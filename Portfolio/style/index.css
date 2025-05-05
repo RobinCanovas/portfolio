@@ -89,17 +89,30 @@ header .logo {
 
 .portfolio-items {
     display: flex;
-    flex-wrap: wrap; /* pour autoriser 2 lignes */
+    flex-wrap: wrap;
     overflow-x: auto;
     gap: 1rem;
     padding: 1rem;
     scroll-snap-type: x mandatory;
-    max-height: calc(2 * 340px); /* Ajusté pour inclure les paddings et marges */
+
+    max-height: none; /* Supprimé pour éviter les coupures */
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* Supprimer la scrollbar visible (optionnel) */
-.portfolio-items::-webkit-scrollbar {
-    display: none;
+/* Exemples d'éléments enfants responsives */
+.portfolio-items > * {
+    flex: 1 1 calc(50% - 1rem); /* 2 par ligne */
+    min-width: 250px;
+    max-width: 100%;
+    scroll-snap-align: start;
+}
+
+/* Adaptation en responsive : 1 colonne sur petit écran */
+@media (max-width: 600px) {
+    .portfolio-items > * {
+        flex: 1 1 100%;
+    }
 }
 
 /* Styles pour chaque carte */
