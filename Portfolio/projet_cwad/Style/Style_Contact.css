@@ -1,0 +1,239 @@
+@charset "utf-8";
+
+/* Reset des styles par défaut */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Police globale */
+body {
+    font-family: 'Rubik', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+html {
+    background-color: rgb(32, 50, 85);
+}
+
+/* Formulaire de contact */
+.contact-form {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+    border-color: #007BFF; /* Couleur de bordure lors du focus */
+}
+
+button.btn {
+    background-color: #007BFF; /* Couleur du bouton */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button.btn:hover {
+    background-color: #0056b3; /* Couleur du bouton au survol */
+}
+
+
+/* Styles pour la section Map */
+.map {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.map h2 {
+    font-size: 1.8rem;
+    color: #127FFE;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.map iframe {
+    width: 100%;
+    height: 350px;
+    border: 2px solid #127FFE;
+    border-radius: 8px;
+}
+
+.map small a {
+    color: #127FFE;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.map small a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive design pour petits écrans */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+    }
+    .header-container .menu-button {
+        display: block;
+    }
+}
+
+
+-----------------------------------
+
+body {
+  background-color: #f4f4f9;
+}
+
+#chatbot-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  max-width: 90%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* En-tête du chatbot */
+#chatbot-header {
+  background-color: #0078d4;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Fenêtre de discussion */
+#chatbot-messages {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto;
+  max-height: 300px;
+  background-color: #fafafa; /* Ajout d'un fond léger pour plus de contraste */
+}
+
+/* Message utilisateur */
+.message.user {
+  text-align: right;
+  background-color: #0078d4;
+  color: #fff;
+  padding: 8px 10px;
+  margin: 5px 0;
+  border-radius: 10px 10px 0 10px;
+  display: inline-block;
+  max-width: 80%;
+}
+
+/* Message bot */
+.message.bot {
+  text-align: left;
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 8px 10px;
+  margin: 5px 0;
+  border-radius: 10px 10px 10px 0;
+  display: inline-block;
+  max-width: 80%;
+}
+
+/* Champ de saisie */
+#chatbot-input-container {
+  display: flex;
+  border-top: 1px solid #ddd;
+  padding: 5px; /* Ajout d'un petit espacement autour du champ de saisie */
+}
+
+/* Champ de texte */
+#chatbot-input {
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  box-sizing: border-box; /* Assure un calcul correct des dimensions */
+}
+/* Liens dans les messages du bot */
+.message.bot a {
+  color: #0078d4;
+  text-decoration: none;
+  font-weight: bold;
+  transition: text-decoration 0.3s ease; /* Transition pour l'effet de survol */
+}
+
+.message.bot a:hover {
+  text-decoration: underline;
+}
+
+/* Responsivité pour écrans plus petits */
+@media (max-width: 500px) {
+  #chatbot-container {
+    width: 100%;
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  #chatbot-header {
+    font-size: 16px; /* Réduction de la taille du texte pour les petits écrans */
+  }
+  
+  #chatbot-messages {
+    max-height: 250px; /* Ajuste la hauteur max pour les petits écrans */
+  }
+  
+  #chatbot-input {
+    font-size: 12px; /* Réduit la taille de police pour plus de confort */
+  }
+}
