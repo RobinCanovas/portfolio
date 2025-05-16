@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>VogMerveille : Destination de rêve</title>
+    <link rel="stylesheet" href="./Style/Style_Contact.css" />
+	<link rel="stylesheet" href="./Style/Index.css" />
+    <link rel="icon" href="./Image/Icon1.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <a href="./index.html">
+                    <img class="ImageLogo" src="Image/Image_Logo2.PNG" alt="Logo VogMerveille">
+                </a>
+            </div>
+			<nav class="nav-links">
+                <a href="./index.html"><img class="ImageIcon" src="Image/Icon2.png" alt="Icon acceuil">	 Accueil</a>
+                <a href="./activite.html"><img class="ImageIcon" src="Image/Icon3.png" alt="Icon Activités">  Activités</a>
+                <a href="./contact.html"><img class="ImageIcon" src="Image/Icon4.png" alt="Icon Contact">  Contact</a>
+			</nav>
+				<div class="user-options">
+					<a href="./login.html">Se connecter</a>
+				</div>
+			</div>
+			</header>
+			
+                
+
+        <!-- Formulaire de contact -->
+        <main>
+        <section class="contact-form">
+            <h2>Contactez-nous</h2>
+            <form action="#" method="post">
+                <div class="form-group">
+                    <label for="name">Nom :</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email :</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message :</label>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn">Envoyer</button>
+            </form>
+        </section>
+		
+		 <section class="map">
+            <h2>Notre emplacement</h2>
+            <iframe width="425" height="350" 
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-122.08715915679933%2C37.42176333862479%2C-122.08464860916139%2C37.42320118761176&amp;layer=mapnik" 
+                style="border: 1px solid black">
+            </iframe>
+            <br/>
+            <small>
+                <a href="https://www.openstreetmap.org/#map=19/37.422482/-122.085904">Afficher une carte plus grande</a>
+            </small>
+        </section>
+
+
+
+		<!-- Conteneur du chatbot -->
+
+<div id="chatbot-container">
+
+  <div id="chatbot-header">FAQ Chatbot</div>
+
+  <div id="chatbot-messages">
+
+    <div class="message bot">Bonjour ! Posez-moi une question ou consultez notre <a href="login.html">FAQ</a>. Tapez "Info" pour bénéficier de renseignements.</div>
+
+  </div>
+
+  <div id="chatbot-input-container">
+
+    <input type="text" id="chatbot-input" placeholder="Posez votre question...">
+
+    <button id="chatbot-send">Envoyer</button>
+
+  </div>
+
+</div>
+
+ 
+
+<script>
+
+  // Sélection des éléments HTML
+
+  const messagesContainer = document.getElementById('chatbot-messages');
+
+  const inputField = document.getElementById('chatbot-input');
+
+  const sendButton = document.getElementById('chatbot-send');
+
+ 
+
+  // Fonction pour ajouter un message
+
+  function addMessage(content, sender) {
+
+    const message = document.createElement('div');
+
+    message.classList.add('message', sender);
+
+    message.innerHTML = content;
+
+    messagesContainer.appendChild(message);
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll automatique vers le bas
+
+  }
+
+ 
+
+  // Gestion de l'envoi des messages
+
+  function handleSendMessage() {
+  const userMessage = inputField.value.trim();
+
+  if (userMessage) {
+    // Ajout du message utilisateur
+    addMessage(userMessage, 'user');
+    inputField.value = '';
+
+    // Vérifier le message utilisateur pour des mots-clés spécifiques
+    const lowerCaseMessage = userMessage.toLowerCase();
+    if (
+      lowerCaseMessage.includes('infos') || 
+      lowerCaseMessage.includes('info') || 
+      lowerCaseMessage.includes('je veux des infos') || 
+      lowerCaseMessage.includes('activités')
+    ) {
+      // Réponse pour les mots-clés "infos" ou "activités"
+      setTimeout(() => {
+        addMessage(
+          `Toutes les informations sur nos activités sont disponibles sur la page <a href="activite.html">Activité</a>. Vous y trouverez des descriptions détaillées, des images captivantes, et tout ce qu'il faut savoir pour votre voyage !`,
+          'bot'
+        );
+      }, 500); // Délai de 500 ms
+    } else {
+      // Réponse par défaut
+      setTimeout(() => {
+        addMessage(
+          `Je ne connais pas encore la réponse à cette question. Vous pouvez consulter notre <a href="faq.html">FAQ</a> ou poser une autre question.`,
+          'bot'
+        );
+      }, 500); // Délai de 500 ms
+    }
+  }
+}
+
+
+ 
+
+  // Envoi du message avec le bouton
+
+  sendButton.addEventListener('click', handleSendMessage);
+
+ 
+
+  // Envoi du message avec la touche "Entrée"
+
+  inputField.addEventListener('keydown', (e) => {
+
+    if (e.key === 'Enter') {
+
+      handleSendMessage();
+
+    }
+
+  });
+
+</script>
+
+
+
+    </main>
+
+    <footer>
+        <p>All rights reserved Metatron</p>
+        <section>
+            <h4>Membres du projet :</h4>
+            <ul>
+                <li>Robin Canovas-Andrieu 1K</li>
+                <li>Safwan Ziani 1K</li>
+            </ul>
+        </section>
+        <section>
+            <h4>Rapports :</h4>
+            <ul>
+              <ul>
+                <li>
+                  <a href="Rapport/Rapport_Projet.docx" download="rapport.docx">
+                    Rapport (format Word)
+                  </a>
+                </li>
+                <li>
+                  <a href="Rapport/Rapport_Projet.pdf" download="rapport.pdf">Rapport (format PDF)</a>
+                </li>
+              </ul>
+            </ul>
+        </section>
+        <section>
+            <img src="Image/Image_Logo1.png" alt="Logo IUT d'Orsay" class="logoIUT">
+        </section>
+    </footer>
+</body>
+</html>
