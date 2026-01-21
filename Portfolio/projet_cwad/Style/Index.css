@@ -1,0 +1,535 @@
+@charset "utf-8";
+
+/* Import de la police unique */
+@font-face {
+    font-family: 'Comic';
+    src: url('./Police/Police1.woff2') format('woff2');
+    font-weight: bold; /* Supposons que c'est le poids normal */
+    font-style: normal;  /* Supposons que ce n'est pas italique */
+}
+
+/* Reset des styles par défaut */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Police globale */
+body {
+    font-family: 'Rubik', sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+html {
+    background-color: rgb(32, 50, 85);
+}
+
+/* Header (En-tête) */
+header {
+    background-color: rgba(160, 193, 252, 0.8);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 250;
+}
+
+/* Conteneur principal du header */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    padding: 0 20px;
+    max-width: 1200px;
+    max-height: 100px;
+    transition: background-color 0.3s ease;
+}
+
+/* Logo */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.ImageLogo {
+    height: 100px;
+    width: auto;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 100;
+}
+
+.ImageIcon {
+    max-height: 2.18vw;
+}
+
+/* Navigation */
+nav {
+    position: relative;
+    height: 50vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+nav.nav-links {
+    display: flex;
+    gap: 50px;
+    padding: 10px;
+}
+
+nav.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.6vw;
+    font-weight: bold;
+    margin-left: 50px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+nav.nav-links a:hover {
+    color: #127FFE;
+    transform: scale(1.02);
+}
+
+
+.user-options {
+    display: flex;
+    gap: 15px;
+}
+
+.user-options a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.user-options a:hover,
+.nav-links :hover img {
+    transform: scale(1.08);
+    transition: transform 0.3s ease;
+	z-index : 101;
+}
+
+.background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    width: 100%;
+    max-width: 70%;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white; 
+    z-index: 1;
+    padding: 20px;
+}
+
+.video-overlay h1 {
+    font-size: 50px; 
+    font-weight: 700; 
+    margin-bottom: 10px; 
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6); 
+}
+
+.video-overlay p {
+    margin-bottom: 20px; 
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); 
+}
+
+main {
+    margin: 20px auto; 
+    padding: 20px; 
+    border-radius: 8px;
+    background-color: rgb(93, 147, 255);
+}
+
+footer {
+    background-color: rgb(93, 147, 255); /* Une teinte légèrement différente pour créer un contraste subtil */
+    padding: 40px 20px; /* Plus d'espace pour l'aération */
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px; /* Espacement plus fluide entre les éléments */
+    color: #ECF6FD;
+    border-top: 3px solid #127FFE; /* Ligne de démarcation moderne */
+}
+
+footer section {
+    flex: 1;
+    min-width: 250px; /* Adaptation aux petits écrans */
+    margin: 0 10px;
+}
+
+footer h4 {
+    font-size: 18px;
+    color: #ECF6FD;
+    margin-bottom: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-bottom: 2px solid #127FFE; /* Ligne fine sous les titres */
+    display: inline-block; /* Limite la ligne au texte */
+    padding-bottom: 5px;
+}
+
+footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+footer ul li {
+    font-size: 14px;
+    margin: 8px 0;
+    transition: color 0.3s ease;
+}
+
+footer ul li:hover {
+    color: #127FFE; /* Accentuation des éléments au survol */
+}
+
+footer a {
+    color: #ECF6FD;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #127FFE;
+    text-decoration: underline;
+}
+
+footer p {
+    font-size: 14px;
+    margin: 10px 0;
+    color: #ECF6FD;
+}
+
+footer .logoIUT {
+    width: 190px; /* Taille plus discrète */
+    margin: 20px auto 0; /* Espacement suffisant autour du logo */
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+footer .logoIUT:hover {
+    transform: scale(1.1); /* Effet d'agrandissement au survol */
+}
+
+p {
+    font-weight: 400; 
+	color : white;
+	font-weight : bold;
+	font-size : 15px;
+}
+.para1 {
+	text-align : center;
+	font-size : 25px;
+	margin : 15px;
+}
+
+@media (max-width: 768px) {
+    .video-overlay h1 {
+        font-size: 2vw; 
+    }
+
+    .video-overlay p {
+        font-size: 1.2vw;
+    }
+
+    .video-overlay .btn {
+        font-size: 1vw;
+        padding: 10px 20px; 
+    }
+
+}
+
+.image-container {
+    position: relative;
+}
+
+.image-container img {
+    position: relative;
+	height: 17vw;
+	border-radius: 8px;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.filter {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    z-index: 0;
+    height:17.2vw;
+	
+}
+.Text_Promo {
+    position: absolute;
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    color: #E2E1E1;
+    border-radius: 10px;
+	margin-top : 10px;
+}
+
+.Text_Promo h4 {
+    margin: 0;
+    font-size: 1.5vw;
+}
+
+.Text_Promo p {
+    margin: 5px 0 0;
+    font-size: 1vw;
+    color: #E2E1E1;
+}
+
+
+.image-promo-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; 
+    gap: 20px;
+}
+
+.Image_Promo {
+    position: relative;
+	margin-top : 25px;
+	margin-bottom : 30px;
+}
+
+iframe {
+  width: 45%;
+  height: 415px;
+  display: block;
+  margin: 20px auto;
+  border: 2px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+
+button {
+  align-items: center;
+  background-image: linear-gradient(144deg, #af40ff, #5b42f3 50%, #00ddeb);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+  box-sizing: border-box;
+  color: #ffffff;
+  display: flex;
+  font-size: 18px;
+  justify-content: center;
+  line-height: 1em;
+  max-width: 100%;
+  min-width: 140px;
+  padding: 3px;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+button:active,
+button:hover {
+  outline: 0;
+}
+
+.text {
+  background-color: rgb(5, 6, 45);
+}
+button a {
+    padding: 16px 24px;
+    border-radius: 6px;
+    width: 100%;
+    height: 100%;
+    transition: 300ms;
+}
+
+button:hover a {
+  background: none;
+}
+
+.containerbtm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button:active {
+  transform: scale(0.9);
+}
+
+.text {
+    text-decoration: none; /* Enlève le soulignement */
+    color: white; /* Met le texte en blanc */
+}
+
+
+
+
+
+
+
+
+
+
+
+-----------------
+/* Section Témoignages */
+.testimonials {
+    margin: 40px auto;
+    padding: 30px;
+    background: linear-gradient(135deg, #f9f9f9, #ececec);
+    border-radius: 15px;
+    max-width: 800px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    font-family: 'Rubik', sans-serif;
+}
+
+.testimonials h2 {
+    font-size: 2rem;
+    text-align: center;
+    color: #222;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.testimonials h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #555;
+    margin: 10px auto 0;
+    border-radius: 3px;
+}
+
+.testimonial {
+    margin-bottom: 25px;
+    padding: 15px 20px;
+    border-left: 4px solid #555;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.testimonial blockquote {
+    font-style: italic;
+    font-size: 1.4rem;
+    color: #444;
+    margin: 0 0 12px 0;
+    line-height: 1.6;
+    position: relative;
+    padding-left: 25px;
+}
+
+.testimonial blockquote::before {
+    content: '“';
+    font-size: 2rem;
+    color: #aaa;
+    position: absolute;
+    left: 0;
+    top: -10px;
+}
+
+.testimonial p {
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    font-size: 1rem;
+}
+
+
+/* Section Réseaux sociaux */
+.social-media {
+    margin: 40px auto;
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #fff, #f7f7f7);
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    font-family: 'Rubik', sans-serif;
+}
+
+.social-media h2 {
+    font-size: 2rem;
+    color: #222;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.social-media h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #555;
+    margin: 10px auto 0;
+    border-radius: 3px;
+}
+
+.social-media .icons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.social-media .icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.social-media .icons a img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+}
+
+.social-media .icons a:hover {
+    transform: scale(1.15);
+    background-color: #e1e1e1;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.social-media .icons a:hover img {
+    filter: brightness(0.8);
+}
