@@ -1,0 +1,570 @@
+import type { ContractType, Tech, WorkMode } from '../types';
+
+/**
+ * French overlay of the content in profile.ts. Anything missing here falls back to English.
+ * Arrays (missions, outcomes, build steps…) replace the English ones item by item.
+ */
+type Facts = { value?: string; label: string }[];
+type Missions = { title: string; items: string[] }[];
+
+export interface FrOverlay {
+  profile: Record<'title' | 'location' | 'status' | 'currentRole' | 'pitch' | 'ambition', string>;
+  companies: Record<string, { sector: string; about: string; facts: Facts; visualAlt?: string }>;
+  clients: Record<string, { about: string; facts: Facts; parentLabel?: string }>;
+  experiences: Record<
+    string,
+    { role: string; period: string; duration: string; location: string; summary: string; missions: Missions; skills?: string[]; confidential?: string }
+  >;
+  projects: Record<
+    string,
+    {
+      title: string;
+      context: string;
+      description: string;
+      problem: string;
+      outcome: string[];
+      highlights: string[];
+      build: { title: string; detail: string }[];
+      confidential?: string;
+      /** Same order as the English maths notes; formulas are shared. */
+      maths?: { title: string; text: string }[];
+      course?: { steps: string[] };
+    }
+  >;
+  education: Record<string, { school?: string; degree: string; details: string[] }>;
+  vModel: { left: string; right: string }[];
+  volunteering: { since: string; points: string[] };
+  interests: string[];
+  links: { cv: string };
+  skillGroups: Record<string, { title: string; skills?: Record<string, string> }>;
+  languages: Record<string, { name: string; level?: string }>;
+  contract: Record<ContractType, string>;
+  mode: Record<WorkMode, string>;
+  tech: Partial<Record<Tech, string>>;
+}
+
+export const fr: FrOverlay = {
+  links: { cv: './Robin-Canovas-CV.pdf' },
+
+  profile: {
+    title: 'Étudiant en informatique & analyste développement',
+    location: 'Paris, France',
+    status: 'Ouvert aux opportunités',
+    currentRole: 'Développeur web @ Éditions Ellipses',
+    pitch:
+      'Étudiant en BUT Informatique en alternance à l’IUT d’Orsay (Université Paris-Saclay), je construis un profil généraliste, solide en maths comme en informatique, avec un objectif clair : un master sélectif ou une grande école. En parallèle de mes études, je transforme déjà des besoins métier en logiciels sûrs et fiables, y compris pour une filiale du groupe BNP Paribas.',
+    ambition: 'Mon projet d’études : après le BUT, un master sélectif ou une grande école, pour approfondir les maths, la data et la prise de décision. À plus long terme, je vise des métiers exigeants où la technologie éclaire les décisions, sans me fermer de portes.',
+  },
+
+  companies: {
+    ellipses: {
+      sector: 'Édition universitaire',
+      about:
+        'Maison d’édition indépendante, 1er éditeur universitaire et des classes préparatoires : des livres pour toutes les matières, du collège à la fin des études supérieures, avec toute sa chaîne du livre intégrée, impression comprise.',
+      facts: [{ value: '50 ans', label: 'de publications' }, { value: '13 000', label: 'titres au catalogue' }, { value: '12 000+', label: 'auteurs' }, { label: 'pays de diffusion' }],
+    },
+    acelys: {
+      sector: 'Entreprise de services numériques (ESN)',
+      about:
+        'ESN montpelliéraine créée en 1997, qui accompagne les organisations dans leur transformation numérique : développement, cybersécurité (audits, gouvernance ISO 27001, pentests), data et performance des systèmes d’information, pour des clients de la banque, de l’assurance et du logement social.',
+      facts: [{ label: 'création' }, { label: 'siège' }, { label: 'offres principales' }],
+    },
+    education: {
+      sector: 'Ministère de l’Éducation nationale',
+      about:
+        'Le ministère de l’Éducation nationale gère les établissements publics du pays. Cette mission a été réalisée pour des établissements du Gard (secteur d’Alès), afin de numériser la gestion des dossiers administratifs des élèves.',
+      facts: [{ value: 'Public', label: 'secteur' }, { label: 'établissements servis' }, { value: 'À distance', label: 'mission freelance' }],
+    },
+    solstice: {
+      sector: 'Mesure environnementale & logiciel industriel',
+      about:
+        'Groupe réunissant analyse de gaz & instrumentation, automatisme du bâtiment et ingénierie. En tant qu’éditeur, il développe un système d’acquisition et de traitement des données (DAHS) pour la surveillance environnementale, dont un outil de reporting conçu pour la norme EN 17255.',
+      facts: [{ label: 'sites : Paris-Saclay, Arras, Lyon, Metz' }, { label: 'logiciel de données environnementales' }, { label: 'norme de reporting' }],
+    },
+    aeroboat: {
+      sector: 'Association aéronautique · engins à effet de sol',
+      about:
+        'Association toulousaine fondée en 2025 par trois étudiants. Inspirée des ekranoplanes soviétiques, elle conçoit, construit et instrumente des maquettes à effet de sol, et a fait sa première apparition publique au Salon du Bourget 2025.',
+      facts: [{ label: 'création' }, { label: 'port d’attache' }, { value: 'Salon du Bourget', label: 'première apparition publique' }],
+      visualAlt: 'Emblème d’Aeroboat France',
+    },
+    boulanger: {
+      sector: 'Distribution d’électroménager et de multimédia',
+      about: 'Enseigne française d’électroménager et de multimédia.',
+      facts: [],
+    },
+  },
+
+  clients: {
+    Domofinance: {
+      about:
+        'Société de crédit à la consommation née de l’alliance de BNP Paribas Personal Finance et d’EDF, spécialiste du financement des travaux de rénovation énergétique (isolation, pompes à chaleur, panneaux solaires…).',
+      facts: [{ label: 'depuis' }, { value: '450 000+', label: 'clients financés' }, { value: '96 %', label: 'clients satisfaits' }],
+      parentLabel: 'groupe',
+    },
+  },
+
+  experiences: {
+    ellipses: {
+      role: 'Développeur web',
+      period: 'Sept. 2026 → aujourd’hui',
+      duration: 'En cours',
+      location: 'Paris, Île-de-France',
+      summary: 'Développement de la plateforme web Symfony de l’éditeur, au sein de l’équipe technique interne.',
+      missions: [
+        {
+          title: 'Développement',
+          items: ['Développer et maintenir des fonctionnalités de la plateforme Symfony / PHP de l’éditeur.', 'Appliquer les pratiques de qualité, de revue de code et de tests de l’équipe.'],
+        },
+      ],
+      skills: ['PHP', 'Symfony', 'Développement web'],
+    },
+    acelys: {
+      role: 'Analyste du développement',
+      period: 'Avr. 2026 → juil. 2026',
+      duration: '4 mois',
+      location: 'Montpellier, Occitanie',
+      summary:
+        'Intégré à une équipe Agile qui accompagne la transformation technique des plateformes de Domofinance (groupe BNP Paribas Personal Finance) : garantir la qualité des livrables et faire le lien technique entre les besoins métier et les équipes de développement externes.',
+      missions: [
+        {
+          title: 'Assurance qualité & expertise technique',
+          items: [
+            'Diagnostic et résolution d’anomalies complexes sur des environnements Symfony et React.',
+            'Mise en place de solutions de sécurité : système d’authentification multifacteur (MFA) et workflows de filtrage des e-mails transactionnels.',
+            'Validation des livrables techniques des partenaires externes au regard des exigences du projet.',
+          ],
+        },
+        {
+          title: 'Interface technique & méthodologie',
+          items: [
+            'Traduction des besoins métier en spécifications techniques pour les équipes de développement.',
+            'Suivi de la performance et de la maintenabilité d’architectures basées sur API Platform.',
+            'Participation aux cérémonies Scrum pour des cycles de déploiement fluides et une bonne vélocité.',
+          ],
+        },
+        {
+          title: 'Déploiement & DevOps',
+          items: [
+            'Mise en place de pipelines de déploiement avec Ansible, déclenchés depuis Bitbucket Pipelines.',
+            'Automatisation de chaque mise en production : installation des dépendances (npm, Yarn), migrations de base de données, mise en ligne.',
+            'Gestion des accès sécurisés aux serveurs : clés SSH et tunnels SSH vers les environnements protégés.',
+          ],
+        },
+      ],
+      skills: ['Développement web', 'Symfony', 'React', 'API Platform', 'Ansible', 'Bitbucket Pipelines', 'SSH', 'Scrum', 'Spécifications', 'Assurance qualité'],
+      confidential:
+        'Cette mission s’est déroulée sur une plateforme de crédit à la consommation réglementée du groupe BNP Paribas. Pour des raisons de sécurité et de confidentialité, aucun code, aucune capture ni aucun détail interne n’est publié ici.',
+    },
+    education: {
+      role: 'Développeur web full-stack',
+      period: 'Janv. 2026 → févr. 2026',
+      duration: '1 mois',
+      location: 'Gard (Alès), Occitanie',
+      summary: 'Développement complet d’une application interne de gestion des dossiers d’aménagement des élèves, de la conception de la base à la formation du personnel.',
+      missions: [
+        {
+          title: 'Réalisé',
+          items: [
+            'Conception et modélisation d’une base de données dédiée aux informations des élèves et aux dossiers administratifs.',
+            'Développement d’une plateforme web interne en PHP pour enregistrer, suivre, mettre à jour et consulter les dossiers.',
+            'Mise en place d’interfaces sécurisées pour faciliter les tâches administratives quotidiennes du personnel.',
+            'Automatisation de plusieurs workflows et centralisation des données entre établissements.',
+            'Formation du personnel à l’utilisation de l’application.',
+          ],
+        },
+      ],
+      skills: ['PHP', 'Conseil en bases de données', 'Modélisation de données', 'Formation des utilisateurs'],
+    },
+    solstice: {
+      role: 'Développeur full-stack',
+      period: 'Sept. 2025 → janv. 2026',
+      duration: '5 mois',
+      location: 'Paris et périphérie',
+      summary: 'Développement et maintenance d’un logiciel environnemental, et participation à sa certification selon la norme applicable.',
+      missions: [
+        {
+          title: 'Logiciel & certification',
+          items: [
+            'Intégration de nouvelles fonctionnalités au logiciel environnemental existant.',
+            'Participation au processus de certification de la solution selon la norme applicable.',
+            'Automatisation de requêtes vers les bases de données du logiciel.',
+            'Résolution de problèmes techniques et amélioration des performances avec le responsable du développement.',
+            'Qualité du code et maintenance logicielle.',
+          ],
+        },
+        { title: 'Innovation', items: ['Accompagnement de l’analyse des diagnostics système, avec l’introduction de l’IA.'] },
+      ],
+      skills: ['Java', 'Autonomie', 'Certification', 'Performance'],
+    },
+    aeroboat: {
+      role: 'Responsable des systèmes informatiques',
+      period: 'Sept. 2025 → janv. 2026',
+      duration: '5 mois',
+      location: 'Toulouse, Occitanie',
+      summary: 'Responsable de l’informatique de l’association, ainsi que de la conception et du développement de son site web.',
+      missions: [
+        {
+          title: 'Site web',
+          items: [
+            'Conception d’une architecture claire et intuitive pour faciliter la navigation.',
+            'Mise en valeur des activités et de l’identité de l’association avec un design moderne.',
+            'Développement d’interfaces interactives pensées pour l’expérience utilisateur.',
+            'Compatibilité multiplateforme (ordinateur, tablette, mobile).',
+            'Bonnes pratiques de performance et de référencement (SEO).',
+          ],
+        },
+      ],
+      skills: ['Gestion de projet', 'Web design', 'SEO'],
+    },
+    boulanger: {
+      role: 'Conseiller vente & services',
+      period: 'Juil. 2025 → août 2025',
+      duration: 'Job d’été',
+      location: 'Lattes, Occitanie',
+      summary: 'Job d’été : accueil client, suivi du SAV et présentation de solutions de financement.',
+      missions: [{ title: 'Job d’été', items: ['Accueil client et encaissements.', 'Suivi du service après-vente.', 'Présentation de solutions de paiement en plusieurs fois et sécurisation des dossiers.'] }],
+      skills: ['Relation client', 'Crédit à la consommation'],
+    },
+  },
+
+  projects: {
+    'domofinance-mfa': {
+      title: 'MFA et sécurité des e-mails d’une plateforme de crédit',
+      context: 'Acelys × Domofinance (groupe BNP Paribas)',
+      description: 'Authentification multifacteur et filtrage des e-mails transactionnels sur les plateformes Domofinance, et validation des livrables des partenaires externes.',
+      problem:
+        'Une plateforme de crédit réglementée doit authentifier fortement ses clients et fiabiliser ses e-mails transactionnels, tandis que plusieurs équipes externes livrent du code qu’il faut vérifier avant la mise en production.',
+      outcome: [
+        'Authentification multifacteur ajoutée au parcours client.',
+        'Workflow de filtrage des e-mails transactionnels en place.',
+        'Livrables externes validés par rapport aux exigences avant mise en production.',
+      ],
+      highlights: ['Authentification multifacteur', 'Filtrage des e-mails transactionnels', 'Validation des livrables', 'Besoins métier → spécifications'],
+      build: [
+        { title: 'Besoin métier', detail: 'Besoins recueillis avec les équipes métier et traduits en spécifications techniques.' },
+        { title: 'MFA', detail: 'Un second facteur d’authentification protège l’accès client.' },
+        { title: 'Filtrage e-mails', detail: 'Les e-mails transactionnels passent par un workflow de filtrage.' },
+        { title: 'Symfony · API Platform', detail: 'Back-end et API, suivis en performance et maintenabilité.' },
+        { title: 'Validation', detail: 'Livrables partenaires vérifiés avant mise en production, en cycles Scrum.' },
+      ],
+      confidential:
+        'Ce projet n’est volontairement pas détaillé : il tourne sur une plateforme réglementée du groupe BNP Paribas, son code et son fonctionnement interne sont donc confidentiels. Ce qui est décrit ici reste au niveau de mon profil LinkedIn public.',
+    },
+    'acelys-deploy': {
+      title: 'Pipelines de déploiement Ansible',
+      context: 'Acelys × Domofinance (groupe BNP Paribas)',
+      description: 'Des mises en production automatisées : Bitbucket Pipelines lance des playbooks Ansible via SSH pour installer les dépendances, migrer la base et mettre en ligne.',
+      problem: 'Une mise en production manuelle est lente et risquée sur une plateforme qui doit rester disponible : chaque étape doit être reproductible, sécurisée et réversible.',
+      outcome: [
+        'Déploiements déclenchés depuis Bitbucket Pipelines.',
+        'Playbooks Ansible pour les dépendances (npm, Yarn), les migrations et la mise en ligne.',
+        'Accès sécurisé aux serveurs par clés SSH et tunnels SSH.',
+      ],
+      highlights: ['Bitbucket Pipelines', 'Playbooks Ansible', 'Clés & tunnels SSH', 'Migrations de base de données'],
+      build: [
+        { title: 'Push', detail: 'Un push sur la branche principale lance le pipeline.' },
+        { title: 'Bitbucket Pipelines', detail: 'Le pipeline exécute le playbook Ansible de l’environnement cible.' },
+        { title: 'SSH', detail: 'Accès par clé, via un tunnel, jusqu’aux serveurs protégés.' },
+        { title: 'Tâches Ansible', detail: 'Dépendances (npm, Yarn), build, migrations de base de données, mise en ligne.' },
+        { title: 'Mise en ligne', detail: 'La nouvelle version est activée ; une étape en échec laisse la précédente en ligne.' },
+      ],
+      confidential:
+        'L’infrastructure réelle du client est confidentielle : la démo interactive ci-dessous est une illustration générique du workflow, pas ses serveurs ni sa configuration.',
+    },
+    'gradient-descent': {
+      title: 'La descente de gradient, en images',
+      context: 'Personnel · Maths & machine learning',
+      description: 'Une régression linéaire interactive entraînée par descente de gradient : ajoutez des points et regardez le modèle apprendre, courbe d’erreur comprise.',
+      problem: 'Comprendre, et montrer, l’idée d’optimisation derrière les réseaux de neurones sur le modèle le plus simple possible.',
+      outcome: ['Descente de gradient implémentée à partir des maths (dérivées partielles de la MSE).', 'Visualisation en direct de l’ajustement et de l’erreur.', 'Taux d’apprentissage réglable pour voir convergence et divergence.'],
+      highlights: ['Erreur quadratique moyenne', 'Dérivées partielles', 'Taux d’apprentissage & convergence'],
+      build: [
+        { title: 'Modèle', detail: 'Une droite ŷ = w·x + b à deux paramètres.' },
+        { title: 'Erreur', detail: 'Erreur quadratique moyenne entre prédictions et points.' },
+        { title: 'Gradient', detail: 'Dérivées partielles de l’erreur par rapport à w et b.' },
+        { title: 'Mise à jour', detail: 'θ ← θ − η·∇E, répété jusqu’à ce que l’erreur ne baisse plus.' },
+      ],
+    },
+    'neural-network': {
+      title: 'Un réseau de neurones codé à la main en Python',
+      context: 'Personnel · Deep learning, formation Machine Learnia',
+      description:
+        'Un neurone artificiel, puis un réseau à 2 couches et un réseau profond, écrits avec NumPy seulement : chaque dérivée calculée à la main, en suivant la formation Deep Learning de la chaîne Machine Learnia.',
+      problem:
+        'Comprendre ce qui se passe vraiment dans un réseau de neurones, sans bibliothèque qui le fait à ma place : comment un neurone décide, comment il apprend de ses erreurs, et pourquoi plusieurs couches résolvent ce qu’un neurone seul ne peut pas.',
+      outcome: [
+        'Un neurone artificiel (sigmoïde et log loss) entraîné par descente de gradient, avec sa frontière de décision.',
+        'Appliqué à de vraies images : chats contre chiens, 64×64 pixels aplatis en 4 096 entrées, normalisés, avec courbes d’entraînement et de test.',
+        'Un réseau à 2 couches avec propagation avant et rétropropagation, qui sépare des cercles concentriques là où un neurone seul échoue.',
+        'Généralisé à un réseau profond avec autant de couches que voulu, entièrement vectorisé avec NumPy.',
+      ],
+      highlights: ['Sigmoïde et log loss', 'Gradients dérivés à la main', 'Propagation avant et rétropropagation', 'Vectorisation NumPy'],
+      build: [
+        { title: 'Neurone', detail: 'z = w·x + b, puis a = σ(z) : une probabilité entre 0 et 1.' },
+        { title: 'Log loss', detail: 'Mesure à quel point les prédictions se trompent, et punit fort les erreurs sûres d’elles.' },
+        { title: 'Gradients', detail: 'Dérivation en chaîne : chaque dérivée se simplifie en (a − y).' },
+        { title: 'Descente de gradient', detail: 'W ← W − α·∂L/∂W, sur des centaines d’itérations.' },
+        { title: 'Couches', detail: 'Propagation avant couche par couche, puis l’erreur remonte le réseau.' },
+        { title: 'Évaluation', detail: 'Courbes d’apprentissage, taux de réussite, jeux d’entraînement et de test contre le surapprentissage.' },
+      ],
+      maths: [
+        {
+          title: 'Le neurone artificiel',
+          text: 'Une somme pondérée des entrées, écrasée par la sigmoïde en probabilité. La frontière a = 0,5 est la droite w·x + b = 0 : un neurone seul ne sait tracer qu’une droite.',
+        },
+        {
+          title: 'Le coût : la log loss',
+          text: 'Elle découle de la vraisemblance d’une loi de Bernoulli. Elle punit très fort une mauvaise réponse donnée avec assurance, et sa dérivée reste remarquablement simple.',
+        },
+        {
+          title: 'Les gradients',
+          text: 'Dérivation en chaîne ∂L/∂a · ∂a/∂z · ∂z/∂w, avec σ′(z) = σ(z)(1 − σ(z)) : les termes se simplifient et il ne reste que l’erreur (a − y).',
+        },
+        {
+          title: 'La descente de gradient',
+          text: 'α est le taux d’apprentissage. Trop petit, l’apprentissage se traîne ; trop grand, la log loss diverge : la démo permet d’essayer les deux.',
+        },
+        {
+          title: 'La vectorisation',
+          text: 'Les m exemples d’un coup avec des produits matriciels au lieu d’une boucle Python : bien plus rapide, et le même code pour 2 entrées ou 4 096 pixels.',
+        },
+        {
+          title: 'La rétropropagation (2 couches)',
+          text: 'L’erreur de sortie remonte le réseau couche par couche. Chaque couche reçoit ses propres gradients, puis tous les poids sont mis à jour ensemble.',
+        },
+      ],
+      course: {
+        steps: [
+          'Le perceptron et le neurone artificiel.',
+          'Les gradients d’un neurone : log loss et descente de gradient.',
+          'Un premier neurone en Python, puis chats contre chiens sur de vraies images.',
+          'Le réseau à 2 couches : propagation avant et rétropropagation.',
+          'Les réseaux profonds, avec autant de couches que voulu.',
+        ],
+      },
+    },
+    'subnet-calculator': {
+      title: 'Calculateur de sous-réseau IPv4',
+      context: 'Personnel · Réseaux',
+      description: 'Un outil de découpage en sous-réseaux qui affiche les 32 bits d’une adresse et calcule réseau, broadcast, masque et plage d’hôtes.',
+      problem: 'Rendre le sous-réseautage visible : où s’arrête la partie réseau, où commence la partie hôte, et ce que cela change pour l’adressage.',
+      outcome: ['Réseau, broadcast, masque et plage d’hôtes calculés en direct.', 'Vue bit à bit du préfixe.', 'Cas particuliers /31 et /32 et plages privées gérés.'],
+      highlights: ['Notation CIDR', 'Opérations bit à bit', 'Plages privées et publiques'],
+      build: [
+        { title: 'Analyse', detail: 'Adresse et préfixe validés (a.b.c.d/p).' },
+        { title: 'Calcul binaire', detail: 'Masque, réseau et broadcast calculés avec des opérations bit à bit.' },
+        { title: 'Visualisation', detail: 'Bits réseau et bits hôte colorés sur la vue 32 bits.' },
+      ],
+    },
+    'edu-accommodation': {
+      title: 'Application de gestion des dossiers d’aménagement',
+      context: 'Éducation nationale · Freelance',
+      description: 'Application PHP interne pour enregistrer, suivre et partager les dossiers d’aménagement des élèves entre établissements.',
+      problem: 'Les dossiers étaient gérés à la main et dispersés entre établissements : un suivi lent et source d’erreurs pour le personnel.',
+      outcome: ['Un espace central et sécurisé pour chaque dossier élève.', 'Plusieurs workflows administratifs automatisés.', 'Personnel formé et autonome sur l’outil.'],
+      highlights: ['Base de données dédiée', 'Interfaces sécurisées', 'Workflows automatisés', 'Formation des utilisateurs'],
+      build: [
+        { title: 'Personnel', detail: 'Accès authentifié pour le personnel des établissements.' },
+        { title: 'Interfaces PHP', detail: 'Formulaires et tableaux de bord pour saisir, rechercher et mettre à jour.' },
+        { title: 'Workflows', detail: 'Automatisations qui remplacent les échanges manuels entre établissements.' },
+        { title: 'MySQL', detail: 'Base modélisée autour des élèves et des dossiers administratifs.' },
+      ],
+    },
+    'solstice-dahs': {
+      title: 'Logiciel environnemental & diagnostics par IA',
+      context: 'Solutions Solstice · Alternance',
+      description: 'Nouvelles fonctionnalités et certification d’un logiciel de surveillance environnementale, automatisation de requêtes et diagnostics assistés par IA.',
+      problem: 'Les sites industriels doivent déclarer leurs émissions de façon fiable selon des normes strictes : le logiciel doit être certifié et les pannes diagnostiquées rapidement.',
+      outcome: ['Nouvelles fonctionnalités intégrées au logiciel.', 'Contribution au processus de certification.', 'Requêtes base de données automatisées.', 'Premiers pas de l’IA dans les diagnostics système.'],
+      highlights: ['Fonctionnalités & maintenance Java', 'Certification selon la norme', 'Automatisation de requêtes', 'IA pour les diagnostics'],
+      build: [
+        { title: 'Mesures', detail: 'Données environnementales acquises depuis les analyseurs sur site.' },
+        { title: 'Logiciel Java', detail: 'Fonctionnalités, corrections et performance de l’application.' },
+        { title: 'Requêtes automatisées', detail: 'Requêtes récurrentes vers la base automatisées.' },
+        { title: 'Diagnostics IA', detail: 'L’IA introduite pour aider à analyser les diagnostics système.' },
+        { title: 'Certification', detail: 'Solution certifiée selon la norme applicable.' },
+      ],
+    },
+    'aeroboat-site': {
+      title: 'Site web d’Aeroboat France',
+      context: 'Aeroboat France · CDD',
+      description: 'Le site de l’association, conçu et développé de zéro : navigation claire, identité moderne, responsive et optimisé SEO.',
+      problem: 'Une toute jeune association avait besoin d’une présence en ligne crédible pour présenter ses projets et ses fondateurs, et attirer membres et partenaires.',
+      outcome: ['Site en ligne présentant l’association et son équipe.', 'Cohérent sur ordinateur, tablette et mobile.', 'Bonnes pratiques SEO appliquées.'],
+      highlights: ['Architecture de l’information', 'Design responsive', 'Performance & SEO'],
+      build: [
+        { title: 'Architecture', detail: 'Navigation claire autour de l’histoire, de l’équipe et du contact.' },
+        { title: 'Design', detail: 'Identité moderne, sections interactives.' },
+        { title: 'WordPress', detail: 'Construit sous WordPress pour que l’association puisse le modifier facilement.' },
+        { title: 'SEO & performance', detail: 'Métadonnées, médias adaptés, vérifications multi-appareils.' },
+      ],
+    },
+    'ac-motors': {
+      title: 'Base de données AC-Motors',
+      context: 'IUT d’Orsay · Académique',
+      description: 'Base de données relationnelle pour une concession automobile (véhicules, clients, ventes), avec un bac à sable SQL qui tourne dans votre navigateur.',
+      problem: 'Une concession doit suivre son stock, ses clients et ses ventes de façon cohérente, et répondre vite aux questions métier.',
+      outcome: ['Schéma normalisé avec contraintes d’intégrité.', 'Requêtes métier : chiffre d’affaires, stock, meilleurs clients.', 'Démo interactive : exécutez du vrai SQL sur le modèle.'],
+      highlights: ['Modèle conceptuel → logique → physique', 'Contraintes & index', 'Requêtes SQL métier'],
+      build: [
+        { title: 'Besoins', detail: 'Entités et règles recueillies auprès de la concession.' },
+        { title: 'Modèle conceptuel', detail: 'Modèle entité–association (MCD).' },
+        { title: 'Modèle physique', detail: 'Tables, clés, contraintes et index.' },
+        { title: 'Requêtes', detail: 'Questions métier traduites en SQL.' },
+      ],
+    },
+    cwad: {
+      title: 'VogMerveille, site d’agence de voyage',
+      context: 'IUT d’Orsay · Projet en équipe',
+      description: 'Site d’une agence fictive de croisières dans le temps : accueil, activités, contact avec chatbot FAQ et connexion, refondu en 2026.',
+      problem: 'Réaliser un site multi-pages complet et responsive en HTML/CSS, puis aller plus loin avec de l’interactivité.',
+      outcome: ['Site original de 4 pages responsive (HTML/CSS).', 'Refonte 2026 : thème luxe sombre, filtres, simulateur de réservation, chatbot.', 'Code validé W3C.'],
+      highlights: ['Mises en page responsive', 'Filtres & simulateur de réservation', 'Chatbot FAQ en JavaScript natif'],
+      build: [
+        { title: 'HTML/CSS', detail: 'Pages sémantiques, mises en page Flexbox & Grid.' },
+        { title: 'JavaScript natif', detail: 'Filtres, simulateur de prix, chatbot, sans framework.' },
+        { title: 'Validation', detail: 'Validation W3C et tests multi-appareils.' },
+      ],
+    },
+    'paris-sud-app': {
+      title: 'Gestion des logements étudiants',
+      context: 'IUT d’Orsay · Académique',
+      description: 'Application Java de gestion des nouveaux étudiants de l’Université Paris-Sud : attribution des chambres, affectations et dossiers du personnel.',
+      problem: 'Attribuer les chambres et suivre étudiants et personnel sans tableurs.',
+      outcome: ['Modèle objet du domaine.', 'Logique d’attribution des chambres.', 'Données persistantes.'],
+      highlights: ['Modèle objet', 'Algorithme d’attribution', 'Persistance'],
+      build: [
+        { title: 'Étudiants & personnel', detail: 'Classes du domaine modélisées en UML.' },
+        { title: 'Attribution', detail: 'Règles d’affectation des étudiants aux chambres.' },
+        { title: 'Stockage', detail: 'Données conservées entre les sessions.' },
+      ],
+    },
+    librairie: {
+      title: 'Librairie Canaules : cahier des charges',
+      context: 'IUT d’Orsay · Académique',
+      description: 'Recueil des besoins (AMOA) pour une librairie et cahier des charges détaillé de son futur système de gestion.',
+      problem: 'Transformer les besoins d’un petit commerce en un cahier des charges exploitable par des développeurs : le cœur du conseil IT.',
+      outcome: ['Analyse des besoins.', 'Diagrammes UML de cas d’utilisation et d’activité.', 'Spécifications fonctionnelles et techniques.'],
+      highlights: ['Analyse des besoins', 'Modélisation UML', 'Rédaction de spécifications'],
+      build: [
+        { title: 'Entretiens', detail: 'Besoins recueillis auprès des parties prenantes.' },
+        { title: 'UML', detail: 'Cas d’utilisation et activités modélisés.' },
+        { title: 'Cahier des charges', detail: 'Exigences fonctionnelles et techniques rédigées.' },
+      ],
+    },
+    debian: {
+      title: 'Poste Debian sur Raspberry Pi',
+      context: 'IUT d’Orsay · Académique',
+      description: 'Installation et configuration d’un poste de développement complet sur Raspberry Pi.',
+      problem: 'Mettre en place un poste Linux fonctionnel, avec base de données et outils Python, sur un matériel peu puissant.',
+      outcome: ['Système Debian opérationnel.', 'Serveur SQL et outils Python.', 'Paquets adaptés à l’usage.'],
+      highlights: ['Installation du système', 'Outils SQL & Python', 'Configuration système'],
+      build: [
+        { title: 'Raspberry Pi', detail: 'Debian installée et configurée.' },
+        { title: 'SQL', detail: 'Serveur de base de données mis en place.' },
+        { title: 'Python', detail: 'Outils de développement et paquets.' },
+      ],
+    },
+    'python-game': {
+      title: 'Jeu avec adversaire IA',
+      context: 'Personnel · Académique',
+      description: 'Jeu en Python avec un adversaire IA autonome, affichage Pygame et logique de jeu en NumPy.',
+      problem: 'Créer un adversaire qui joue seul tout en restant amusant à battre.',
+      outcome: ['Boucle de jeu jouable.', 'Adversaire IA autonome.', 'Logique vectorisée avec NumPy.'],
+      highlights: ['Affichage Pygame', 'Logique de décision IA', 'Calculs NumPy'],
+      build: [
+        { title: 'Pygame', detail: 'Affichage et boucle d’entrées.' },
+        { title: 'IA', detail: 'Logique de décision de l’adversaire.' },
+        { title: 'NumPy', detail: 'Calculs de l’état du jeu.' },
+      ],
+    },
+  },
+
+  education: {
+    iut: {
+      degree: 'BUT Informatique (Bachelor)',
+      details: [
+        'Développement logiciel & web : programmation efficace, qualité, architecture, web avancé.',
+        'Bases de données & systèmes : SQL avancé, programmation système, réseaux, virtualisation.',
+        'Génie logiciel : UML, méthodes Agile, projets en équipe selon le cycle en V.',
+        'Mathématiques : analyse, probabilités, algèbre linéaire, optimisation, automates.',
+        'Transverse : communication, anglais technique, droit du numérique.',
+      ],
+    },
+    bac: {
+      degree: 'Baccalauréat général, Mathématiques & NSI',
+      details: ['Spécialités : Mathématiques et NSI (informatique).', 'Options : Mathématiques expertes, Théâtre.'],
+    },
+  },
+
+  vModel: [
+    { left: 'Besoins', right: 'Recette' },
+    { left: 'Spécification', right: 'Tests système' },
+    { left: 'Architecture', right: 'Tests d’intégration' },
+    { left: 'Conception détaillée', right: 'Tests unitaires' },
+  ],
+
+  volunteering: {
+    since: 'Scout depuis 2013 · Gard',
+    points: ['Activités de plein air et projets de groupe.', 'Accueil et formation de nouveaux membres.', 'Participation à des événements caritatifs et des collectes de fonds.'],
+  },
+
+  interests: ['Volley & beach-volley', 'Tennis', 'Lutte', 'Piano', 'Voyages : Roumanie, Angleterre, Espagne', 'Vulgarisation scientifique'],
+
+  skillGroups: {
+    data: {
+      title: 'Bases de données',
+      skills: {
+        'Data modelling (MCD, MLD)': 'Modélisation (MCD, MLD)',
+        'Advanced SQL': 'SQL avancé',
+        'Indexes & query tuning': 'Index & optimisation de requêtes',
+      },
+    },
+    network: {
+      title: 'Réseaux & DevOps',
+      skills: {
+        'TCP/IP & subnetting': 'TCP/IP & sous-réseaux',
+        'Routing & switching': 'Routage & commutation',
+        'Linux administration': 'Administration Linux',
+        'SSH: keys & tunnels': 'SSH : clés & tunnels',
+        Virtualisation: 'Virtualisation',
+      },
+    },
+    maths: {
+      title: 'Maths',
+      skills: {
+        'Linear algebra': 'Algèbre linéaire',
+        'Probability & statistics': 'Probabilités & statistiques',
+        'Graph theory': 'Théorie des graphes',
+        'Analysis & numerical methods': 'Analyse & méthodes numériques',
+        'Operations research & optimisation': 'Recherche opérationnelle & optimisation',
+        'Discrete maths & logic': 'Maths discrètes & logique',
+        Cryptography: 'Cryptographie',
+        'Machine learning basics': 'Bases du machine learning',
+      },
+    },
+    business: {
+      title: 'Métier & conseil',
+      skills: {
+        'Requirements → specifications': 'Besoins → spécifications',
+        'Quality assurance & acceptance': 'Assurance qualité & recette',
+        'Security: MFA, access control': 'Sécurité : MFA, contrôle d’accès',
+        'Regulated environments': 'Environnements réglementés',
+        'Team & project management': 'Gestion d’équipe & de projet',
+      },
+    },
+    backend: { title: 'Back-end', skills: { 'Algorithms & OOP': 'Algorithmique & POO' } },
+    frontend: { title: 'Front-end' },
+  },
+
+  languages: {
+    French: { name: 'Français', level: 'Natif' },
+    English: { name: 'Anglais' },
+    Spanish: { name: 'Espagnol' },
+  },
+
+  contract: { Apprenticeship: 'Alternance', Internship: 'Stage', Freelance: 'Freelance', 'Fixed-term': 'CDD' },
+  mode: { 'On-site': 'Sur site', Hybrid: 'Hybride', Remote: 'À distance' },
+  tech: { Security: 'Sécurité', AI: 'IA', Networks: 'Réseaux' },
+};
