@@ -1,0 +1,288 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --color-ink: #0a0a10;
+  --color-accent: #a855f7;
+  --color-accent-2: #22d3ee;
+
+  --animate-aurora: aurora 22s ease-in-out infinite alternate;
+  --animate-marquee: marquee 45s linear infinite;
+  --animate-shine: shine 4s linear infinite;
+  --animate-spin-border: spin-border 6s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-rail: rail 3.2s linear infinite;
+  --animate-rail-y: rail-y 3.2s linear infinite;
+
+  @keyframes rail {
+    from { left: -25%; }
+    to { left: 100%; }
+  }
+  @keyframes rail-y {
+    from { top: -25%; }
+    to { top: 100%; }
+  }
+
+  @keyframes aurora {
+    0% { transform: translate3d(-10%, -5%, 0) rotate(0deg) scale(1); }
+    50% { transform: translate3d(8%, 6%, 0) rotate(160deg) scale(1.15); }
+    100% { transform: translate3d(-4%, 10%, 0) rotate(320deg) scale(0.95); }
+  }
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+  @keyframes shine {
+    to { background-position: 200% center; }
+  }
+  @keyframes spin-border {
+    to { --angle: 360deg; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+/* Animatable angle for the rotating conic borders. */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-ink font-sans text-zinc-200 antialiased;
+  }
+  ::selection {
+    @apply bg-fuchsia-500/40 text-white;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-cyan-400;
+  }
+  /* Hide the native cursor only where the custom cursor is active. */
+  html.has-cursor,
+  html.has-cursor * {
+    cursor: none !important;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #030303;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    border: 3px solid #030303;
+    background: #3f3f46;
+  }
+}
+
+/* A light blur is enough over the dark backdrop, and costs far less than a wide one on dozens of cards while scrolling. */
+@utility glass {
+  @apply border border-white/[0.12] bg-white/[0.06] backdrop-blur-sm;
+}
+
+@utility text-gradient {
+  @apply bg-gradient-to-r from-violet-400 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent;
+}
+
+/* Animated shimmering gradient text. */
+@utility text-shine {
+  background: linear-gradient(90deg, #ddd6fe, #c4b5fd, #bae6fd, #ddd6fe);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: var(--animate-shine);
+}
+
+/*
+ * Mouse-following glow. The global pointer handler (CursorFx) writes --mx / --my
+ * on the hovered .spotlight element: ::before draws a luminous border, ::after a soft wash.
+ */
+@utility spotlight {
+  position: relative;
+  isolation: isolate;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  &::before {
+    padding: 1px;
+    background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgb(192 132 252 / 0.55), rgb(34 211 238 / 0.25) 35%, transparent 65%);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    z-index: 2;
+  }
+  &::after {
+    background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 50%), rgb(168 85 247 / 0.06), transparent 45%);
+    z-index: -1;
+  }
+  &:hover::before,
+  &:hover::after,
+  &:focus-within::before {
+    opacity: 1;
+  }
+}
+
+/* Rotating light border (used on the call to action). */
+@utility glow-border {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--angle), transparent 0 55%, #a855f7 70%, #22d3ee 85%, transparent 100%);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    animation: var(--animate-spin-border);
+    pointer-events: none;
+    z-index: 2;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: conic-gradient(from var(--angle), transparent 0 55%, #a855f7 70%, #22d3ee 85%, transparent 100%);
+    filter: blur(24px);
+    opacity: 0.18;
+    animation: var(--animate-spin-border);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+/* Film grain for depth on pure black. */
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+
+/* Project illustrations (ProjectArt): small loops on SVG parts. */
+.art-float {
+  animation: art-float 5s ease-in-out infinite;
+}
+.art-dash {
+  stroke-dasharray: 5 6;
+  animation: art-dash 1.4s linear infinite;
+}
+.art-blink {
+  animation: art-blink 1.8s ease-in-out infinite;
+}
+.art-pulse,
+.art-spin,
+.art-rise,
+.art-fit {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.art-pulse {
+  animation: art-pulse 2.6s ease-in-out infinite;
+}
+.art-spin {
+  animation: art-spin 16s linear infinite;
+}
+/* Clock hands: the pivot is given inline, in canvas coordinates. */
+.art-hand {
+  animation: art-spin 2s linear infinite;
+}
+.art-rise {
+  animation: art-rise 3.6s ease-out infinite;
+}
+.art-travel {
+  animation: art-travel 2.8s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+}
+.art-wave {
+  animation: art-wave 6s linear infinite;
+}
+.art-fit {
+  animation: art-fit 4.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+@keyframes art-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes art-dash {
+  to { stroke-dashoffset: -22; }
+}
+@keyframes art-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+@keyframes art-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.06); opacity: 0.85; }
+}
+@keyframes art-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes art-rise {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: translateY(-46px) scale(1.6); opacity: 0; }
+}
+@keyframes art-travel {
+  0% { transform: translateX(0); opacity: 0; }
+  12%, 85% { opacity: 1; }
+  100% { transform: translateX(var(--dx, 100px)); opacity: 0; }
+}
+@keyframes art-wave {
+  to { transform: translateX(calc(-1 * var(--w, 60px))); }
+}
+@keyframes art-fit {
+  0% { transform: rotate(-22deg); }
+  55%, 85% { transform: rotate(0deg); }
+  100% { transform: rotate(-22deg); }
+}
+
+/* Energy: looping animations pause while their element is off screen (usePauseOffscreen). */
+[data-offscreen],
+[data-offscreen]::before,
+[data-offscreen]::after,
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
+}
+
+/* Easter egg: Konami code / `hyper` terminal command. */
+html.hyper main {
+  animation: hyper-hue 1.2s linear infinite;
+}
+@keyframes hyper-hue {
+  to { filter: hue-rotate(360deg) saturate(1.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
