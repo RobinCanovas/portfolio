@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { motion } from 'framer-motion';
 import { Database, KeyRound, Link2, Loader2, Play, RotateCcw, Table2 } from 'lucide-react';
+import { useLang } from '../../i18n';
 
 /* sql.js (SQLite compiled to WebAssembly) is loaded from cdnjs on demand. */
 const SQLJS_VERSION = '1.13.0';
@@ -187,6 +188,7 @@ function SchemaDiagram() {
 }
 
 export function SqlPlayground() {
+  const { t, lang } = useLang();
   const dbRef = useRef<SqlDatabase | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [sql, setSql] = useState(PRESETS[0].sql);
@@ -219,14 +221,14 @@ export function SqlPlayground() {
       const res = db.exec(query);
       setResults(res);
       setError(null);
-      setMessage(res.length === 0 ? 'Statement executed — no rows returned.' : null);
+      setMessage(res.length === 0 ? t('sql.noRows') : null);
     } catch (e) {
       setResults([]);
       setMessage(null);
       setError((e as Error).message);
     }
     setElapsed(performance.now() - t0);
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     let alive = true;
@@ -268,7 +270,7 @@ export function SqlPlayground() {
           </div>
 
           <label htmlFor="sql-editor" className="sr-only">
-            SQL query
+            {t('sql.query')}
           </label>
           <textarea
             id="sql-editor"
@@ -287,18 +289,18 @@ export function SqlPlayground() {
               disabled={status !== 'ready'}
               className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-500 px-3.5 py-1.5 text-sm font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.4)] transition hover:brightness-110 disabled:opacity-50"
             >
-              {status === 'loading' ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />} Run
+              {status === 'loading' ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />} {t('sql.run')}
             </button>
             <button
               type="button"
-              onClick={() => reset().then(() => setMessage('Database reset to its initial data.'))}
+              onClick={() => reset().then(() => setMessage(t('sql.resetDone')))}
               disabled={status !== 'ready'}
               className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-zinc-300 transition hover:bg-white/5 disabled:opacity-50"
             >
-              <RotateCcw className="size-4" /> Reset data
+              <RotateCcw className="size-4" /> {t('sql.reset')}
             </button>
             <span className="ml-auto font-mono text-[11px] text-zinc-500">
-              {status === 'loading' ? 'loading SQLite (WebAssembly)…' : 'Ctrl + Enter to run'}
+              {status === 'loading' ? t('sql.loading') : t('sql.hint')}
               {elapsed !== null && status === 'ready' ? ` · ${elapsed.toFixed(1)} ms` : ''}
             </span>
           </div>
@@ -327,7 +329,7 @@ export function SqlPlayground() {
                 <motion.tr key={ri} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: ri * 0.03 }} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.03]">
                   {row.map((cell, ci) => (
                     <td key={ci} className={`px-4 py-2 ${typeof cell === 'number' ? 'text-right font-mono text-cyan-100 tabular-nums' : 'text-zinc-300'}`}>
-                      {cell === null ? <span className="text-zinc-600">NULL</span> : typeof cell === 'number' ? cell.toLocaleString('en-US') : cell}
+                      {cell === null ? <span className="text-zinc-600">NULL</span> : typeof cell === 'number' ? cell.toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US') : cell}
                     </td>
                   ))}
                 </motion.tr>
@@ -338,7 +340,7 @@ export function SqlPlayground() {
       ))}
 
       <p className="text-xs text-zinc-500">
-        Fictional demo dataset. The original project ran on MySQL; this demo runs the same relational model on SQLite compiled to WebAssembly, entirely in your browser.
+        {t('sql.note')}
       </p>
     </div>
   );

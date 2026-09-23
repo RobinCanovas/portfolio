@@ -11,7 +11,7 @@ const COMMANDS: Record<string, () => string[]> = {
     triggerHyperMode();
     return ['⚡ HYPER MODE ENGAGED ⚡'];
   },
-  sudo: () => ['Nice try. This incident will be reported to the scout leader. 🏕️'],
+  sudo: () => ['Nice try. This incident will be reported to the scouts. 🏕️'],
   whoami: () => [`${profile.name} — ${profile.title}`, `Based in ${profile.location}.`],
   stack: () => ['business → specs · QA · security (MFA)', 'backend  → PHP · Symfony · API Platform · Java', 'frontend → React · TypeScript · HTML/CSS', 'data     → MySQL · PL/SQL · SQLite', 'method   → Agile/Scrum · V-Model · UML'],
   experience: () => [...experiences.filter((e) => !e.minor).map((e) => `${e.period.padEnd(24)} ${e.company.name}  → open ${e.id}`)],

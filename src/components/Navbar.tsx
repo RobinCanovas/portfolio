@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import { ArrowRight, ChevronDown, Command, GraduationCap, Menu, Sparkles, Tent, X } from 'lucide-react';
-import { education, experiences, projectFilters, projects, volunteering } from '../data/profile';
+import type { Content } from '../data/content';
 import { useActiveSection } from '../hooks/useActiveSection';
+import { useContent, useLang } from '../i18n';
+import type { UiKey } from '../i18n/ui';
 import { href, navigate } from '../router';
 import type { Tech } from '../types';
 import { TechIcon } from './TechIcon';
@@ -10,12 +12,13 @@ import { CompanyLogo, LogoTile } from './ui';
 
 type MenuId = 'experience' | 'projects';
 
-const LINKS = [
-  { id: 'home', label: 'Home' },
-  { id: 'experience', label: 'Experience', menu: 'experience' as const },
-  { id: 'projects', label: 'Projects', menu: 'projects' as const },
-  { id: 'skills', label: 'Skills' },
-  { id: 'education', label: 'Education' },
+const LINKS: { id: string; label: UiKey; menu?: MenuId }[] = [
+  { id: 'home', label: 'nav.home' },
+  { id: 'experience', label: 'nav.experience', menu: 'experience' },
+  { id: 'projects', label: 'nav.projects', menu: 'projects' },
+  { id: 'skills', label: 'nav.skills' },
+  { id: 'education', label: 'nav.education' },
+  { id: 'goals', label: 'nav.goals' },
 ];
 const SECTION_IDS = [...LINKS.map((l) => l.id), 'contact'];
 
@@ -29,18 +32,47 @@ export interface NavActions {
   onHome?: boolean;
 }
 
-const countFor = (tech: Tech | 'All') => (tech === 'All' ? projects.length : projects.filter((p) => p.stack.includes(tech)).length);
+const countFor = (c: Content, tech: Tech | 'All') => (tech === 'All' ? c.projects.length : c.projects.filter((p) => p.stack.includes(tech)).length);
+
+/** FR / EN switch — English is the default language. */
+function LangToggle({ className = '' }: { className?: string }) {
+  const { lang, toggle, t } = useLang();
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={t('lang.switch')}
+      title={t('lang.switch')}
+      className={`relative isolate inline-flex items-center rounded-lg border border-white/15 bg-white/[0.05] p-0.5 font-mono text-[11px] font-semibold ${className}`}
+    >
+      {(['en', 'fr'] as const).map((l) => (
+        <span key={l} className={`relative px-2 py-1 uppercase transition-colors ${lang === l ? 'text-white' : 'text-zinc-500'}`}>
+          {lang === l && (
+            <motion.span
+              layoutId="lang-pill"
+              className="absolute inset-0 -z-10 rounded-md bg-gradient-to-r from-violet-500/80 to-cyan-500/80 shadow-[0_0_14px_rgb(168_85_247/0.5)]"
+              transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+            />
+          )}
+          {l}
+        </span>
+      ))}
+    </button>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* Mega-menu panels                                                    */
 /* ------------------------------------------------------------------ */
 
 function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperience']; close: () => void }) {
+  const { t } = useLang();
+  const { education, experiences, volunteering } = useContent();
   const iut = education[0];
   return (
     <div className="grid w-[min(92vw,720px)] grid-cols-[1.4fr_1fr] gap-2 p-2">
       <div>
-        <p className="px-3 pt-2 pb-1 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">Career</p>
+        <p className="px-3 pt-2 pb-1 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">{t('nav.career')}</p>
         <ul>
           {experiences.filter((e) => !e.minor).map((exp, i) => (
             <motion.li key={exp.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.035 }}>
@@ -71,7 +103,7 @@ function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperien
       </div>
 
       <div className="flex flex-col gap-2 rounded-xl bg-gradient-to-br from-violet-500/10 via-transparent to-cyan-500/10 p-2">
-        <p className="px-2 pt-2 pb-1 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">Background</p>
+        <p className="px-2 pt-2 pb-1 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">{t('nav.background')}</p>
         <button
           type="button"
           data-menu-item
@@ -107,8 +139,8 @@ function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperien
             }
           />
           <span className="min-w-0">
-            <span className="block text-sm font-semibold text-white">Scout leader · {volunteering.years}+ yrs</span>
-            <span className="block text-xs text-zinc-400">EEDF — leadership & autonomy</span>
+            <span className="block text-sm font-semibold text-white">{t('nav.scout')}</span>
+            <span className="block text-xs text-zinc-400">{t('nav.scoutSub')}</span>
           </span>
         </button>
         <a
@@ -117,7 +149,7 @@ function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperien
           onClick={close}
           className="mt-auto inline-flex items-center justify-between rounded-xl bg-white/5 px-3 py-2.5 text-xs font-medium text-zinc-200 transition hover:bg-white/10"
         >
-          Full timeline <ArrowRight className="size-3.5" aria-hidden="true" />
+          {t('nav.timeline')} <ArrowRight className="size-3.5" aria-hidden="true" />
         </a>
       </div>
     </div>
@@ -125,13 +157,15 @@ function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperien
 }
 
 function ProjectsPanel({ onFilter, onFocusProject, close }: { onFilter: NavActions['onFilter']; onFocusProject: NavActions['onFocusProject']; close: () => void }) {
-  const featured = projects.filter((p) => p.featured);
+  const { t } = useLang();
+  const c = useContent();
+  const featured = c.projects.filter((p) => p.featured);
   return (
     <div className="grid w-[min(92vw,680px)] grid-cols-[1fr_1.1fr] gap-2 p-2">
       <div>
-        <p className="px-3 pt-2 pb-1 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">Filter by tech</p>
+        <p className="px-3 pt-2 pb-1 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">{t('nav.filter')}</p>
         <ul className="grid grid-cols-2 gap-0.5">
-          {(['All', ...projectFilters] as const).map((tech, i) => (
+          {(['All', ...c.projectFilters] as const).map((tech, i) => (
             <motion.li key={tech} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
               <button
                 type="button"
@@ -143,8 +177,8 @@ function ProjectsPanel({ onFilter, onFocusProject, close }: { onFilter: NavActio
                 className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-zinc-300 transition hover:bg-white/[0.06] hover:text-white"
               >
                 <TechIcon tech={tech} />
-                <span className="flex-1 truncate">{tech === 'All' ? 'All projects' : tech}</span>
-                <span className="font-mono text-[10px] text-zinc-500">{countFor(tech)}</span>
+                <span className="flex-1 truncate">{tech === 'All' ? t('nav.allProjects') : c.tech(tech)}</span>
+                <span className="font-mono text-[10px] text-zinc-500">{countFor(c, tech)}</span>
               </button>
             </motion.li>
           ))}
@@ -152,7 +186,7 @@ function ProjectsPanel({ onFilter, onFocusProject, close }: { onFilter: NavActio
       </div>
       <div className="rounded-xl bg-gradient-to-br from-fuchsia-500/10 via-transparent to-cyan-500/10 p-2">
         <p className="flex items-center gap-1.5 px-2 pt-2 pb-1 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
-          <Sparkles className="size-3" aria-hidden="true" /> Featured
+          <Sparkles className="size-3" aria-hidden="true" /> {t('nav.featured')}
         </p>
         <ul className="space-y-1">
           {featured.map((p, i) => (
@@ -211,6 +245,8 @@ function Accordion({ title, open, onToggle, children }: { title: string; open: b
 /* ------------------------------------------------------------------ */
 
 export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, onPalette, onHome = true }: NavActions) {
+  const { t } = useLang();
+  const c = useContent();
   const sectionInView = useActiveSection(SECTION_IDS);
   const active = onHome ? sectionInView : null;
   const [scrolled, setScrolled] = useState(false);
@@ -306,9 +342,7 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
           <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-cyan-500 text-xs font-bold shadow-lg shadow-violet-500/30 transition group-hover:rotate-6">
             RC
           </span>
-          <span className="hidden sm:inline">
-            robin<span className="text-cyan-300">.dev</span>
-          </span>
+          <span className="hidden font-sans text-[15px] tracking-wide sm:inline">{t('brand')}</span>
         </a>
 
         {/* Desktop */}
@@ -323,7 +357,7 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
                 {isActive && (
                   <motion.span layoutId="nav-active" className="absolute inset-x-3 -bottom-[13px] h-px bg-gradient-to-r from-violet-400 to-cyan-300" transition={{ type: 'spring', stiffness: 400, damping: 34 }} />
                 )}
-                {link.label}
+                {t(link.label)}
               </>
             );
             const cls = `relative isolate inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
@@ -361,10 +395,11 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
         </ul>
 
         <div className="flex items-center gap-2">
+          <LangToggle />
           <button
             type="button"
             onClick={onPalette}
-            aria-label="Open command palette (Ctrl+K)"
+            aria-label={t('nav.palette')}
             className="hidden items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-xs text-zinc-400 transition hover:border-white/20 hover:text-white sm:inline-flex"
           >
             <Command className="size-3.5" aria-hidden="true" />
@@ -375,12 +410,12 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
             onClick={onContact}
             className="hidden rounded-lg bg-gradient-to-r from-violet-500 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:shadow-violet-500/40 hover:brightness-110 lg:inline-flex"
           >
-            Let’s talk
+            {t('nav.talk')}
           </button>
           <button
             type="button"
             onClick={() => setDrawer(true)}
-            aria-label="Open menu"
+            aria-label={t('nav.openMenu')}
             aria-expanded={drawer}
             className="rounded-lg p-2 text-zinc-300 hover:bg-white/10 lg:hidden"
           >
@@ -395,7 +430,7 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
               id="nav-panel"
               ref={panelRef}
               role="region"
-              aria-label={menu === 'experience' ? 'Experience menu' : 'Projects menu'}
+              aria-label={menu === 'experience' ? t('nav.experienceMenu') : t('nav.projectsMenu')}
               onMouseEnter={() => window.clearTimeout(closeTimer.current)}
               onMouseLeave={hoverClose}
               onKeyDown={onPanelKey}
@@ -444,18 +479,18 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             >
               <div className="mb-2 flex items-center justify-between">
-                <span className="font-mono text-xs text-zinc-500">menu</span>
-                <button type="button" onClick={() => setDrawer(false)} aria-label="Close menu" className="rounded-lg p-2 text-zinc-300 hover:bg-white/10">
+                <span className="font-mono text-xs text-zinc-500">{t('nav.menu')}</span>
+                <button type="button" onClick={() => setDrawer(false)} aria-label={t('nav.closeMenu')} className="rounded-lg p-2 text-zinc-300 hover:bg-white/10">
                   <X className="size-6" />
                 </button>
               </div>
 
               <a href="#home" onClick={() => setDrawer(false)} className="border-b border-white/5 px-3 py-3 text-base font-medium text-zinc-200">
-                Home
+                {t('nav.home')}
               </a>
-              <Accordion title="Experience" open={section === 'experience'} onToggle={() => setSection((s) => (s === 'experience' ? null : 'experience'))}>
+              <Accordion title={t('nav.experience')} open={section === 'experience'} onToggle={() => setSection((s) => (s === 'experience' ? null : 'experience'))}>
                 <ul className="space-y-1">
-                  {experiences.filter((e) => !e.minor).map((exp) => (
+                  {c.experiences.filter((e) => !e.minor).map((exp) => (
                     <li key={exp.id}>
                       <button type="button" onClick={mobilePick(() => onOpenExperience(exp.id))} className="flex w-full items-center gap-3 rounded-xl p-2 text-left hover:bg-white/5">
                         <CompanyLogo company={exp.company} size={36} />
@@ -468,9 +503,9 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
                   ))}
                 </ul>
               </Accordion>
-              <Accordion title="Projects" open={section === 'projects'} onToggle={() => setSection((s) => (s === 'projects' ? null : 'projects'))}>
+              <Accordion title={t('nav.projects')} open={section === 'projects'} onToggle={() => setSection((s) => (s === 'projects' ? null : 'projects'))}>
                 <div className="flex flex-wrap gap-2 px-2">
-                  {(['All', ...projectFilters] as const).map((tech) => (
+                  {(['All', ...c.projectFilters] as const).map((tech) => (
                     <button
                       key={tech}
                       type="button"
@@ -480,24 +515,24 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
                       className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs text-zinc-300 hover:border-violet-400"
                     >
                       <TechIcon tech={tech} className="size-3.5" />
-                      {tech}
-                      <span className="text-zinc-500">{countFor(tech)}</span>
+                      {tech === 'All' ? t('nav.allProjects') : c.tech(tech)}
+                      <span className="text-zinc-500">{countFor(c, tech)}</span>
                     </button>
                   ))}
                 </div>
               </Accordion>
               {LINKS.filter((l) => !l.menu && l.id !== 'home').map((l) => (
                 <a key={l.id} href={`#${l.id}`} onClick={() => setDrawer(false)} className="border-b border-white/5 px-3 py-3 text-base font-medium text-zinc-200">
-                  {l.label}
+                  {t(l.label)}
                 </a>
               ))}
 
               <div className="mt-auto space-y-2 pt-6">
                 <button type="button" onClick={mobilePick(onPalette)} className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 px-4 py-3 text-sm text-zinc-300">
-                  <Command className="size-4" aria-hidden="true" /> Search everything
+                  <Command className="size-4" aria-hidden="true" /> {t('nav.search')}
                 </button>
                 <button type="button" onClick={mobilePick(onContact)} className="w-full rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 px-4 py-3 font-semibold text-white">
-                  Let’s talk
+                  {t('nav.talk')}
                 </button>
               </div>
             </motion.aside>

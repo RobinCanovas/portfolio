@@ -1,7 +1,6 @@
 import type { Client, Company, Education, Experience, Project, SkillGroup, SocialLinks, Tech } from '../types';
 
 export const links: SocialLinks = {
-  github: 'https://github.com/RobinCanovas',
   linkedin: 'https://www.linkedin.com/in/robin-canovas',
   email: 'robin.canovas@outlook.com',
   cv: './Robin-Canovas-CV.pdf',
@@ -14,7 +13,7 @@ export const profile = {
   status: 'Open to opportunities',
   currentRole: 'Web Developer @ Éditions Ellipses',
   pitch:
-    'I turn business requirements into secure, reliable software — from specifications and quality assurance to Symfony & React delivery. After working on a BNP Paribas group subsidiary’s platform, I’m building my path toward banking and IT consulting.',
+    'I turn business requirements into secure, reliable software — and I’m building a generalist profile for banking and consulting. After a mission on a BNP Paribas group subsidiary’s platform, my next steps are university, then an ambitious master’s-level degree.',
   ambition: 'Long-term goal: banking & IT consulting — where rigour, security and business understanding matter as much as code.',
   avatar: './avatar.jpg',
 };
@@ -104,8 +103,8 @@ const companies = {
       { value: 'Paris Air Show', label: 'first public appearance' },
     ],
     visual: {
-      src: ['./logos/aeroboat-craft.png', 'https://aeroboat-france.com/wp-content/uploads/2025/09/chatgpt_image_16_sept._2025__09_43_42-removebg-preview.png'],
-      alt: 'Aeroboat ground-effect craft',
+      src: ['./logos/aeroboat.png', 'https://aeroboat-france.com/wp-content/uploads/2025/09/logoabf-without-bg-1.png'],
+      alt: 'Aeroboat France emblem',
     },
     url: 'https://aeroboat-france.com',
   },
@@ -527,13 +526,12 @@ export const vModel = [
 
 export const volunteering = {
   org: 'EEDF — Éclaireuses Éclaireurs de France',
-  years: 14,
-  since: 'Since 2013 · Gard',
+  since: 'Scout since 2013 · Gard',
   logos: ['./logos/eedf.png', 'https://icons.duckduckgo.com/ip3/eedf.fr.ico'],
   points: [
-    'Organised outdoor activities and group projects.',
-    'Took part in training new members of the organisation.',
-    'Coordinated charity events and fundraising.',
+    'Outdoor activities and group projects.',
+    'Helped welcome and train new members.',
+    'Took part in charity events and fundraising.',
   ],
 };
 
@@ -612,7 +610,7 @@ export const skillGroups: SkillGroup[] = [
 export const languages = [
   { name: 'French', level: 'Native', code: 'FR' },
   { name: 'English', level: 'B2', code: 'EN' },
-  { name: 'Spanish', level: 'B2', code: 'ES' },
+  { name: 'Spanish', level: 'B1', code: 'ES' },
 ];
 
 export const findExperience = (id: string) => experiences.find((e) => e.id === id);
