@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { GraduationCap, Heart, Tent } from 'lucide-react';
 import { education, interests, vModel, volunteering } from '../data/profile';
+import { CountUp } from './fx/effects';
 import { Badge, LogoTile, Section, fadeUp } from './ui';
 
 function VModelDiagram() {
@@ -30,7 +31,7 @@ export function Education() {
       <div className="grid gap-6 lg:grid-cols-2">
         <motion.div {...fadeUp} className="space-y-6">
           {education.map((ed) => (
-            <article key={ed.id} className="glass rounded-2xl p-6">
+            <article key={ed.id} className="glass spotlight rounded-2xl p-6">
               <div className="flex items-start gap-4">
                 <LogoTile
                   sources={ed.logos}
@@ -66,7 +67,7 @@ export function Education() {
         </motion.div>
 
         <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.1 }} className="space-y-6">
-          <article className="glass relative overflow-hidden rounded-2xl p-6">
+          <article className="glass spotlight relative overflow-hidden rounded-2xl p-6">
             <div aria-hidden="true" className="absolute -top-10 -right-10 size-40 rounded-full bg-emerald-500/20 blur-3xl" />
             <div className="flex items-center gap-4">
               <LogoTile
@@ -85,7 +86,9 @@ export function Education() {
               </div>
             </div>
             <p className="mt-6 flex items-baseline gap-2">
-              <span className="text-gradient text-6xl font-extrabold">{volunteering.years}+</span>
+              <span className="text-gradient text-6xl font-extrabold drop-shadow-[0_0_24px_rgb(52_211_153/0.35)]">
+                <CountUp to={volunteering.years} suffix="+" />
+              </span>
               <span className="text-sm text-zinc-400">years of commitment</span>
             </p>
             <ul className="mt-4 space-y-1.5 text-sm text-zinc-300">
@@ -103,7 +106,7 @@ export function Education() {
             </div>
           </article>
 
-          <article className="glass rounded-2xl p-6">
+          <article className="glass spotlight rounded-2xl p-6">
             <h3 className="flex items-center gap-2 font-semibold text-white">
               <Heart className="size-4 text-fuchsia-400" aria-hidden="true" /> Beyond code
             </h3>

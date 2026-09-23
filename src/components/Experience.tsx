@@ -27,7 +27,7 @@ export function Experience({ selectedId, onSelect }: { selectedId: string | null
             <button
               type="button"
               onClick={() => onSelect(exp.id)}
-              className="glass group w-full rounded-2xl p-5 text-left transition hover:border-violet-400/40 hover:bg-white/[0.07] sm:p-6"
+              className="glass spotlight group w-full rounded-2xl p-5 text-left transition hover:border-violet-400/40 hover:bg-white/[0.07] sm:p-6"
             >
               <div className="flex items-start gap-4">
                 <CompanyLogo company={exp.company} size={52} />

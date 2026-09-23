@@ -53,7 +53,7 @@ export function Skills() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.03 }}
-              className="glass group flex items-center gap-3 rounded-2xl p-4 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.07]"
+              className="glass spotlight group flex items-center gap-3 rounded-2xl p-4 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.07]"
             >
               <SimpleIcon slug={s.icon} className="size-7" />
               <span className="min-w-0">

@@ -31,6 +31,13 @@ describe('<Terminal />', () => {
     expect(screen.queryByText(/Robin Canovas — Software Engineer/)).not.toBeInTheDocument();
   });
 
+  it('unlocks hyper mode with the hidden command', async () => {
+    render(<Terminal />);
+    await run('hyper');
+    expect(screen.getByText(/HYPER MODE ENGAGED/)).toBeInTheDocument();
+    expect(document.documentElement).toHaveClass('hyper');
+  });
+
   it('recalls history with the up arrow', async () => {
     render(<Terminal />);
     await run('now');
