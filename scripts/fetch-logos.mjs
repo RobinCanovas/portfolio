@@ -12,7 +12,6 @@ const LOGOS = {
   'lycee-francoise-combes.webp': 'https://associer.archi/sites/default/files/styles/xlarge_1600/public/images/Madec-PY_Brunaud-1459.jpg.webp',
   'lycee-francoise-combes-2.webp': 'https://associer.archi/sites/default/files/styles/xlarge_1600/public/images/Madec-PY_Brunaud-1600-bleue.jpg.webp',
   'lycee-francoise-combes-3.webp': 'https://associer.archi/sites/default/files/styles/xlarge_1600/public/images/Madec-PY_Brunaud-1446%202.jpg.webp',
-  'imt-atlantique.svg': 'https://upload.wikimedia.org/wikipedia/commons/0/06/IMT_Atlantique.svg',
   'education.svg': 'https://www.education.gouv.fr/libraries/dsfr/dist/favicon/favicon.svg',
   'solstice.png': 'https://www.solutions-solstice.com/img/2018-logo-solution-solstice.png',
   'aeroboat.png': 'https://aeroboat-france.com/wp-content/uploads/2025/09/logoabf-without-bg-1.png',
