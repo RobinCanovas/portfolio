@@ -34,7 +34,8 @@ export function Goals({ onContact }: { onContact?: () => void }) {
     <Section id="goals" eyebrow={t('section.goals')} title={t('section.goals.title')}>
       <p className="-mt-4 mb-12 max-w-3xl text-lg leading-relaxed text-zinc-200">{t('goals.intro')}</p>
 
-      <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr]">
+      <div className="relative grid gap-10 lg:grid-cols-[1.15fr_1fr]">
+        <div aria-hidden="true" className="pointer-events-none absolute -inset-x-10 -inset-y-6 -z-10 rounded-[3rem] bg-[radial-gradient(ellipse_at_10%_20%,rgb(52_211_153/0.12),transparent_45%),radial-gradient(ellipse_at_90%_30%,rgb(217_70_239/0.12),transparent_45%),radial-gradient(ellipse_at_40%_100%,rgb(251_191_36/0.12),transparent_50%)] blur-2xl" />
         {/* Roadmap */}
         <div>
           <h3 className="mb-6 flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-cyan-300 uppercase">

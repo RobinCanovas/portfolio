@@ -7,7 +7,7 @@ import { LogoTile } from './ui';
 /** Professional portrait with a 3D tilt that follows the pointer, a moving glare and floating badges. */
 export function Portrait() {
   const { t } = useLang();
-  const { profile, experiences, group, lang } = useContent();
+  const { profile, experiences, lang } = useContent();
   const bankClient = experiences.find((e) => e.client?.parent)?.client;
   const [failed, setFailed] = useState(false);
   const px = useMotionValue(0.5);
@@ -68,7 +68,8 @@ export function Portrait() {
               <LogoTile sources={bankClient.parent.logos} name={bankClient.parent.name} size={36} fallback={<ShieldCheck className="size-6 text-emerald-300" />} />
               <span className="text-left leading-tight">
                 <span className="block text-[10px] tracking-wider text-emerald-300 uppercase">{t('portrait.client')}</span>
-                <span className="block text-xs font-semibold text-white">{group('BNP Paribas')}</span>
+                <span className="block text-xs font-semibold text-white">{t('portrait.clientLine')}</span>
+                <span className="block text-[10px] text-zinc-400">Domofinance · MFA · Ansible</span>
               </span>
             </motion.div>
           </div>
