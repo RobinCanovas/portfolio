@@ -11,12 +11,31 @@ const goTo = (hash: string) =>
 
 afterEach(() => {
   window.location.hash = '';
+  window.localStorage.clear();
+  document.documentElement.lang = 'en';
+});
+
+describe('language switch', () => {
+  it('defaults to English and switches the whole site to French', async () => {
+    render(<App />);
+    expect(screen.getByRole('heading', { level: 2, name: 'Where I’m heading' })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Passer le site en français' }));
+    expect(await screen.findByRole('heading', { level: 2, name: 'Où je vais' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Expériences' })).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe('fr');
+    expect(window.localStorage.getItem('portfolio-lang')).toBe('fr');
+  });
+
+  it('never links to GitHub', () => {
+    render(<App />);
+    expect(document.querySelector('a[href*="github.com"]')).toBeNull();
+  });
 });
 
 describe('<App />', () => {
   it('renders every home section', () => {
     render(<App />);
-    for (const id of ['home', 'experience', 'projects', 'skills', 'education', 'contact']) {
+    for (const id of ['home', 'experience', 'projects', 'skills', 'education', 'goals', 'contact']) {
       expect(document.getElementById(id), id).not.toBeNull();
     }
   });

@@ -1,22 +1,24 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Monitor, Smartphone, Tablet } from 'lucide-react';
+import { useLang } from '../../i18n';
 
 const DEVICES = [
-  { id: 'desktop', label: 'Desktop', icon: Monitor, width: '100%', height: 620 },
-  { id: 'tablet', label: 'Tablet', icon: Tablet, width: '768px', height: 620 },
-  { id: 'mobile', label: 'Mobile', icon: Smartphone, width: '390px', height: 680 },
+  { id: 'desktop', label: 'device.desktop', icon: Monitor, width: '100%', height: 620 },
+  { id: 'tablet', label: 'device.tablet', icon: Tablet, width: '768px', height: 620 },
+  { id: 'mobile', label: 'device.mobile', icon: Smartphone, width: '390px', height: 680 },
 ] as const;
 
 /** Live iframe preview of a static demo, with a device-width switcher to show responsiveness. */
 export function DevicePreview({ src, title, originalSrc }: { src: string; title: string; originalSrc?: string }) {
+  const { t } = useLang();
   const [device, setDevice] = useState<(typeof DEVICES)[number]['id']>('desktop');
   const current = DEVICES.find((d) => d.id === device)!;
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <div role="radiogroup" aria-label="Preview size" className="flex rounded-xl border border-white/10 bg-white/[0.03] p-1">
+        <div role="radiogroup" aria-label={t('device.size')} className="flex rounded-xl border border-white/10 bg-white/[0.03] p-1">
           {DEVICES.map((d) => (
             <button
               key={d.id}
@@ -27,16 +29,16 @@ export function DevicePreview({ src, title, originalSrc }: { src: string; title:
               className={`relative isolate inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${device === d.id ? 'text-white' : 'text-zinc-400 hover:text-white'}`}
             >
               {device === d.id && <motion.span layoutId="device-pill" className="absolute inset-0 -z-10 rounded-lg bg-white/10" />}
-              <d.icon className="size-3.5" aria-hidden="true" /> {d.label}
+              <d.icon className="size-3.5" aria-hidden="true" /> {t(d.label)}
             </button>
           ))}
         </div>
         <a href={src} target="_blank" rel="noopener" className="ml-auto inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.4)] hover:brightness-110">
-          <ExternalLink className="size-3.5" aria-hidden="true" /> Open full screen
+          <ExternalLink className="size-3.5" aria-hidden="true" /> {t('device.full')}
         </a>
         {originalSrc && (
           <a href={originalSrc} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 px-4 py-2 text-xs text-zinc-300 hover:bg-white/5">
-            Original 2024 version
+            {t('device.original')}
           </a>
         )}
       </div>

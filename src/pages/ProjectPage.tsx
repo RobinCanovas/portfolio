@@ -1,9 +1,8 @@
 import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ArrowUpRight, CheckCircle2, Loader2, Lock, Sparkles, Target } from 'lucide-react';
-import { findExperience, projects } from '../data/profile';
+import { useContent, useLang } from '../i18n';
 import { href } from '../router';
-import type { Project } from '../types';
 import { BuildDiagram } from '../components/BuildDiagram';
 import { DevicePreview } from '../components/demos/DevicePreview';
 import { TechIcon } from '../components/TechIcon';
@@ -29,8 +28,13 @@ function SectionTitle({ kicker, title, id }: { kicker: string; title: string; id
   );
 }
 
-export function ProjectPage({ project }: { project: Project }) {
-  const exp = project.experienceId ? findExperience(project.experienceId) : undefined;
+export function ProjectPage({ id }: { id: string }) {
+  const { t } = useLang();
+  const c = useContent();
+  const project = c.findProject(id);
+  if (!project) return null;
+  const { projects } = c;
+  const exp = project.experienceId ? c.findExperience(project.experienceId) : undefined;
   const index = projects.findIndex((p) => p.id === project.id);
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
@@ -44,7 +48,7 @@ export function ProjectPage({ project }: { project: Project }) {
         </div>
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <a href={href.section('projects')} className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition hover:text-white">
-            <ArrowLeft className="size-4" aria-hidden="true" /> All projects
+            <ArrowLeft className="size-4" aria-hidden="true" /> {t('page.allProjects')}
           </a>
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} className="mt-8">
             <div className="flex flex-wrap items-center gap-3">
@@ -58,9 +62,9 @@ export function ProjectPage({ project }: { project: Project }) {
             <h1 className="mt-4 max-w-4xl text-4xl font-extrabold tracking-tight text-white sm:text-6xl">{project.title}</h1>
             <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-300">{project.description}</p>
             <ul className="mt-6 flex flex-wrap gap-2">
-              {project.stack.map((t) => (
-                <li key={t} className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-xs text-zinc-300">
-                  <TechIcon tech={t} className="size-3.5" /> {t}
+              {project.stack.map((tech) => (
+                <li key={tech} className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-xs text-zinc-300">
+                  <TechIcon tech={tech} className="size-3.5" /> {c.tech(tech)}
                 </li>
               ))}
             </ul>
@@ -77,11 +81,11 @@ export function ProjectPage({ project }: { project: Project }) {
                 <Lock className="size-6 text-amber-300" aria-hidden="true" />
               </span>
               <div>
-                <h2 className="text-lg font-semibold text-amber-100">Why this project is not shown in detail</h2>
+                <h2 className="text-lg font-semibold text-amber-100">{t('page.whyHidden')}</h2>
                 <p className="mt-2 leading-relaxed text-amber-100/80">{project.confidential}</p>
                 {exp && (
                   <a href={href.experience(exp.id)} className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-amber-200 hover:text-white">
-                    Read about the mission and the client <ArrowRight className="size-4" aria-hidden="true" />
+                    {t('page.readMission')} <ArrowRight className="size-4" aria-hidden="true" />
                   </a>
                 )}
               </div>
@@ -90,16 +94,16 @@ export function ProjectPage({ project }: { project: Project }) {
         )}
 
         {/* Problem / outcome */}
-        <section className="grid gap-5 lg:grid-cols-2" aria-label="Context and results">
+        <section className="grid gap-5 lg:grid-cols-2" aria-label={t('page.context')}>
           <motion.div {...fade()} className="glass spotlight rounded-3xl p-6 sm:p-8">
             <h2 className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-violet-300 uppercase">
-              <Target className="size-4" aria-hidden="true" /> The challenge
+              <Target className="size-4" aria-hidden="true" /> {t('page.challenge')}
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-zinc-200">{project.problem}</p>
           </motion.div>
           <motion.div {...fade(0.1)} className="glass spotlight rounded-3xl p-6 sm:p-8">
             <h2 className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-emerald-300 uppercase">
-              <Sparkles className="size-4" aria-hidden="true" /> The result
+              <Sparkles className="size-4" aria-hidden="true" /> {t('page.result')}
             </h2>
             <ul className="mt-4 space-y-3">
               {project.outcome.map((o) => (
@@ -114,7 +118,7 @@ export function ProjectPage({ project }: { project: Project }) {
 
         {/* How it's built */}
         <section aria-labelledby="build-title">
-          <SectionTitle kicker="Under the hood" title="How it’s built" id="build-title" />
+          <SectionTitle kicker={t('page.underHood')} title={t('page.howBuilt')} id="build-title" />
           <div className="glass rounded-3xl p-6 sm:p-10">
             <BuildDiagram steps={project.build} />
           </div>
@@ -123,11 +127,11 @@ export function ProjectPage({ project }: { project: Project }) {
         {/* Demos */}
         {project.demo === 'sql' && (
           <section aria-labelledby="demo-title">
-            <SectionTitle kicker="Try it" title="Live SQL playground" id="demo-title" />
+            <SectionTitle kicker={t('page.tryIt')} title={t('page.sql')} id="demo-title" />
             <Suspense
               fallback={
                 <p className="flex items-center gap-2 text-zinc-400">
-                  <Loader2 className="size-4 animate-spin" /> Loading the playground…
+                  <Loader2 className="size-4 animate-spin" /> {t('page.loading')}
                 </p>
               }
             >
@@ -137,7 +141,7 @@ export function ProjectPage({ project }: { project: Project }) {
         )}
         {project.demo === 'cwad' && project.demoUrl && (
           <section aria-labelledby="demo-title">
-            <SectionTitle kicker="Try it" title="Live demo" id="demo-title" />
+            <SectionTitle kicker={t('page.tryIt')} title={t('page.liveDemo')} id="demo-title" />
             <DevicePreview src={project.demoUrl} title={`${project.title} demo`} originalSrc="./projects/cwad/original/index.html" />
           </section>
         )}
@@ -152,27 +156,27 @@ export function ProjectPage({ project }: { project: Project }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-5 py-3 font-semibold text-white shadow-[0_0_30px_rgb(168_85_247/0.4)] transition hover:brightness-110"
               >
-                {project.demo === 'sql' ? 'Original project proposal' : 'Visit the live site'} <ArrowUpRight className="size-4" aria-hidden="true" />
+                {project.demo === 'sql' ? t('page.proposal') : t('page.liveSite')} <ArrowUpRight className="size-4" aria-hidden="true" />
               </a>
             )}
             {exp && (
               <a href={href.experience(exp.id)} className="glass inline-flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm text-white transition hover:bg-white/[0.06]">
-                <CompanyLogo company={exp.company} size={28} /> About the mission at {exp.company.name}
+                <CompanyLogo company={exp.company} size={28} /> {t('page.aboutMission', { name: exp.company.name })}
               </a>
             )}
           </motion.div>
         )}
 
-        <nav aria-label="Other projects" className="grid gap-3 border-t border-white/10 pt-8 sm:grid-cols-2">
+        <nav aria-label={t('page.otherProjects')} className="grid gap-3 border-t border-white/10 pt-8 sm:grid-cols-2">
           <a href={href.project(prev.id)} className="group rounded-2xl p-3 transition hover:bg-white/[0.04]">
             <span className="flex items-center gap-1.5 text-xs text-zinc-500">
-              <ArrowLeft className="size-3.5 transition group-hover:-translate-x-1" aria-hidden="true" /> Previous
+              <ArrowLeft className="size-3.5 transition group-hover:-translate-x-1" aria-hidden="true" /> {t('page.previous')}
             </span>
             <span className="mt-1 block font-medium text-white">{prev.title}</span>
           </a>
           <a href={href.project(next.id)} className="group rounded-2xl p-3 text-right transition hover:bg-white/[0.04]">
             <span className="flex items-center justify-end gap-1.5 text-xs text-zinc-500">
-              Next <ArrowRight className="size-3.5 transition group-hover:translate-x-1" aria-hidden="true" />
+              {t('page.next')} <ArrowRight className="size-3.5 transition group-hover:translate-x-1" aria-hidden="true" />
             </span>
             <span className="mt-1 block font-medium text-white">{next.title}</span>
           </a>

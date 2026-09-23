@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useLang } from '../i18n';
 import type { Company } from '../types';
 
 export function Section({
@@ -98,7 +99,6 @@ export function LogoTile({
         key={sources[index]}
         src={sources[index]}
         alt={`${name} logo`}
-        loading="lazy"
         decoding="async"
         referrerPolicy="no-referrer"
         onError={() => setIndex((i) => i + 1)}
@@ -106,7 +106,7 @@ export function LogoTile({
           const img = e.currentTarget;
           if (img.naturalHeight) setRatio(img.naturalWidth / img.naturalHeight);
         }}
-        className="max-h-full max-w-full object-contain"
+        className="size-full object-contain"
       />
     </span>
   );
@@ -157,6 +157,7 @@ export function Modal({
   children: ReactNode;
   wide?: boolean;
 }) {
+  const { t } = useLang();
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   // Keep the latest onClose without re-running the focus/scroll-lock effect on every parent render.
@@ -226,7 +227,7 @@ export function Modal({
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Close dialog"
+                aria-label={t('modal.close')}
                 className="rounded-lg p-1.5 text-zinc-400 transition hover:bg-white/10 hover:text-white"
               >
                 <X className="size-5" />

@@ -12,7 +12,6 @@ const LOGOS = {
   'domofinance.png': 'https://www.domofinance.com/build/website/domofinance-trans.f48e1653.png',
   'bnp-paribas.svg': 'https://cdn-group.bnpparibas.com/build/images/logo-bnp.svg',
   'boulanger.svg': 'https://cdn.simpleicons.org/boulanger',
-  'aeroboat-craft.png': 'https://aeroboat-france.com/wp-content/uploads/2025/09/chatgpt_image_16_sept._2025__09_43_42-removebg-preview.png',
 };
 
 const dir = new URL('../public/logos/', import.meta.url);

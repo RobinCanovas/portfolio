@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Briefcase, CalendarDays, CheckCircle2, Clock, Laptop, Lock, MapPin } from 'lucide-react';
-import { experiences, findProject } from '../data/profile';
+import { useContent, useLang } from '../i18n';
 import { href } from '../router';
-import type { Client, Experience, KeyFact } from '../types';
+import type { Client, KeyFact } from '../types';
 import { Magnetic } from '../components/fx/effects';
 import { Badge, CompanyLogo, LogoTile } from '../components/ui';
 
@@ -29,10 +29,12 @@ function Facts({ facts }: { facts: KeyFact[] }) {
 }
 
 function ClientBlock({ client, notice }: { client: Client; notice?: string }) {
+  const { t } = useLang();
+  const c = useContent();
   return (
     <motion.section {...fade()} aria-labelledby="client-title" className="glass spotlight relative overflow-hidden rounded-3xl p-6 sm:p-8">
       <div aria-hidden="true" className="absolute -top-20 -right-20 size-72 rounded-full bg-emerald-500/15 blur-3xl" />
-      <p className="font-mono text-xs tracking-[0.25em] text-emerald-300 uppercase">End client</p>
+      <p className="font-mono text-xs tracking-[0.25em] text-emerald-300 uppercase">{t('page.endClient')}</p>
       <div className="mt-4 flex flex-wrap items-center gap-4">
         <LogoTile sources={client.logos} name={client.name} size={72} fallback={<span className="text-2xl font-bold text-white">{client.name}</span>} />
         {client.parent && (
@@ -47,7 +49,7 @@ function ClientBlock({ client, notice }: { client: Client; notice?: string }) {
           <h2 id="client-title" className="text-2xl font-bold text-white">
             {client.name}
           </h2>
-          {client.parent && <p className="text-sm text-emerald-200/80">{client.parent.name} group</p>}
+          {client.parent && <p className="text-sm text-emerald-200/90">{c.group(client.parent.name)}</p>}
         </div>
       </div>
       <p className="mt-5 max-w-3xl leading-relaxed text-zinc-300">{client.about}</p>
@@ -64,19 +66,24 @@ function ClientBlock({ client, notice }: { client: Client; notice?: string }) {
   );
 }
 
-export function ExperiencePage({ exp }: { exp: Experience }) {
+export function ExperiencePage({ id }: { id: string }) {
+  const { t } = useLang();
+  const c = useContent();
+  const exp = c.findExperience(id);
+  if (!exp) return null;
+  const { experiences } = c;
   const { company } = exp;
   const index = experiences.findIndex((e) => e.id === exp.id);
   const prev = experiences[(index - 1 + experiences.length) % experiences.length];
   const next = experiences[(index + 1) % experiences.length];
-  const related = (exp.projectIds ?? []).map(findProject).filter((p) => p !== undefined);
+  const related = (exp.projectIds ?? []).map(c.findProject).filter((p) => p !== undefined);
 
   const meta = [
-    { icon: Briefcase, text: exp.contract },
+    { icon: Briefcase, text: c.contract(exp.contract) },
     { icon: CalendarDays, text: exp.period },
     { icon: Clock, text: exp.duration },
     { icon: MapPin, text: exp.location },
-    { icon: Laptop, text: exp.mode },
+    { icon: Laptop, text: c.mode(exp.mode) },
   ];
 
   return (
@@ -93,7 +100,7 @@ export function ExperiencePage({ exp }: { exp: Experience }) {
 
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <a href={href.section('experience')} className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition hover:text-white">
-            <ArrowLeft className="size-4" aria-hidden="true" /> All experience
+            <ArrowLeft className="size-4" aria-hidden="true" /> {t('page.allExperience')}
           </a>
 
           <div className="mt-8 grid items-center gap-10 lg:grid-cols-[1fr_auto]">
@@ -104,7 +111,7 @@ export function ExperiencePage({ exp }: { exp: Experience }) {
                 {exp.role}
                 {exp.current && (
                   <span className="ml-3 inline-flex translate-y-[-3px] items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 align-middle text-xs text-emerald-300">
-                    <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px] shadow-emerald-400" /> Current
+                    <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px] shadow-emerald-400" /> {t('exp.current')}
                   </span>
                 )}
               </p>
@@ -136,9 +143,9 @@ export function ExperiencePage({ exp }: { exp: Experience }) {
         {/* About the company */}
         <motion.section {...fade()} aria-labelledby="about-title" className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
           <div className="glass spotlight rounded-3xl p-6 sm:p-8">
-            <p className="font-mono text-xs tracking-[0.25em] text-violet-300 uppercase">The company</p>
+            <p className="font-mono text-xs tracking-[0.25em] text-violet-300 uppercase">{t('page.company')}</p>
             <h2 id="about-title" className="mt-2 text-2xl font-bold text-white">
-              About {company.name}
+              {t('page.about', { name: company.name })}
             </h2>
             <p className="mt-4 leading-relaxed text-zinc-300">{company.about}</p>
           </div>
@@ -148,7 +155,7 @@ export function ExperiencePage({ exp }: { exp: Experience }) {
             </div>
           ) : (
             <div className="glass spotlight flex flex-col justify-center gap-3 rounded-3xl p-6 sm:p-8">
-              <p className="font-mono text-xs tracking-[0.25em] text-violet-300 uppercase">In short</p>
+              <p className="font-mono text-xs tracking-[0.25em] text-violet-300 uppercase">{t('page.inShort')}</p>
               <p className="text-lg text-white">{exp.summary}</p>
             </div>
           )}
@@ -161,7 +168,7 @@ export function ExperiencePage({ exp }: { exp: Experience }) {
         {/* Missions */}
         <section aria-labelledby="missions-title">
           <motion.h2 {...fade()} id="missions-title" className="text-3xl font-bold text-white">
-            My role
+            {t('page.myRole')}
           </motion.h2>
           {company.visual && <p className="mt-3 max-w-3xl text-zinc-400">{exp.summary}</p>}
           <div className={`mt-6 grid gap-5 ${exp.missions.length > 1 ? 'lg:grid-cols-2' : ''}`}>
@@ -190,10 +197,10 @@ export function ExperiencePage({ exp }: { exp: Experience }) {
 
         {/* Stack & skills */}
         {(exp.stack.length > 0 || exp.skills.length > 0) && (
-          <motion.section {...fade()} aria-label="Skills used" className="flex flex-wrap gap-2">
-            {exp.stack.map((t) => (
-              <Badge key={t} active>
-                {t}
+          <motion.section {...fade()} aria-label={t('page.skillsUsed')} className="flex flex-wrap gap-2">
+            {exp.stack.map((tech) => (
+              <Badge key={tech} active>
+                {c.tech(tech)}
               </Badge>
             ))}
             {exp.skills
@@ -208,7 +215,7 @@ export function ExperiencePage({ exp }: { exp: Experience }) {
         {related.length > 0 && (
           <section aria-labelledby="related-title">
             <h2 id="related-title" className="text-2xl font-bold text-white">
-              Project
+              {t('page.project')}
             </h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {related.map((p) => (
@@ -229,7 +236,7 @@ export function ExperiencePage({ exp }: { exp: Experience }) {
         {company.url && (
           <motion.div {...fade()} className="glass spotlight relative overflow-hidden rounded-3xl p-8 text-center">
             <div aria-hidden="true" className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(circle at 50% 120%, ${company.gradient[0]}, transparent 60%)` }} />
-            <p className="relative text-zinc-300">Want to know more about {company.name}?</p>
+            <p className="relative text-zinc-200">{t('page.more', { name: company.name })}</p>
             <Magnetic className="relative mt-4">
               <a
                 href={company.url}
@@ -237,25 +244,25 @@ export function ExperiencePage({ exp }: { exp: Experience }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-zinc-900 shadow-[0_0_40px_rgb(255_255_255/0.25)] transition hover:bg-zinc-200"
               >
-                Visit the website <ArrowUpRight className="size-4" aria-hidden="true" />
+                {t('page.visit')} <ArrowUpRight className="size-4" aria-hidden="true" />
               </a>
             </Magnetic>
           </motion.div>
         )}
 
         {/* Prev / next */}
-        <nav aria-label="Other experiences" className="grid gap-3 border-t border-white/10 pt-8 sm:grid-cols-2">
+        <nav aria-label={t('page.otherExperiences')} className="grid gap-3 border-t border-white/10 pt-8 sm:grid-cols-2">
           <a href={href.experience(prev.id)} className="group flex items-center gap-3 rounded-2xl p-3 transition hover:bg-white/[0.04]">
             <ArrowLeft className="size-4 text-zinc-500 transition group-hover:-translate-x-1 group-hover:text-white" aria-hidden="true" />
             <CompanyLogo company={prev.company} size={40} />
             <span>
-              <span className="block text-xs text-zinc-500">Previous</span>
+              <span className="block text-xs text-zinc-400">{t('page.previous')}</span>
               <span className="font-medium text-white">{prev.company.name}</span>
             </span>
           </a>
           <a href={href.experience(next.id)} className="group flex items-center justify-end gap-3 rounded-2xl p-3 text-right transition hover:bg-white/[0.04]">
             <span>
-              <span className="block text-xs text-zinc-500">Next</span>
+              <span className="block text-xs text-zinc-400">{t('page.next')}</span>
               <span className="font-medium text-white">{next.company.name}</span>
             </span>
             <CompanyLogo company={next.company} size={40} />
