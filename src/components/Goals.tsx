@@ -1,7 +1,16 @@
 import { motion } from 'framer-motion';
 import { Briefcase, Building2, Calculator, GraduationCap, Landmark, MessagesSquare, ShieldCheck, Trophy } from 'lucide-react';
+import { useState } from 'react';
+import { targetSchools } from '../data/profile';
 import { useLang } from '../i18n';
 import { Section } from './ui';
+
+/** School logo that falls back through its sources, then to the school name. */
+function SchoolLogo({ sources, name }: { sources: string[]; name: string }) {
+  const [i, setI] = useState(0);
+  if (i >= sources.length) return <span className="text-sm font-semibold text-zinc-800">{name}</span>;
+  return <img src={sources[i]} alt={`${name} logo`} onError={() => setI((n) => n + 1)} referrerPolicy="no-referrer" className="max-h-full max-w-full object-contain" />;
+}
 
 const STEPS = [
   { n: 1, icon: Briefcase, state: 'now' },
@@ -100,6 +109,43 @@ export function Goals() {
             ))}
           </ul>
         </div>
+      </div>
+
+      {/* Work ethic */}
+      <motion.blockquote
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.6 }}
+        className="relative mt-12 overflow-hidden rounded-3xl border border-violet-400/25 bg-gradient-to-br from-violet-500/15 via-fuchsia-500/[0.07] to-cyan-500/10 p-6 text-lg leading-relaxed text-white shadow-[0_20px_70px_-30px_rgb(168_85_247/0.7)] sm:p-8 sm:text-xl"
+      >
+        <span aria-hidden="true" className="text-shine absolute -top-4 left-4 font-serif text-8xl leading-none opacity-40">
+          “
+        </span>
+        <p className="relative">{t('goals.drive')}</p>
+      </motion.blockquote>
+
+      {/* Target schools */}
+      <div className="mt-12">
+        <h3 className="font-mono text-xs tracking-[0.25em] text-amber-200 uppercase">{t('goals.schools')}</h3>
+        <p className="mt-2 text-sm text-zinc-300">{t('goals.schoolsNote')}</p>
+        <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {targetSchools.map((s, i) => (
+            <motion.li
+              key={s.id}
+              initial={{ opacity: 0, y: 16, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ delay: i * 0.07, duration: 0.45 }}
+              className="group flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center transition hover:-translate-y-1 hover:border-amber-300/40 hover:shadow-[0_16px_40px_-20px_rgb(251_191_36/0.6)]"
+            >
+              <span className="flex h-20 w-full items-center justify-center rounded-xl bg-white p-3 shadow-inner">
+                <SchoolLogo sources={s.logos} name={s.name} />
+              </span>
+              <span className="text-xs font-medium text-zinc-200">{s.name}</span>
+            </motion.li>
+          ))}
+        </ul>
       </div>
     </Section>
   );

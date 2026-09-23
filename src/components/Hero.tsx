@@ -15,7 +15,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
 
   const stats = [
     { value: experiences.filter((e) => !e.minor).length, label: t('hero.stat.experiences') },
-    { value: 12, label: t('hero.stat.months') },
+    { value: 12, suffix: '+', label: t('hero.stat.months') },
     { value: projects.length, label: t('hero.stat.projects') },
     { value: null, text: '2027', label: t('hero.stat.graduation') },
   ];
@@ -23,7 +23,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
   return (
     <section id="home" className="relative isolate overflow-hidden">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-        <div className="animate-aurora absolute top-[-20%] left-[10%] size-[55vmax] rounded-full bg-[conic-gradient(from_90deg,#7c3aed77,#06b6d455,#db277744,#7c3aed77)] opacity-70 blur-[110px]" />
+        <div className="animate-aurora absolute top-[-20%] left-[10%] size-[55vmax] rounded-full bg-[conic-gradient(from_90deg,#7c3aed88,#06b6d466,#db277755,#7c3aed88)] opacity-80 blur-[110px]" />
         <ParticleField className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
       </div>
@@ -83,7 +83,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
               {stats.map((s) => (
                 <div key={s.label}>
                   <dt className="sr-only">{s.label}</dt>
-                  <dd className="text-2xl font-bold text-white sm:text-3xl">{s.value === null ? s.text : <CountUp to={s.value} />}</dd>
+                  <dd className="text-2xl font-bold text-white sm:text-3xl">{s.value === null ? s.text : <CountUp to={s.value} suffix={s.suffix} />}</dd>
                   <dd className="text-[11px] tracking-wide text-zinc-400 uppercase" aria-hidden="true">
                     {s.label}
                   </dd>

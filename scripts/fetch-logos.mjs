@@ -4,7 +4,11 @@ import { mkdir, writeFile } from 'node:fs/promises';
 
 const LOGOS = {
   'ellipses.jpg': 'https://www.editions-ellipses.fr/img/ellipses-logo-1564132122.jpg',
-  'acelys.png': 'https://www.acelys.fr/wp-content/uploads/2021/12/Logo-Acelys.png',
+  'acelys.webp': 'https://www.acelys.fr/wp-content/uploads/2026/03/logo-acelys-entete-wp.webp',
+  'dauphine.png': 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Dauphine_logo_2019_-_Bleu.png',
+  'centralesupelec.svg': 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Ecole_Centrale_Supelec_logo.svg',
+  'telecom-sudparis.svg': 'https://upload.wikimedia.org/wikipedia/fr/1/1d/Logo_T%C3%A9l%C3%A9com_SudParis.svg',
+  'imt-atlantique.svg': 'https://upload.wikimedia.org/wikipedia/commons/0/06/IMT_Atlantique.svg',
   'education.svg': 'https://www.education.gouv.fr/libraries/dsfr/dist/favicon/favicon.svg',
   'solstice.png': 'https://www.solutions-solstice.com/img/2018-logo-solution-solstice.png',
   'aeroboat.png': 'https://aeroboat-france.com/wp-content/uploads/2025/09/logoabf-without-bg-1.png',

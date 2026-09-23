@@ -13,8 +13,8 @@ export const profile = {
   status: 'Open to opportunities',
   currentRole: 'Web Developer @ Éditions Ellipses',
   pitch:
-    'I turn business requirements into secure, reliable software — and I’m building a generalist profile for banking and consulting. After a mission on a BNP Paribas group subsidiary’s platform, my next steps are university, then an ambitious master’s-level degree.',
-  ambition: 'Long-term goal: banking & IT consulting — where rigour, security and business understanding matter as much as code.',
+    'I turn business requirements into secure, reliable software, and I’m building a generalist profile for banking and consulting. After a mission on a BNP Paribas group subsidiary’s platform, my next steps are university, then an ambitious master’s-level degree.',
+  ambition: 'Long-term goal: banking & IT consulting, where rigour, security and business understanding matter as much as code.',
   avatar: './avatar.jpg',
 };
 
@@ -31,7 +31,7 @@ const companies = {
     logos: ['./logos/ellipses.jpg', 'https://www.editions-ellipses.fr/img/ellipses-logo-1564132122.jpg'],
     sector: 'Academic publishing',
     about:
-      'Independent French publisher and the leading publisher for universities and preparatory classes, covering every subject from secondary school to the end of higher education — and running its whole book chain, printing included.',
+      'Independent French publisher and the leading publisher for universities and preparatory classes, covering every subject from secondary school to the end of higher education, and running its whole book chain, printing included.',
     facts: [
       { value: '50 yrs', label: 'of publishing' },
       { value: '13,000', label: 'titles in catalogue' },
@@ -45,10 +45,10 @@ const companies = {
     name: 'Acelys Services Numériques',
     monogram: 'Ac',
     gradient: ['#e11d48', '#7c3aed'],
-    logos: ['./logos/acelys.png', 'https://www.acelys.fr/wp-content/uploads/2021/12/Logo-Acelys.png'],
+    logos: ['./logos/acelys.webp', 'https://www.acelys.fr/wp-content/uploads/2026/03/logo-acelys-entete-wp.webp'],
     sector: 'IT services company (ESN)',
     about:
-      'Digital services company based in Montpellier since 1997, supporting organisations in their digital transformation: software development, cybersecurity (audits, ISO 27001 governance, pentests), data and information-system performance — for clients in banking, insurance and social housing.',
+      'Digital services company based in Montpellier since 1997, supporting organisations in their digital transformation: software development, cybersecurity (audits, ISO 27001 governance, pentests), data and information-system performance, for clients in banking, insurance and social housing.',
     facts: [
       { value: '1997', label: 'founded' },
       { value: 'Montpellier', label: 'headquarters' },
@@ -96,7 +96,7 @@ const companies = {
     logos: ['./logos/aeroboat.png', 'https://aeroboat-france.com/wp-content/uploads/2025/09/logoabf-without-bg-1.png'],
     sector: 'Aeronautics association · ground-effect craft',
     about:
-      'Toulouse-based association founded in 2025 by three students. Inspired by Soviet ekranoplans, it designs, builds and instruments ground-effect scale models — and made its first public appearance at the 2025 Paris Air Show.',
+      'Toulouse-based association founded in 2025 by three students. Inspired by Soviet ekranoplans, it designs, builds and instruments ground-effect scale models, and made its first public appearance at the 2025 Paris Air Show.',
     facts: [
       { value: '2025', label: 'founded' },
       { value: 'Toulouse', label: 'home base' },
@@ -143,7 +143,7 @@ export const experiences: Experience[] = [
     company: companies.ellipses,
     role: 'Web Developer',
     contract: 'Apprenticeship',
-    period: 'Sept. 2026 — Present',
+    period: 'Sept. 2026 → Present',
     duration: 'Ongoing',
     location: 'Paris, Île-de-France',
     mode: 'On-site',
@@ -166,7 +166,7 @@ export const experiences: Experience[] = [
     company: companies.acelys,
     role: 'Development Analyst',
     contract: 'Internship',
-    period: 'Apr. 2026 — Jul. 2026',
+    period: 'Apr. 2026 → Jul. 2026',
     duration: '4 months',
     location: 'Montpellier, Occitanie',
     mode: 'Hybrid',
@@ -189,9 +189,17 @@ export const experiences: Experience[] = [
           'Contributed to Scrum ceremonies to keep deployment cycles smooth and team velocity high.',
         ],
       },
+      {
+        title: 'Deployment & DevOps',
+        items: [
+          'Set up deployment pipelines with Ansible, triggered from Bitbucket Pipelines.',
+          'Automated each release: dependency installs (npm, Yarn), database migrations, go-live.',
+          'Managed secure access to servers: SSH keys and SSH tunnels to reach protected environments.',
+        ],
+      },
     ],
-    stack: ['Symfony', 'React', 'API Platform', 'Security', 'Agile'],
-    skills: ['Web development', 'Symfony', 'React', 'API Platform', 'Scrum', 'Specifications', 'Quality assurance'],
+    stack: ['Symfony', 'React', 'API Platform', 'Security', 'Ansible', 'Agile'],
+    skills: ['Web development', 'Symfony', 'React', 'API Platform', 'Ansible', 'Bitbucket Pipelines', 'SSH', 'Scrum', 'Specifications', 'Quality assurance'],
     client: domofinance,
     confidential:
       'This work was done on a regulated consumer-credit platform of the BNP Paribas group. For security and confidentiality reasons, no code, screenshot or internal detail is published here.',
@@ -202,7 +210,7 @@ export const experiences: Experience[] = [
     company: companies.education,
     role: 'Full-Stack Web Developer',
     contract: 'Freelance',
-    period: 'Jan. 2026 — Feb. 2026',
+    period: 'Jan. 2026 → Feb. 2026',
     duration: '1 month',
     location: 'Gard (Alès), Occitanie',
     mode: 'Remote',
@@ -228,7 +236,7 @@ export const experiences: Experience[] = [
     company: companies.solstice,
     role: 'Full-Stack Developer',
     contract: 'Apprenticeship',
-    period: 'Sept. 2025 — Jan. 2026',
+    period: 'Sept. 2025 → Jan. 2026',
     duration: '5 months',
     location: 'Paris area',
     mode: 'On-site',
@@ -258,7 +266,7 @@ export const experiences: Experience[] = [
     company: companies.aeroboat,
     role: 'IT Systems Manager',
     contract: 'Fixed-term',
-    period: 'Sept. 2025 — Jan. 2026',
+    period: 'Sept. 2025 → Jan. 2026',
     duration: '5 months',
     location: 'Toulouse, Occitanie',
     mode: 'Remote',
@@ -284,7 +292,7 @@ export const experiences: Experience[] = [
     company: companies.boulanger,
     role: 'Retail Sales & Service Advisor',
     contract: 'Fixed-term',
-    period: 'Jul. 2025 — Aug. 2025',
+    period: 'Jul. 2025 → Aug. 2025',
     duration: 'Summer job',
     location: 'Lattes, Occitanie',
     mode: 'On-site',
@@ -309,23 +317,25 @@ export const projects: Project[] = [
     context: 'Acelys × Domofinance (BNP Paribas group)',
     experienceId: 'acelys',
     year: '2026',
-    description: 'MFA and transaction e-mail filtering on Domofinance’s platforms, plus validation of external partners’ deliverables.',
+    description: 'MFA, transaction e-mail filtering and Ansible deployment pipelines on Domofinance’s platforms, plus validation of external partners’ deliverables.',
     problem:
       'A regulated credit platform needs strong customer authentication and trustworthy transactional e-mails, while several external teams deliver code that must be checked before it reaches production.',
     outcome: [
       'Multi-factor authentication added to the customer journey.',
       'Transaction e-mail filtering workflow in place.',
+      'Automated deployments with Ansible from Bitbucket Pipelines.',
       'External deliverables validated against requirements before release.',
     ],
-    highlights: ['Multi-factor authentication', 'Transaction e-mail filtering', 'Deliverable validation', 'Business → technical specifications'],
+    highlights: ['Multi-factor authentication', 'Ansible deployment pipelines', 'Transaction e-mail filtering', 'Deliverable validation'],
     build: [
       { icon: 'file', title: 'Business need', detail: 'Requirements gathered with business teams and turned into technical specifications.' },
       { icon: 'shield', title: 'MFA', detail: 'A second authentication factor protects customer access.' },
       { icon: 'mail', title: 'E-mail filtering', detail: 'Transactional e-mails go through a filtering workflow.' },
-      { icon: 'server', title: 'Symfony · API Platform', detail: 'Back-end and APIs, monitored for performance and maintainability.' },
+      { icon: 'git', title: 'Bitbucket Pipelines', detail: 'Each push triggers the deployment pipeline.' },
+      { icon: 'rocket', title: 'Ansible over SSH', detail: 'Playbooks install dependencies (npm, Yarn), run migrations and release.' },
       { icon: 'check', title: 'Validation', detail: 'Partner deliverables checked before release, in Scrum cycles.' },
     ],
-    stack: ['Symfony', 'React', 'API Platform', 'Security', 'Agile'],
+    stack: ['Symfony', 'React', 'API Platform', 'Security', 'Ansible', 'Agile'],
     confidential:
       'This project is not showcased in detail on purpose: it runs on a regulated platform of the BNP Paribas group, so its code and internals are confidential. What is described here stays at the level of my public LinkedIn profile.',
   },
@@ -392,7 +402,7 @@ export const projects: Project[] = [
     title: 'AC-Motors database',
     context: 'IUT d’Orsay · Academic',
     year: '2024',
-    description: 'Relational database for a car dealership — vehicles, customers, orders — with a live SQL playground running in your browser.',
+    description: 'Relational database for a car dealership (vehicles, customers, orders), with a live SQL playground running in your browser.',
     problem: 'A dealership needs to track its stock, customers and sales consistently, and to answer business questions quickly.',
     outcome: ['Normalised schema with integrity constraints.', 'Business queries: revenue, stock, best customers.', 'Interactive demo: run real SQL on the model.'],
     highlights: ['Conceptual → logical → physical model', 'Constraints & indexes', 'Business SQL queries'],
@@ -408,16 +418,16 @@ export const projects: Project[] = [
   },
   {
     id: 'cwad',
-    title: 'VogMerveille — travel agency site',
+    title: 'VogMerveille, travel agency site',
     context: 'IUT d’Orsay · Team project',
     year: '2024',
-    description: 'Website of a fictional time-travel cruise agency: home, activities, contact with FAQ chatbot, and login — redesigned in 2026.',
+    description: 'Website of a fictional time-travel cruise agency: home, activities, contact with FAQ chatbot, and login, redesigned in 2026.',
     problem: 'Build a complete, responsive multi-page website with HTML/CSS, then push it further with interactivity.',
     outcome: ['Original 4-page responsive site (HTML/CSS).', '2026 redesign: dark luxury theme, filters, booking simulator, chatbot.', 'W3C-validated markup.'],
     highlights: ['Responsive layouts', 'Destination filters & booking simulator', 'FAQ chatbot in vanilla JS'],
     build: [
       { icon: 'layout', title: 'HTML/CSS', detail: 'Semantic pages, Flexbox & Grid layouts.' },
-      { icon: 'code', title: 'Vanilla JS', detail: 'Filters, price simulator, chatbot — no framework.' },
+      { icon: 'code', title: 'Vanilla JS', detail: 'Filters, price simulator, chatbot, no framework.' },
       { icon: 'check', title: 'Validation', detail: 'W3C validation and cross-device checks.' },
     ],
     stack: ['HTML/CSS', 'JavaScript'],
@@ -442,11 +452,11 @@ export const projects: Project[] = [
   },
   {
     id: 'librairie',
-    title: 'Canaules bookshop — requirements',
+    title: 'Canaules bookshop: requirements',
     context: 'IUT d’Orsay · Academic',
     year: '2025',
     description: 'Requirements gathering (AMOA) for a bookshop and a detailed specification of its future management system.',
-    problem: 'Turn a small business’s needs into a specification developers can build from — the core of IT consulting.',
+    problem: 'Turn a small business’s needs into a specification developers can build from: the core of IT consulting.',
     outcome: ['Needs analysis.', 'UML use-case & activity diagrams.', 'Functional & technical specification.'],
     highlights: ['Needs analysis', 'UML modelling', 'Specification writing'],
     build: [
@@ -495,9 +505,9 @@ export const projectFilters: Tech[] = ['Symfony', 'React', 'PHP', 'Java', 'Secur
 export const education: Education[] = [
   {
     id: 'iut',
-    school: 'IUT d’Orsay — Université Paris-Saclay',
+    school: 'IUT d’Orsay, Université Paris-Saclay',
     degree: 'BUT Computer Science (Bachelor)',
-    period: '2024 — 2027',
+    period: '2024 → 2027',
     logos: ['./logos/iut-orsay.png', './logos/paris-saclay.png'],
     details: [
       'Software & web development: efficient programming, quality, architecture, advanced web.',
@@ -510,8 +520,8 @@ export const education: Education[] = [
   {
     id: 'bac',
     school: 'Internat d’Excellence de Montpellier',
-    degree: 'Baccalauréat général — Mathematics & Computer Science',
-    period: '2022 — 2024',
+    degree: 'Baccalauréat général, Mathematics & Computer Science',
+    period: '2022 → 2024',
     logos: [],
     details: ['Specialities: Mathematics and NSI (computer science).', 'Options: Mathématiques Expertes, Theatre.'],
   },
@@ -525,7 +535,7 @@ export const vModel = [
 ] as const;
 
 export const volunteering = {
-  org: 'EEDF — Éclaireuses Éclaireurs de France',
+  org: 'EEDF · Éclaireuses Éclaireurs de France',
   since: 'Scout since 2013 · Gard',
   logos: ['./logos/eedf.png', 'https://icons.duckduckgo.com/ip3/eedf.fr.ico'],
   points: [
@@ -535,10 +545,52 @@ export const volunteering = {
   ],
 };
 
-export const interests = ['Volleyball & beach volley', 'Tennis', 'Wrestling', 'Piano', 'Travel — Romania, England, Spain', 'Science popularisation'];
+export const interests = ['Volleyball & beach volley', 'Tennis', 'Wrestling', 'Piano', 'Travel: Romania, England, Spain', 'Science popularisation'];
 
 /** Icons come from the Simple Icons CDN (https://simpleicons.org) at runtime. */
 export const skillGroups: SkillGroup[] = [
+  {
+    id: 'data',
+    title: 'Databases',
+    skills: [
+      { name: 'MySQL', icon: 'mysql', level: 'daily' },
+      { name: 'Data modelling (MCD, MLD)', level: 'daily' },
+      { name: 'Advanced SQL', level: 'daily' },
+      { name: 'PL/SQL · Oracle', level: 'solid' },
+      { name: 'SQLite', icon: 'sqlite', level: 'solid' },
+      { name: 'Indexes & query tuning', level: 'solid' },
+      { name: 'Doctrine ORM', icon: 'doctrine', level: 'solid' },
+      { name: 'phpMyAdmin', icon: 'phpmyadmin', level: 'solid' },
+    ],
+  },
+  {
+    id: 'network',
+    title: 'Networks & DevOps',
+    skills: [
+      { name: 'TCP/IP & subnetting', level: 'solid' },
+      { name: 'Routing & switching', level: 'solid' },
+      { name: 'Linux administration', icon: 'debian', level: 'solid' },
+      { name: 'SSH: keys & tunnels', level: 'daily' },
+      { name: 'Ansible', icon: 'ansible', level: 'solid' },
+      { name: 'Bitbucket Pipelines', icon: 'bitbucket', level: 'solid' },
+      { name: 'Git', icon: 'git', level: 'daily' },
+      { name: 'Virtualisation', level: 'solid' },
+    ],
+  },
+  {
+    id: 'maths',
+    title: 'Maths',
+    skills: [
+      { name: 'Linear algebra', level: 'solid' },
+      { name: 'Probability & statistics', level: 'solid' },
+      { name: 'Graph theory', level: 'solid' },
+      { name: 'Analysis & numerical methods', level: 'solid' },
+      { name: 'Operations research & optimisation', level: 'solid' },
+      { name: 'Discrete maths & logic', level: 'solid' },
+      { name: 'Cryptography', level: 'learning' },
+      { name: 'Machine learning basics', level: 'learning' },
+    ],
+  },
   {
     id: 'business',
     title: 'Business & consulting',
@@ -549,7 +601,6 @@ export const skillGroups: SkillGroup[] = [
       { name: 'Regulated environments', level: 'solid' },
       { name: 'Team & project management', level: 'solid' },
       { name: 'Agile / Scrum', icon: 'jira', level: 'daily' },
-      { name: 'Cryptography basics', level: 'learning' },
     ],
   },
   {
@@ -559,11 +610,11 @@ export const skillGroups: SkillGroup[] = [
       { name: 'PHP', icon: 'php', level: 'daily' },
       { name: 'Symfony', icon: 'symfony', level: 'daily' },
       { name: 'API Platform', level: 'solid' },
-      { name: 'Doctrine', icon: 'doctrine', level: 'solid' },
       { name: 'Java', icon: 'openjdk', level: 'solid' },
       { name: 'Python', icon: 'python', level: 'solid' },
       { name: 'C / C++', icon: 'cplusplus', level: 'solid' },
-      { name: 'C#', level: 'learning' },
+      { name: 'Algorithms & OOP', level: 'daily' },
+      { name: 'UML', level: 'solid' },
     ],
   },
   {
@@ -580,31 +631,15 @@ export const skillGroups: SkillGroup[] = [
       { name: 'Figma', icon: 'figma', level: 'solid' },
     ],
   },
-  {
-    id: 'data',
-    title: 'Data & systems',
-    skills: [
-      { name: 'MySQL', icon: 'mysql', level: 'daily' },
-      { name: 'SQLite', icon: 'sqlite', level: 'solid' },
-      { name: 'PL/SQL · Oracle', level: 'solid' },
-      { name: 'phpMyAdmin', icon: 'phpmyadmin', level: 'solid' },
-      { name: 'Linux / Debian', icon: 'debian', level: 'solid' },
-      { name: 'Git', icon: 'git', level: 'daily' },
-      { name: 'XML', icon: 'xml', level: 'solid' },
-    ],
-  },
-  {
-    id: 'foundations',
-    title: 'Foundations',
-    skills: [
-      { name: 'Algorithms & recursion', level: 'solid' },
-      { name: 'Object-oriented design', level: 'daily' },
-      { name: 'UML', level: 'solid' },
-      { name: 'Numerical optimisation', level: 'solid' },
-      { name: 'Human–machine interfaces', level: 'solid' },
-      { name: 'LaTeX', icon: 'latex', level: 'solid' },
-    ],
-  },
+];
+
+/** Schools targeted after the BUT (parallel admissions). Logos: local file first, then Wikimedia. */
+export const targetSchools = [
+  { id: 'dauphine', name: 'Université Paris Dauphine-PSL', logos: ['./logos/dauphine.png', 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Dauphine_logo_2019_-_Bleu.png'] },
+  { id: 'centrale', name: 'CentraleSupélec', logos: ['./logos/centralesupelec.svg', 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Ecole_Centrale_Supelec_logo.svg'] },
+  { id: 'telecom-paris', name: 'Télécom Paris', logos: ['./logos/telecom-paris.svg'] },
+  { id: 'telecom-sudparis', name: 'Télécom SudParis', logos: ['./logos/telecom-sudparis.svg', 'https://upload.wikimedia.org/wikipedia/fr/1/1d/Logo_T%C3%A9l%C3%A9com_SudParis.svg'] },
+  { id: 'imt-atlantique', name: 'IMT Atlantique', logos: ['./logos/imt-atlantique.svg', 'https://upload.wikimedia.org/wikipedia/commons/0/06/IMT_Atlantique.svg'] },
 ];
 
 export const languages = [

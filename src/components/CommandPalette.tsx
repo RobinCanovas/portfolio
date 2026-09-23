@@ -31,6 +31,7 @@ const SECTIONS: [string, UiKey][] = [
   ['experience', 'nav.experience'],
   ['projects', 'nav.projects'],
   ['skills', 'nav.skills'],
+  ['lab', 'nav.lab'],
   ['education', 'nav.education'],
   ['goals', 'nav.goals'],
   ['contact', 'section.contact.title'],

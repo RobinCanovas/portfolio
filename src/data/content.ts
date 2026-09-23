@@ -51,6 +51,7 @@ function build(lang: Lang) {
   return {
     lang,
     links: en.links,
+    targetSchools: en.targetSchools,
     profile: isFr ? { ...en.profile, ...fr.profile } : en.profile,
     experiences,
     projects,

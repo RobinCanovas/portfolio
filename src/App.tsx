@@ -6,6 +6,7 @@ import { CommandPalette } from './components/CommandPalette';
 import { Contact } from './components/Contact';
 import { Education } from './components/Education';
 import { Goals } from './components/Goals';
+import { Lab } from './components/lab/Lab';
 import { LangProvider, useLang } from './i18n';
 import { Experience } from './components/Experience';
 import { Hero } from './components/Hero';
@@ -22,8 +23,8 @@ import type { Tech } from './types';
 function Backdrop() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-ink">
-      <div className="absolute top-1/3 -right-60 h-[32rem] w-[32rem] rounded-full bg-cyan-500/[0.12] blur-[140px]" />
-      <div className="absolute bottom-0 -left-60 h-[32rem] w-[32rem] rounded-full bg-fuchsia-600/[0.12] blur-[140px]" />
+      <div className="absolute top-1/3 -right-60 h-[32rem] w-[32rem] rounded-full bg-cyan-500/[0.16] blur-[140px]" />
+      <div className="absolute bottom-0 -left-60 h-[32rem] w-[32rem] rounded-full bg-fuchsia-600/[0.16] blur-[140px]" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" />
       <div className="grain absolute inset-0 opacity-[0.035] mix-blend-overlay" />
     </div>
@@ -150,6 +151,7 @@ function Portfolio() {
             <Experience />
             <Projects filter={filter} onFilter={setFilter} />
             <Skills />
+            <Lab />
             <Education />
             <Goals />
           </>

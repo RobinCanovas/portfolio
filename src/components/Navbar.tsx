@@ -7,20 +7,21 @@ import { useContent, useLang } from '../i18n';
 import type { UiKey } from '../i18n/ui';
 import { href, navigate } from '../router';
 import type { Tech } from '../types';
+import { Logo } from './Logo';
 import { TechIcon } from './TechIcon';
 import { CompanyLogo, LogoTile } from './ui';
 
 type MenuId = 'experience' | 'projects';
 
 const LINKS: { id: string; label: UiKey; menu?: MenuId }[] = [
-  { id: 'home', label: 'nav.home' },
   { id: 'experience', label: 'nav.experience', menu: 'experience' },
   { id: 'projects', label: 'nav.projects', menu: 'projects' },
   { id: 'skills', label: 'nav.skills' },
+  { id: 'lab', label: 'nav.lab' },
   { id: 'education', label: 'nav.education' },
   { id: 'goals', label: 'nav.goals' },
 ];
-const SECTION_IDS = [...LINKS.map((l) => l.id), 'contact'];
+const SECTION_IDS = ['home', ...LINKS.map((l) => l.id), 'contact'];
 
 export interface NavActions {
   onFilter: (tech: Tech | 'All') => void;
@@ -338,11 +339,9 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
       }`}
     >
       <nav aria-label="Main" className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <a href="#home" className="group flex items-center gap-2 font-mono text-sm font-semibold text-white">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-cyan-500 text-xs font-bold shadow-lg shadow-violet-500/30 transition group-hover:rotate-6">
-            RC
-          </span>
-          <span className="hidden font-sans text-[15px] tracking-wide sm:inline">{t('brand')}</span>
+        <a href="#home" aria-label={t('nav.home')} className="group flex items-center gap-2.5 text-white">
+          <Logo className="size-9 drop-shadow-[0_0_12px_rgb(168_85_247/0.55)] transition duration-500 group-hover:rotate-[20deg] group-hover:drop-shadow-[0_0_18px_rgb(34_211_238/0.7)]" />
+          <span className="hidden text-[15px] font-semibold tracking-wide sm:inline">{t('brand')}</span>
         </a>
 
         {/* Desktop */}

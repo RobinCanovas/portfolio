@@ -142,7 +142,7 @@ export function ProjectPage({ id }: { id: string }) {
         {project.demo === 'cwad' && project.demoUrl && (
           <section aria-labelledby="demo-title">
             <SectionTitle kicker={t('page.tryIt')} title={t('page.liveDemo')} id="demo-title" />
-            <DevicePreview src={project.demoUrl} title={`${project.title} demo`} originalSrc="./projects/cwad/original/index.html" />
+            <DevicePreview src={project.demoUrl} title={`${project.title} demo`} />
           </section>
         )}
 

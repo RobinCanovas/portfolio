@@ -12,10 +12,10 @@ const COMMANDS: Record<string, () => string[]> = {
     return ['⚡ HYPER MODE ENGAGED ⚡'];
   },
   sudo: () => ['Nice try. This incident will be reported to the scouts. 🏕️'],
-  whoami: () => [`${profile.name} — ${profile.title}`, `Based in ${profile.location}.`],
+  whoami: () => [`${profile.name} · ${profile.title}`, `Based in ${profile.location}.`],
   stack: () => ['business → specs · QA · security (MFA)', 'backend  → PHP · Symfony · API Platform · Java', 'frontend → React · TypeScript · HTML/CSS', 'data     → MySQL · PL/SQL · SQLite', 'method   → Agile/Scrum · V-Model · UML'],
   experience: () => [...experiences.filter((e) => !e.minor).map((e) => `${e.period.padEnd(24)} ${e.company.name}  → open ${e.id}`)],
-  now: () => [`${profile.currentRole} — Symfony / PHP`, 'Status: open to opportunities ✔'],
+  now: () => [`${profile.currentRole} · Symfony / PHP`, 'Status: open to opportunities ✔'],
   contact: () => [`email    ${links.email}`, `linkedin ${links.linkedin}`],
 };
 
