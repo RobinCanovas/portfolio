@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Brain, Code2, Search, Users } from 'lucide-react';
+import { Brain, Code2, Network, Search, Sigma, Users } from 'lucide-react';
 import type { Tech } from '../types';
 
 const TECH_SLUGS: Partial<Record<Tech, string>> = {
@@ -12,12 +12,15 @@ const TECH_SLUGS: Partial<Record<Tech, string>> = {
   MySQL: 'mysql',
   'HTML/CSS': 'html5',
   Linux: 'linux',
+  Ansible: 'ansible',
 };
 
 const TECH_FALLBACK: Partial<Record<Tech, typeof Code2>> = {
   AI: Brain,
   SEO: Search,
   Agile: Users,
+  Networks: Network,
+  Maths: Sigma,
 };
 
 /** Brands whose official colour is black and would vanish on the dark theme. */

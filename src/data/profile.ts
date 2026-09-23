@@ -126,7 +126,7 @@ export const companyList: Company[] = Object.values(companies);
 const domofinance: Client = {
   name: 'Domofinance',
   logos: ['./logos/domofinance.png', 'https://www.domofinance.com/build/website/domofinance-trans.f48e1653.png'],
-  parent: { name: 'BNP Paribas Personal Finance', logos: ['./logos/bnp-paribas.svg', 'https://cdn-group.bnpparibas.com/build/images/logo-bnp.svg'] },
+  parent: { name: 'BNP Paribas Personal Finance', logos: ['https://cdn-group.bnpparibas.com/build/images/logo-bnp.svg'] },
   about:
     'Consumer-credit company born from the alliance of BNP Paribas Personal Finance and EDF, specialised in financing home energy-renovation projects (insulation, heat pumps, solar panels…).',
   facts: [
@@ -203,7 +203,7 @@ export const experiences: Experience[] = [
     client: domofinance,
     confidential:
       'This work was done on a regulated consumer-credit platform of the BNP Paribas group. For security and confidentiality reasons, no code, screenshot or internal detail is published here.',
-    projectIds: ['domofinance-security'],
+    projectIds: ['domofinance-mfa', 'acelys-deploy'],
   },
   {
     id: 'education',
@@ -311,33 +311,58 @@ export const experiences: Experience[] = [
 
 export const projects: Project[] = [
   {
-    id: 'domofinance-security',
+    id: 'domofinance-mfa',
     featured: true,
-    title: 'Securing a consumer-credit platform',
+    title: 'MFA & e-mail security for a credit platform',
     context: 'Acelys × Domofinance (BNP Paribas group)',
     experienceId: 'acelys',
     year: '2026',
-    description: 'MFA, transaction e-mail filtering and Ansible deployment pipelines on Domofinance’s platforms, plus validation of external partners’ deliverables.',
+    description: 'Multi-factor authentication and transaction e-mail filtering on Domofinance’s platforms, plus validation of external partners’ deliverables.',
     problem:
       'A regulated credit platform needs strong customer authentication and trustworthy transactional e-mails, while several external teams deliver code that must be checked before it reaches production.',
     outcome: [
       'Multi-factor authentication added to the customer journey.',
       'Transaction e-mail filtering workflow in place.',
-      'Automated deployments with Ansible from Bitbucket Pipelines.',
       'External deliverables validated against requirements before release.',
     ],
-    highlights: ['Multi-factor authentication', 'Ansible deployment pipelines', 'Transaction e-mail filtering', 'Deliverable validation'],
+    highlights: ['Multi-factor authentication', 'Transaction e-mail filtering', 'Deliverable validation', 'Business needs → specifications'],
     build: [
       { icon: 'file', title: 'Business need', detail: 'Requirements gathered with business teams and turned into technical specifications.' },
       { icon: 'shield', title: 'MFA', detail: 'A second authentication factor protects customer access.' },
       { icon: 'mail', title: 'E-mail filtering', detail: 'Transactional e-mails go through a filtering workflow.' },
-      { icon: 'git', title: 'Bitbucket Pipelines', detail: 'Each push triggers the deployment pipeline.' },
-      { icon: 'rocket', title: 'Ansible over SSH', detail: 'Playbooks install dependencies (npm, Yarn), run migrations and release.' },
+      { icon: 'server', title: 'Symfony · API Platform', detail: 'Back-end and APIs, monitored for performance and maintainability.' },
       { icon: 'check', title: 'Validation', detail: 'Partner deliverables checked before release, in Scrum cycles.' },
     ],
-    stack: ['Symfony', 'React', 'API Platform', 'Security', 'Ansible', 'Agile'],
+    stack: ['Symfony', 'React', 'API Platform', 'Security', 'Agile'],
     confidential:
       'This project is not showcased in detail on purpose: it runs on a regulated platform of the BNP Paribas group, so its code and internals are confidential. What is described here stays at the level of my public LinkedIn profile.',
+  },
+  {
+    id: 'acelys-deploy',
+    featured: true,
+    title: 'Ansible deployment pipelines',
+    context: 'Acelys × Domofinance (BNP Paribas group)',
+    experienceId: 'acelys',
+    year: '2026',
+    description: 'Automated releases: Bitbucket Pipelines runs Ansible playbooks over SSH to install dependencies, migrate the database and go live.',
+    problem: 'Manual releases are slow and risky on a platform that must stay available: every step has to be repeatable, secured and reversible.',
+    outcome: [
+      'Deployments triggered from Bitbucket Pipelines.',
+      'Ansible playbooks for dependencies (npm, Yarn), migrations and release.',
+      'Secure server access with SSH keys and SSH tunnels.',
+    ],
+    highlights: ['Bitbucket Pipelines', 'Ansible playbooks', 'SSH keys & tunnels', 'Database migrations'],
+    build: [
+      { icon: 'git', title: 'Push', detail: 'A push to the main branch starts the pipeline.' },
+      { icon: 'rocket', title: 'Bitbucket Pipelines', detail: 'The pipeline runs the Ansible playbook for the target environment.' },
+      { icon: 'key', title: 'SSH', detail: 'Key-based access through a tunnel to reach protected servers.' },
+      { icon: 'server', title: 'Ansible tasks', detail: 'Dependencies (npm, Yarn), build, database migrations, release.' },
+      { icon: 'check', title: 'Go-live', detail: 'The new release is switched on; a failed step keeps the previous one online.' },
+    ],
+    stack: ['Ansible', 'Networks', 'Linux', 'Symfony'],
+    demo: 'deploy',
+    confidential:
+      'The client’s real infrastructure is confidential: the interactive demo below is a generic illustration of the workflow, not their servers or configuration.',
   },
   {
     id: 'edu-accommodation',
@@ -396,6 +421,41 @@ export const projects: Project[] = [
     ],
     stack: ['WordPress', 'HTML/CSS', 'SEO'],
     demoUrl: 'https://aeroboat-france.com',
+  },
+  {
+    id: 'gradient-descent',
+    title: 'Gradient descent, visualised',
+    context: 'Personal · Maths & machine learning',
+    year: '2026',
+    description: 'An interactive linear regression trained by gradient descent: add points and watch the model learn, error curve included.',
+    problem: 'Understand, and show, the optimisation idea behind neural networks on the simplest possible model.',
+    outcome: ['Gradient descent implemented from the maths (partial derivatives of the MSE).', 'Live visualisation of the fit and of the error.', 'Tunable learning rate to see convergence and divergence.'],
+    highlights: ['Mean squared error', 'Partial derivatives', 'Learning rate & convergence'],
+    build: [
+      { icon: 'cpu', title: 'Model', detail: 'A line ŷ = w·x + b with two parameters.' },
+      { icon: 'search', title: 'Error', detail: 'Mean squared error between predictions and points.' },
+      { icon: 'code', title: 'Gradient', detail: 'Partial derivatives of the error with respect to w and b.' },
+      { icon: 'check', title: 'Update', detail: 'θ ← θ − η·∇E, repeated until the error stops decreasing.' },
+    ],
+    stack: ['Maths', 'AI', 'TypeScript'],
+    demo: 'gradient',
+  },
+  {
+    id: 'subnet-calculator',
+    title: 'IPv4 subnet calculator',
+    context: 'Personal · Networks',
+    year: '2026',
+    description: 'A subnetting tool that shows the 32 bits of an address and computes network, broadcast, mask and usable host range.',
+    problem: 'Make subnetting visible: where the network part ends, where the host part starts, and what that means for addressing.',
+    outcome: ['Network, broadcast, mask and host range computed live.', 'Bit-level view of the prefix.', 'Handles /31 and /32 special cases and private ranges.'],
+    highlights: ['CIDR notation', 'Bitwise operations', 'Private vs public ranges'],
+    build: [
+      { icon: 'file', title: 'Parse', detail: 'Address and prefix validated (a.b.c.d/p).' },
+      { icon: 'code', title: 'Bitwise maths', detail: 'Mask, network and broadcast computed with bit operations.' },
+      { icon: 'layout', title: 'Visualise', detail: 'Network bits and host bits coloured on the 32-bit view.' },
+    ],
+    stack: ['Networks', 'TypeScript'],
+    demo: 'subnet',
   },
   {
     id: 'ac-motors',
@@ -500,7 +560,7 @@ export const projects: Project[] = [
   },
 ];
 
-export const projectFilters: Tech[] = ['Symfony', 'React', 'PHP', 'Java', 'Security', 'MySQL', 'AI', 'HTML/CSS', 'WordPress', 'Python'];
+export const projectFilters: Tech[] = ['Symfony', 'React', 'PHP', 'Java', 'MySQL', 'Networks', 'Ansible', 'Security', 'Maths', 'AI', 'HTML/CSS', 'WordPress', 'Python'];
 
 export const education: Education[] = [
   {
@@ -519,10 +579,10 @@ export const education: Education[] = [
   },
   {
     id: 'bac',
-    school: 'Internat d’Excellence de Montpellier',
+    school: 'Lycée Françoise Combes, Internat d’Excellence de Montpellier',
     degree: 'Baccalauréat général, Mathematics & Computer Science',
     period: '2022 → 2024',
-    logos: [],
+    logos: ['./logos/lycee-francoise-combes-logo.png'],
     details: ['Specialities: Mathematics and NSI (computer science).', 'Options: Mathématiques Expertes, Theatre.'],
   },
 ];

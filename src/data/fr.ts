@@ -223,29 +223,75 @@ export const fr: FrOverlay = {
   },
 
   projects: {
-    'domofinance-security': {
-      title: 'Sécuriser une plateforme de crédit à la consommation',
+    'domofinance-mfa': {
+      title: 'MFA et sécurité des e-mails d’une plateforme de crédit',
       context: 'Acelys × Domofinance (groupe BNP Paribas)',
-      description: 'MFA, filtrage des e-mails transactionnels et pipelines de déploiement Ansible sur les plateformes Domofinance, et validation des livrables des partenaires externes.',
+      description: 'Authentification multifacteur et filtrage des e-mails transactionnels sur les plateformes Domofinance, et validation des livrables des partenaires externes.',
       problem:
         'Une plateforme de crédit réglementée doit authentifier fortement ses clients et fiabiliser ses e-mails transactionnels, tandis que plusieurs équipes externes livrent du code qu’il faut vérifier avant la mise en production.',
       outcome: [
         'Authentification multifacteur ajoutée au parcours client.',
         'Workflow de filtrage des e-mails transactionnels en place.',
-        'Déploiements automatisés avec Ansible depuis Bitbucket Pipelines.',
         'Livrables externes validés par rapport aux exigences avant mise en production.',
       ],
-      highlights: ['Authentification multifacteur', 'Pipelines de déploiement Ansible', 'Filtrage des e-mails transactionnels', 'Validation des livrables'],
+      highlights: ['Authentification multifacteur', 'Filtrage des e-mails transactionnels', 'Validation des livrables', 'Besoins métier → spécifications'],
       build: [
         { title: 'Besoin métier', detail: 'Besoins recueillis avec les équipes métier et traduits en spécifications techniques.' },
         { title: 'MFA', detail: 'Un second facteur d’authentification protège l’accès client.' },
         { title: 'Filtrage e-mails', detail: 'Les e-mails transactionnels passent par un workflow de filtrage.' },
-        { title: 'Bitbucket Pipelines', detail: 'Chaque push déclenche le pipeline de déploiement.' },
-        { title: 'Ansible via SSH', detail: 'Les playbooks installent les dépendances (npm, Yarn), jouent les migrations et mettent en ligne.' },
+        { title: 'Symfony · API Platform', detail: 'Back-end et API, suivis en performance et maintenabilité.' },
         { title: 'Validation', detail: 'Livrables partenaires vérifiés avant mise en production, en cycles Scrum.' },
       ],
       confidential:
         'Ce projet n’est volontairement pas détaillé : il tourne sur une plateforme réglementée du groupe BNP Paribas, son code et son fonctionnement interne sont donc confidentiels. Ce qui est décrit ici reste au niveau de mon profil LinkedIn public.',
+    },
+    'acelys-deploy': {
+      title: 'Pipelines de déploiement Ansible',
+      context: 'Acelys × Domofinance (groupe BNP Paribas)',
+      description: 'Des mises en production automatisées : Bitbucket Pipelines lance des playbooks Ansible via SSH pour installer les dépendances, migrer la base et mettre en ligne.',
+      problem: 'Une mise en production manuelle est lente et risquée sur une plateforme qui doit rester disponible : chaque étape doit être reproductible, sécurisée et réversible.',
+      outcome: [
+        'Déploiements déclenchés depuis Bitbucket Pipelines.',
+        'Playbooks Ansible pour les dépendances (npm, Yarn), les migrations et la mise en ligne.',
+        'Accès sécurisé aux serveurs par clés SSH et tunnels SSH.',
+      ],
+      highlights: ['Bitbucket Pipelines', 'Playbooks Ansible', 'Clés & tunnels SSH', 'Migrations de base de données'],
+      build: [
+        { title: 'Push', detail: 'Un push sur la branche principale lance le pipeline.' },
+        { title: 'Bitbucket Pipelines', detail: 'Le pipeline exécute le playbook Ansible de l’environnement cible.' },
+        { title: 'SSH', detail: 'Accès par clé, via un tunnel, jusqu’aux serveurs protégés.' },
+        { title: 'Tâches Ansible', detail: 'Dépendances (npm, Yarn), build, migrations de base de données, mise en ligne.' },
+        { title: 'Mise en ligne', detail: 'La nouvelle version est activée ; une étape en échec laisse la précédente en ligne.' },
+      ],
+      confidential:
+        'L’infrastructure réelle du client est confidentielle : la démo interactive ci-dessous est une illustration générique du workflow, pas ses serveurs ni sa configuration.',
+    },
+    'gradient-descent': {
+      title: 'La descente de gradient, en images',
+      context: 'Personnel · Maths & machine learning',
+      description: 'Une régression linéaire interactive entraînée par descente de gradient : ajoutez des points et regardez le modèle apprendre, courbe d’erreur comprise.',
+      problem: 'Comprendre, et montrer, l’idée d’optimisation derrière les réseaux de neurones sur le modèle le plus simple possible.',
+      outcome: ['Descente de gradient implémentée à partir des maths (dérivées partielles de la MSE).', 'Visualisation en direct de l’ajustement et de l’erreur.', 'Taux d’apprentissage réglable pour voir convergence et divergence.'],
+      highlights: ['Erreur quadratique moyenne', 'Dérivées partielles', 'Taux d’apprentissage & convergence'],
+      build: [
+        { title: 'Modèle', detail: 'Une droite ŷ = w·x + b à deux paramètres.' },
+        { title: 'Erreur', detail: 'Erreur quadratique moyenne entre prédictions et points.' },
+        { title: 'Gradient', detail: 'Dérivées partielles de l’erreur par rapport à w et b.' },
+        { title: 'Mise à jour', detail: 'θ ← θ − η·∇E, répété jusqu’à ce que l’erreur ne baisse plus.' },
+      ],
+    },
+    'subnet-calculator': {
+      title: 'Calculateur de sous-réseau IPv4',
+      context: 'Personnel · Réseaux',
+      description: 'Un outil de découpage en sous-réseaux qui affiche les 32 bits d’une adresse et calcule réseau, broadcast, masque et plage d’hôtes.',
+      problem: 'Rendre le sous-réseautage visible : où s’arrête la partie réseau, où commence la partie hôte, et ce que cela change pour l’adressage.',
+      outcome: ['Réseau, broadcast, masque et plage d’hôtes calculés en direct.', 'Vue bit à bit du préfixe.', 'Cas particuliers /31 et /32 et plages privées gérés.'],
+      highlights: ['Notation CIDR', 'Opérations bit à bit', 'Plages privées et publiques'],
+      build: [
+        { title: 'Analyse', detail: 'Adresse et préfixe validés (a.b.c.d/p).' },
+        { title: 'Calcul binaire', detail: 'Masque, réseau et broadcast calculés avec des opérations bit à bit.' },
+        { title: 'Visualisation', detail: 'Bits réseau et bits hôte colorés sur la vue 32 bits.' },
+      ],
     },
     'edu-accommodation': {
       title: 'Application de gestion des dossiers d’aménagement',
@@ -456,5 +502,5 @@ export const fr: FrOverlay = {
 
   contract: { Apprenticeship: 'Alternance', Internship: 'Stage', Freelance: 'Freelance', 'Fixed-term': 'CDD' },
   mode: { 'On-site': 'Sur site', Hybrid: 'Hybride', Remote: 'À distance' },
-  tech: { Security: 'Sécurité', AI: 'IA' },
+  tech: { Security: 'Sécurité', AI: 'IA', Networks: 'Réseaux' },
 };

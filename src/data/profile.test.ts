@@ -29,7 +29,7 @@ describe('profile data', () => {
     expect(acelys.client?.name).toBe('Domofinance');
     expect(acelys.client?.parent?.name).toMatch(/BNP Paribas/);
     expect(acelys.confidential).toBeTruthy();
-    const project = findProject('domofinance-security')!;
+    const project = findProject('domofinance-mfa')!;
     expect(project.confidential).toBeTruthy();
     expect(project.snippet).toBeUndefined();
     expect(project.stack).not.toContain('AI');

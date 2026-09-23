@@ -8,13 +8,16 @@ const LOGOS = {
   'dauphine.png': 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Dauphine_logo_2019_-_Bleu.png',
   'centralesupelec.svg': 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Ecole_Centrale_Supelec_logo.svg',
   'telecom-sudparis.svg': 'https://upload.wikimedia.org/wikipedia/fr/1/1d/Logo_T%C3%A9l%C3%A9com_SudParis.svg',
+  'academie-occitanie.svg': 'https://francoise-combes.mon-ent-occitanie.fr/images/logos_portails/region_academique_occitanie.svg',
+  'lycee-francoise-combes.webp': 'https://associer.archi/sites/default/files/styles/xlarge_1600/public/images/Madec-PY_Brunaud-1459.jpg.webp',
+  'lycee-francoise-combes-2.webp': 'https://associer.archi/sites/default/files/styles/xlarge_1600/public/images/Madec-PY_Brunaud-1600-bleue.jpg.webp',
+  'lycee-francoise-combes-3.webp': 'https://associer.archi/sites/default/files/styles/xlarge_1600/public/images/Madec-PY_Brunaud-1446%202.jpg.webp',
   'imt-atlantique.svg': 'https://upload.wikimedia.org/wikipedia/commons/0/06/IMT_Atlantique.svg',
   'education.svg': 'https://www.education.gouv.fr/libraries/dsfr/dist/favicon/favicon.svg',
   'solstice.png': 'https://www.solutions-solstice.com/img/2018-logo-solution-solstice.png',
   'aeroboat.png': 'https://aeroboat-france.com/wp-content/uploads/2025/09/logoabf-without-bg-1.png',
   'eedf.png': 'https://icons.duckduckgo.com/ip3/eedf.fr.ico',
   'domofinance.png': 'https://www.domofinance.com/build/website/domofinance-trans.f48e1653.png',
-  'bnp-paribas.svg': 'https://cdn-group.bnpparibas.com/build/images/logo-bnp.svg',
   'boulanger.svg': 'https://cdn.simpleicons.org/boulanger',
 };
 

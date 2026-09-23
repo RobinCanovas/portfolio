@@ -5,6 +5,10 @@ import { useContent, useLang } from '../i18n';
 import { href } from '../router';
 import { BuildDiagram } from '../components/BuildDiagram';
 import { DevicePreview } from '../components/demos/DevicePreview';
+import { DeployPipeline } from '../components/lab/DeployPipeline';
+import { GradientDescent } from '../components/lab/GradientDescent';
+import { SubnetCalculator } from '../components/lab/SubnetCalculator';
+import { ShareButton } from '../components/ShareButton';
 import { TechIcon } from '../components/TechIcon';
 import { CompanyLogo, LogoTile } from '../components/ui';
 
@@ -47,9 +51,12 @@ export function ProjectPage({ id }: { id: string }) {
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
         </div>
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <a href={href.section('projects')} className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition hover:text-white">
-            <ArrowLeft className="size-4" aria-hidden="true" /> {t('page.allProjects')}
-          </a>
+          <div className="flex items-center justify-between gap-3">
+            <a href={href.section('projects')} className="inline-flex items-center gap-1.5 text-sm text-zinc-300 transition hover:text-white">
+              <ArrowLeft className="size-4" aria-hidden="true" /> {t('page.allProjects')}
+            </a>
+            <ShareButton title={`${project.title} · Robin Canovas`} />
+          </div>
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} className="mt-8">
             <div className="flex flex-wrap items-center gap-3">
               {exp && <CompanyLogo company={exp.company} size={44} />}
@@ -137,6 +144,16 @@ export function ProjectPage({ id }: { id: string }) {
             >
               <SqlPlayground />
             </Suspense>
+          </section>
+        )}
+        {(project.demo === 'deploy' || project.demo === 'gradient' || project.demo === 'subnet') && (
+          <section aria-labelledby="demo-title">
+            <SectionTitle kicker={t('page.tryIt')} title={t('page.liveDemo')} id="demo-title" />
+            <div className="glass spotlight rounded-3xl p-5 sm:p-8">
+              {project.demo === 'deploy' && <DeployPipeline />}
+              {project.demo === 'gradient' && <GradientDescent />}
+              {project.demo === 'subnet' && <SubnetCalculator />}
+            </div>
           </section>
         )}
         {project.demo === 'cwad' && project.demoUrl && (

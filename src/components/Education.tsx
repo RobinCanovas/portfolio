@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { GraduationCap, Heart, Tent } from 'lucide-react';
+import { ArrowRight, GraduationCap, Heart, Tent } from 'lucide-react';
+import { href } from '../router';
 import { useContent, useLang } from '../i18n';
 import { Badge, LogoTile, Section, fadeUp } from './ui';
 
@@ -35,7 +36,7 @@ export function Education() {
       <div className="grid gap-6 lg:grid-cols-2">
         <motion.div {...fadeUp} className="space-y-6">
           {education.map((ed) => (
-            <article key={ed.id} className="glass spotlight rounded-2xl p-6">
+            <a key={ed.id} href={href.education(ed.id)} className="glass spotlight group block rounded-2xl p-6 transition hover:-translate-y-0.5 hover:border-violet-400/40">
               <div className="flex items-start gap-4">
                 <LogoTile
                   sources={ed.logos}
@@ -68,12 +69,15 @@ export function Education() {
                   <VModelDiagram />
                 </div>
               )}
-            </article>
+              <span className="mt-5 inline-flex items-center gap-1 text-xs font-medium text-cyan-300 transition group-hover:gap-2 group-hover:text-white">
+                {t('exp.discover')} <ArrowRight className="size-3.5" aria-hidden="true" />
+              </span>
+            </a>
           ))}
         </motion.div>
 
         <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.1 }} className="space-y-6">
-          <article className="glass spotlight relative overflow-hidden rounded-2xl p-6">
+          <a href={href.education('eedf')} className="glass spotlight group relative block overflow-hidden rounded-2xl p-6 transition hover:-translate-y-0.5 hover:border-emerald-400/40">
             <div aria-hidden="true" className="absolute -top-10 -right-10 size-40 rounded-full bg-emerald-500/20 blur-3xl" />
             <div className="flex items-center gap-4">
               <LogoTile
@@ -110,7 +114,10 @@ export function Education() {
                   <Badge key={s}>{s}</Badge>
                 ))}
             </div>
-          </article>
+              <span className="mt-5 inline-flex items-center gap-1 text-xs font-medium text-cyan-300 transition group-hover:gap-2 group-hover:text-white">
+                {t('exp.discover')} <ArrowRight className="size-3.5" aria-hidden="true" />
+              </span>
+          </a>
 
           <article className="glass spotlight rounded-2xl p-6">
             <h3 className="flex items-center gap-2 font-semibold text-white">

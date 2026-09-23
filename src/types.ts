@@ -16,6 +16,7 @@ export type Tech =
   | 'Security'
   | 'Ansible'
   | 'Networks'
+  | 'Maths'
   | 'Agile'
   | 'UML';
 
@@ -79,8 +80,6 @@ export interface Experience {
   /** Shown on the page when the work itself cannot be published */
   confidential?: string;
   projectIds?: string[];
-  /** Optional PDF (e.g. internship report) placed in public/reports/ */
-  report?: string;
 }
 
 export interface CodeSnippet {
@@ -113,7 +112,7 @@ export interface Project {
   confidential?: string;
   demoUrl?: string;
   /** Interactive demo rendered inside the project page */
-  demo?: 'cwad' | 'sql';
+  demo?: 'cwad' | 'sql' | 'deploy' | 'gradient' | 'subnet';
   repoUrl?: string;
   snippet?: CodeSnippet;
 }

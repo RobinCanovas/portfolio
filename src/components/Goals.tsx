@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Briefcase, Building2, Calculator, GraduationCap, Landmark, MessagesSquare, ShieldCheck, Trophy } from 'lucide-react';
+import { ArrowRight, Briefcase, Building2, Calculator, GraduationCap, Landmark, MessagesSquare, ShieldCheck, Trophy } from 'lucide-react';
+import { Magnetic } from './fx/effects';
 import { useState } from 'react';
 import { targetSchools } from '../data/profile';
 import { useLang } from '../i18n';
@@ -26,7 +27,7 @@ const PILLARS = [
   { n: 4, icon: Calculator, color: 'text-fuchsia-300' },
 ] as const;
 
-export function Goals() {
+export function Goals({ onContact }: { onContact?: () => void }) {
   const { t } = useLang();
 
   return (
@@ -147,6 +148,31 @@ export function Goals() {
           ))}
         </ul>
       </div>
+      {onContact && (
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.6 }}
+          className="glow-border relative mt-14 overflow-hidden rounded-3xl"
+        >
+          <div className="relative flex flex-col items-start gap-5 rounded-3xl bg-[radial-gradient(circle_at_0%_0%,rgb(168_85_247/0.25),transparent_50%),radial-gradient(circle_at_100%_100%,rgb(34_211_238/0.2),transparent_50%)] bg-black/60 p-7 sm:flex-row sm:items-center sm:p-9">
+            <div className="flex-1">
+              <p className="text-2xl font-bold text-white">{t('goals.cta.title')}</p>
+              <p className="mt-2 text-zinc-200">{t('goals.cta.text')}</p>
+            </div>
+            <Magnetic>
+              <button
+                type="button"
+                onClick={onContact}
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 font-semibold text-zinc-900 shadow-[0_0_40px_rgb(255_255_255/0.3)] transition hover:bg-zinc-200"
+              >
+                {t('goals.cta.button')} <ArrowRight className="size-4" aria-hidden="true" />
+              </button>
+            </Magnetic>
+          </div>
+        </motion.div>
+      )}
     </Section>
   );
 }
