@@ -63,7 +63,7 @@ export function Projects({ filter, onFilter, highlightId = null }: Props) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25 }}
-              className={`glass group relative flex scroll-mt-24 flex-col overflow-hidden rounded-2xl p-5 transition duration-500 hover:-translate-y-1 hover:border-violet-400/40 hover:shadow-2xl hover:shadow-violet-900/30 ${
+              className={`glass spotlight group relative flex scroll-mt-24 flex-col overflow-hidden rounded-2xl p-5 transition duration-500 hover:-translate-y-1 hover:border-violet-400/40 hover:shadow-2xl hover:shadow-violet-900/30 ${
                 highlightId === p.id ? 'border-violet-400/70 shadow-2xl ring-2 shadow-violet-600/40 ring-violet-400/60' : ''
               }`}
             >

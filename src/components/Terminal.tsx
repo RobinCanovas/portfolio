@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { experiences, links, profile } from '../data/profile';
+import { triggerHyperMode } from './fx/effects';
 
 type Line = { kind: 'in' | 'out'; text: string };
 
 const COMMANDS: Record<string, () => string[]> = {
-  help: () => ['Available: whoami, stack, experience, now, contact, clear'],
+  help: () => ['Available: whoami, stack, experience, now, contact, clear', 'psst… there is a hidden one. Try the Konami code too.'],
+  hyper: () => {
+    triggerHyperMode();
+    return ['⚡ HYPER MODE ENGAGED ⚡'];
+  },
+  sudo: () => ['Nice try. This incident will be reported to the scout leader. 🏕️'],
   whoami: () => [`${profile.name} — ${profile.title}`, `Based in ${profile.location}.`],
   stack: () => ['backend  → PHP · Symfony · API Platform · Java', 'frontend → React · TypeScript · HTML/CSS', 'data     → MySQL · SQL modelling', 'method   → Agile/Scrum · V-Model'],
   experience: () => experiences.map((e) => `${e.period.padEnd(24)} ${e.company.name}`),
@@ -52,7 +58,9 @@ export function Terminal() {
   };
 
   return (
-    <div className="glass overflow-hidden rounded-2xl bg-zinc-950/70 shadow-2xl shadow-violet-900/20">
+    <div className="glow-border rounded-2xl">
+    <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-black/85 shadow-2xl shadow-violet-900/30 backdrop-blur-xl">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent_0_2px,rgb(255_255_255/0.015)_2px_3px)]" />
       <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
         <span className="size-3 rounded-full bg-red-500/80" />
         <span className="size-3 rounded-full bg-yellow-400/80" />
@@ -72,7 +80,7 @@ export function Terminal() {
               <span className="text-violet-400">❯</span> {l.text}
             </p>
           ) : (
-            <p key={i} className="whitespace-pre-wrap text-cyan-200/80">
+            <p key={i} className="whitespace-pre-wrap text-cyan-200/85 [text-shadow:0_0_8px_rgb(34_211_238/0.35)]">
               {l.text}
             </p>
           ),
@@ -96,6 +104,7 @@ export function Terminal() {
           />
         </form>
       </div>
+    </div>
     </div>
   );
 }

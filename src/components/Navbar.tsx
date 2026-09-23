@@ -410,7 +410,7 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
               <motion.div
                 layout
                 transition={{ type: 'spring', stiffness: 380, damping: 34 }}
-                className="relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 shadow-2xl shadow-black/60 ring-1 ring-violet-500/10 backdrop-blur-2xl"
+                className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#08080c] shadow-[0_30px_90px_-20px_rgb(168_85_247/0.45),0_0_0_1px_rgb(168_85_247/0.08)]"
               >
                 <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/60 to-transparent" />
                 <AnimatePresence mode="wait" initial={false}>

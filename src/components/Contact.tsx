@@ -70,18 +70,18 @@ function QuickLinks() {
       <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl bg-[#0a66c2] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-110">
         <LinkedinIcon className="size-5" /> Connect on LinkedIn
       </a>
-      <a href={links.github} target="_blank" rel="noopener noreferrer" className="glass flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white hover:bg-white/10">
+      <a href={links.github} target="_blank" rel="noopener noreferrer" className="glass spotlight flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white hover:bg-white/10">
         <GithubIcon className="size-5" /> GitHub
       </a>
       <button
         type="button"
         onClick={() => navigator.clipboard?.writeText(links.email).then(() => setCopied(true), () => undefined)}
-        className="glass flex items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-white hover:bg-white/10"
+        className="glass spotlight flex items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-white hover:bg-white/10"
       >
         <Copy className="size-5" aria-hidden="true" />
         <span className="truncate">{copied ? 'Email copied!' : links.email}</span>
       </button>
-      <a href={links.cv} target="_blank" rel="noopener" className="glass flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white hover:bg-white/10">
+      <a href={links.cv} target="_blank" rel="noopener" className="glass spotlight flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white hover:bg-white/10">
         <FileText className="size-5" aria-hidden="true" /> Download resume
       </a>
     </div>
@@ -91,7 +91,7 @@ function QuickLinks() {
 export function Contact({ open, onOpen, onClose }: { open: boolean; onOpen: () => void; onClose: () => void }) {
   return (
     <Section id="contact" eyebrow="06 · Contact" title="Let’s build something">
-      <div className="glass relative overflow-hidden rounded-3xl p-6 sm:p-10">
+      <div className="glass spotlight relative overflow-hidden rounded-3xl p-6 sm:p-10">
         <div aria-hidden="true" className="absolute -bottom-24 -left-24 size-72 rounded-full bg-violet-600/25 blur-3xl" />
         <div aria-hidden="true" className="absolute -top-24 -right-24 size-72 rounded-full bg-cyan-500/20 blur-3xl" />
         <div className="relative flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">

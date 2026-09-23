@@ -36,5 +36,7 @@ vi.stubGlobal(
 );
 
 Element.prototype.scrollTo = vi.fn();
+// Canvas effects bail out when no 2D context is available.
+HTMLCanvasElement.prototype.getContext = vi.fn(() => null) as unknown as typeof HTMLCanvasElement.prototype.getContext;
 Element.prototype.scrollIntoView = vi.fn();
 window.scrollTo = vi.fn() as typeof window.scrollTo;

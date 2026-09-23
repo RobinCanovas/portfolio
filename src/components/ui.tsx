@@ -14,19 +14,40 @@ export function Section({
   title: string;
   children: ReactNode;
 }) {
+  const [index, label] = eyebrow.split(' · ');
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-      <motion.header
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.5 }}
-        className="mb-10 sm:mb-14"
-      >
-        <p className="font-mono text-xs tracking-widest text-cyan-300 uppercase">{eyebrow}</p>
-        <h2 id={`${id}-title`} className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          {title}
-        </h2>
+      <motion.header initial="hidden" whileInView="show" viewport={{ once: true, margin: '-80px' }} className="relative mb-10 sm:mb-14">
+        {/* Giant outlined section number */}
+        <motion.span
+          aria-hidden="true"
+          variants={{ hidden: { opacity: 0, x: -30 }, show: { opacity: 1, x: 0, transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } } }}
+          className="pointer-events-none absolute -top-10 -left-2 font-mono text-[7rem] leading-none font-bold text-transparent select-none [-webkit-text-stroke:1px_rgb(255_255_255/0.07)] sm:-top-14 sm:text-[10rem]"
+        >
+          {index}
+        </motion.span>
+        <motion.p
+          variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+          className="relative flex items-center gap-3 font-mono text-xs tracking-[0.25em] text-cyan-300 uppercase"
+        >
+          <span className="h-px w-8 bg-gradient-to-r from-transparent to-cyan-300 shadow-[0_0_8px_rgb(34_211_238)]" aria-hidden="true" />
+          {label ?? eyebrow}
+        </motion.p>
+        <motion.h2
+          id={`${id}-title`}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } } }}
+          className="relative mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl"
+        >
+          {title.split(' ').map((word, i) => (
+            <motion.span
+              key={i}
+              variants={{ hidden: { opacity: 0, y: 24, filter: 'blur(10px)' }, show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}
+              className="mr-[0.25em] inline-block last:mr-0"
+            >
+              {word}
+            </motion.span>
+          ))}
+        </motion.h2>
       </motion.header>
       {children}
     </section>

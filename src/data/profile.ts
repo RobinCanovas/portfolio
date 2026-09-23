@@ -409,7 +409,7 @@ export const skillGroups: SkillGroup[] = [
       { name: 'JavaScript', icon: 'javascript', level: 'solid' },
       { name: 'HTML5', icon: 'html5', level: 'daily' },
       { name: 'CSS3', icon: 'css', level: 'daily' },
-      { name: 'Twig', icon: 'twig', level: 'daily' },
+      { name: 'Twig', level: 'daily' },
       { name: 'Figma', icon: 'figma', level: 'solid' },
     ],
   },
