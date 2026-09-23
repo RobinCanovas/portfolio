@@ -30,8 +30,8 @@ function ContactForm() {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const name = String(data.get('name') ?? '');
-    const subject = encodeURIComponent(`[Portfolio] ${String(data.get('subject') || 'Hello')} — ${name}`);
-    const body = encodeURIComponent(`${String(data.get('message') ?? '')}\n\n— ${name} (${String(data.get('email') ?? '')})`);
+    const subject = encodeURIComponent(`[Portfolio] ${String(data.get('subject') || 'Hello')} | ${name}`);
+    const body = encodeURIComponent(`${String(data.get('message') ?? '')}\n\n${name} (${String(data.get('email') ?? '')})`);
     window.location.href = `mailto:${links.email}?subject=${subject}&body=${body}`;
     setSent(true);
   };

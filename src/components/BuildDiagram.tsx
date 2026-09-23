@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { CheckCircle2, Code2, Cpu, Database, FileText, Globe, LayoutDashboard, Mail, Search, Server, ShieldCheck, UserRound } from 'lucide-react';
+import { CheckCircle2, Code2, Cpu, Database, FileText, GitBranch, Globe, KeyRound, LayoutDashboard, Mail, Rocket, Search, Server, ShieldCheck, UserRound } from 'lucide-react';
 import type { BuildStep } from '../types';
 
 const ICONS: Record<BuildStep['icon'], typeof Code2> = {
@@ -15,6 +15,9 @@ const ICONS: Record<BuildStep['icon'], typeof Code2> = {
   search: Search,
   file: FileText,
   globe: Globe,
+  git: GitBranch,
+  key: KeyRound,
+  rocket: Rocket,
 };
 
 /**

@@ -35,7 +35,7 @@ describe('language switch', () => {
 describe('<App />', () => {
   it('renders every home section', () => {
     render(<App />);
-    for (const id of ['home', 'experience', 'projects', 'skills', 'education', 'goals', 'contact']) {
+    for (const id of ['home', 'experience', 'projects', 'skills', 'lab', 'education', 'goals', 'contact']) {
       expect(document.getElementById(id), id).not.toBeNull();
     }
   });

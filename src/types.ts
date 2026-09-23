@@ -14,6 +14,8 @@ export type Tech =
   | 'Linux'
   | 'SEO'
   | 'Security'
+  | 'Ansible'
+  | 'Networks'
   | 'Agile'
   | 'UML';
 
@@ -77,6 +79,8 @@ export interface Experience {
   /** Shown on the page when the work itself cannot be published */
   confidential?: string;
   projectIds?: string[];
+  /** Optional PDF (e.g. internship report) placed in public/reports/ */
+  report?: string;
 }
 
 export interface CodeSnippet {
@@ -89,7 +93,7 @@ export interface CodeSnippet {
 export interface BuildStep {
   title: string;
   detail: string;
-  icon: 'user' | 'shield' | 'server' | 'database' | 'code' | 'check' | 'layout' | 'cpu' | 'mail' | 'search' | 'file' | 'globe';
+  icon: 'user' | 'shield' | 'server' | 'database' | 'code' | 'check' | 'layout' | 'cpu' | 'mail' | 'search' | 'file' | 'globe' | 'git' | 'key' | 'rocket';
 }
 
 export interface Project {

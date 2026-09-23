@@ -46,21 +46,21 @@ export const fr: FrOverlay = {
     status: 'Ouvert aux opportunités',
     currentRole: 'Développeur web @ Éditions Ellipses',
     pitch:
-      'Je transforme des besoins métier en logiciels sûrs et fiables — et je construis un profil généraliste pour la banque et le conseil. Après une mission sur la plateforme d’une filiale du groupe BNP Paribas, mes prochaines étapes : la fac, puis un Bac+5 ambitieux.',
-    ambition: 'Objectif à long terme : la banque et le conseil IT — là où la rigueur, la sécurité et la compréhension du métier comptent autant que le code.',
+      'Je transforme des besoins métier en logiciels sûrs et fiables, et je construis un profil généraliste pour la banque et le conseil. Après une mission sur la plateforme d’une filiale du groupe BNP Paribas, mes prochaines étapes : la fac, puis un Bac+5 ambitieux.',
+    ambition: 'Objectif à long terme : la banque et le conseil IT, là où la rigueur, la sécurité et la compréhension du métier comptent autant que le code.',
   },
 
   companies: {
     ellipses: {
       sector: 'Édition universitaire',
       about:
-        'Maison d’édition indépendante, 1er éditeur universitaire et des classes préparatoires : des livres pour toutes les matières, du collège à la fin des études supérieures — avec toute sa chaîne du livre intégrée, impression comprise.',
+        'Maison d’édition indépendante, 1er éditeur universitaire et des classes préparatoires : des livres pour toutes les matières, du collège à la fin des études supérieures, avec toute sa chaîne du livre intégrée, impression comprise.',
       facts: [{ value: '50 ans', label: 'de publications' }, { value: '13 000', label: 'titres au catalogue' }, { value: '12 000+', label: 'auteurs' }, { label: 'pays de diffusion' }],
     },
     acelys: {
       sector: 'Entreprise de services numériques (ESN)',
       about:
-        'ESN montpelliéraine créée en 1997, qui accompagne les organisations dans leur transformation numérique : développement, cybersécurité (audits, gouvernance ISO 27001, pentests), data et performance des systèmes d’information — pour des clients de la banque, de l’assurance et du logement social.',
+        'ESN montpelliéraine créée en 1997, qui accompagne les organisations dans leur transformation numérique : développement, cybersécurité (audits, gouvernance ISO 27001, pentests), data et performance des systèmes d’information, pour des clients de la banque, de l’assurance et du logement social.',
       facts: [{ label: 'création' }, { label: 'siège' }, { label: 'offres principales' }],
     },
     education: {
@@ -78,7 +78,7 @@ export const fr: FrOverlay = {
     aeroboat: {
       sector: 'Association aéronautique · engins à effet de sol',
       about:
-        'Association toulousaine fondée en 2025 par trois étudiants. Inspirée des ekranoplanes soviétiques, elle conçoit, construit et instrumente des maquettes à effet de sol — et a fait sa première apparition publique au Salon du Bourget 2025.',
+        'Association toulousaine fondée en 2025 par trois étudiants. Inspirée des ekranoplanes soviétiques, elle conçoit, construit et instrumente des maquettes à effet de sol, et a fait sa première apparition publique au Salon du Bourget 2025.',
       facts: [{ label: 'création' }, { label: 'port d’attache' }, { value: 'Salon du Bourget', label: 'première apparition publique' }],
       visualAlt: 'Emblème d’Aeroboat France',
     },
@@ -101,7 +101,7 @@ export const fr: FrOverlay = {
   experiences: {
     ellipses: {
       role: 'Développeur web',
-      period: 'Sept. 2026 — aujourd’hui',
+      period: 'Sept. 2026 → aujourd’hui',
       duration: 'En cours',
       location: 'Paris, Île-de-France',
       summary: 'Développement de la plateforme web Symfony de l’éditeur, au sein de l’équipe technique interne.',
@@ -115,7 +115,7 @@ export const fr: FrOverlay = {
     },
     acelys: {
       role: 'Analyste du développement',
-      period: 'Avr. 2026 — juil. 2026',
+      period: 'Avr. 2026 → juil. 2026',
       duration: '4 mois',
       location: 'Montpellier, Occitanie',
       summary:
@@ -137,14 +137,22 @@ export const fr: FrOverlay = {
             'Participation aux cérémonies Scrum pour des cycles de déploiement fluides et une bonne vélocité.',
           ],
         },
+        {
+          title: 'Déploiement & DevOps',
+          items: [
+            'Mise en place de pipelines de déploiement avec Ansible, déclenchés depuis Bitbucket Pipelines.',
+            'Automatisation de chaque mise en production : installation des dépendances (npm, Yarn), migrations de base de données, mise en ligne.',
+            'Gestion des accès sécurisés aux serveurs : clés SSH et tunnels SSH vers les environnements protégés.',
+          ],
+        },
       ],
-      skills: ['Développement web', 'Symfony', 'React', 'API Platform', 'Scrum', 'Spécifications', 'Assurance qualité'],
+      skills: ['Développement web', 'Symfony', 'React', 'API Platform', 'Ansible', 'Bitbucket Pipelines', 'SSH', 'Scrum', 'Spécifications', 'Assurance qualité'],
       confidential:
         'Cette mission s’est déroulée sur une plateforme de crédit à la consommation réglementée du groupe BNP Paribas. Pour des raisons de sécurité et de confidentialité, aucun code, aucune capture ni aucun détail interne n’est publié ici.',
     },
     education: {
       role: 'Développeur web full-stack',
-      period: 'Janv. 2026 — févr. 2026',
+      period: 'Janv. 2026 → févr. 2026',
       duration: '1 mois',
       location: 'Gard (Alès), Occitanie',
       summary: 'Développement complet d’une application interne de gestion des dossiers d’aménagement des élèves, de la conception de la base à la formation du personnel.',
@@ -164,7 +172,7 @@ export const fr: FrOverlay = {
     },
     solstice: {
       role: 'Développeur full-stack',
-      period: 'Sept. 2025 — janv. 2026',
+      period: 'Sept. 2025 → janv. 2026',
       duration: '5 mois',
       location: 'Paris et périphérie',
       summary: 'Développement et maintenance d’un logiciel environnemental, et participation à sa certification selon la norme applicable.',
@@ -185,7 +193,7 @@ export const fr: FrOverlay = {
     },
     aeroboat: {
       role: 'Responsable des systèmes informatiques',
-      period: 'Sept. 2025 — janv. 2026',
+      period: 'Sept. 2025 → janv. 2026',
       duration: '5 mois',
       location: 'Toulouse, Occitanie',
       summary: 'Responsable de l’informatique de l’association, ainsi que de la conception et du développement de son site web.',
@@ -205,7 +213,7 @@ export const fr: FrOverlay = {
     },
     boulanger: {
       role: 'Conseiller vente & services',
-      period: 'Juil. 2025 — août 2025',
+      period: 'Juil. 2025 → août 2025',
       duration: 'Job d’été',
       location: 'Lattes, Occitanie',
       summary: 'Job d’été : accueil client, suivi du SAV et présentation de solutions de financement.',
@@ -218,20 +226,22 @@ export const fr: FrOverlay = {
     'domofinance-security': {
       title: 'Sécuriser une plateforme de crédit à la consommation',
       context: 'Acelys × Domofinance (groupe BNP Paribas)',
-      description: 'MFA et filtrage des e-mails transactionnels sur les plateformes Domofinance, et validation des livrables des partenaires externes.',
+      description: 'MFA, filtrage des e-mails transactionnels et pipelines de déploiement Ansible sur les plateformes Domofinance, et validation des livrables des partenaires externes.',
       problem:
         'Une plateforme de crédit réglementée doit authentifier fortement ses clients et fiabiliser ses e-mails transactionnels, tandis que plusieurs équipes externes livrent du code qu’il faut vérifier avant la mise en production.',
       outcome: [
         'Authentification multifacteur ajoutée au parcours client.',
         'Workflow de filtrage des e-mails transactionnels en place.',
+        'Déploiements automatisés avec Ansible depuis Bitbucket Pipelines.',
         'Livrables externes validés par rapport aux exigences avant mise en production.',
       ],
-      highlights: ['Authentification multifacteur', 'Filtrage des e-mails transactionnels', 'Validation des livrables', 'Besoin métier → spécifications'],
+      highlights: ['Authentification multifacteur', 'Pipelines de déploiement Ansible', 'Filtrage des e-mails transactionnels', 'Validation des livrables'],
       build: [
         { title: 'Besoin métier', detail: 'Besoins recueillis avec les équipes métier et traduits en spécifications techniques.' },
         { title: 'MFA', detail: 'Un second facteur d’authentification protège l’accès client.' },
         { title: 'Filtrage e-mails', detail: 'Les e-mails transactionnels passent par un workflow de filtrage.' },
-        { title: 'Symfony · API Platform', detail: 'Back-end et API, suivis en performance et maintenabilité.' },
+        { title: 'Bitbucket Pipelines', detail: 'Chaque push déclenche le pipeline de déploiement.' },
+        { title: 'Ansible via SSH', detail: 'Les playbooks installent les dépendances (npm, Yarn), jouent les migrations et mettent en ligne.' },
         { title: 'Validation', detail: 'Livrables partenaires vérifiés avant mise en production, en cycles Scrum.' },
       ],
       confidential:
@@ -283,7 +293,7 @@ export const fr: FrOverlay = {
     'ac-motors': {
       title: 'Base de données AC-Motors',
       context: 'IUT d’Orsay · Académique',
-      description: 'Base de données relationnelle pour une concession automobile — véhicules, clients, ventes — avec un bac à sable SQL qui tourne dans votre navigateur.',
+      description: 'Base de données relationnelle pour une concession automobile (véhicules, clients, ventes), avec un bac à sable SQL qui tourne dans votre navigateur.',
       problem: 'Une concession doit suivre son stock, ses clients et ses ventes de façon cohérente, et répondre vite aux questions métier.',
       outcome: ['Schéma normalisé avec contraintes d’intégrité.', 'Requêtes métier : chiffre d’affaires, stock, meilleurs clients.', 'Démo interactive : exécutez du vrai SQL sur le modèle.'],
       highlights: ['Modèle conceptuel → logique → physique', 'Contraintes & index', 'Requêtes SQL métier'],
@@ -295,15 +305,15 @@ export const fr: FrOverlay = {
       ],
     },
     cwad: {
-      title: 'VogMerveille — site d’agence de voyage',
+      title: 'VogMerveille, site d’agence de voyage',
       context: 'IUT d’Orsay · Projet en équipe',
-      description: 'Site d’une agence fictive de croisières dans le temps : accueil, activités, contact avec chatbot FAQ et connexion — refondu en 2026.',
+      description: 'Site d’une agence fictive de croisières dans le temps : accueil, activités, contact avec chatbot FAQ et connexion, refondu en 2026.',
       problem: 'Réaliser un site multi-pages complet et responsive en HTML/CSS, puis aller plus loin avec de l’interactivité.',
       outcome: ['Site original de 4 pages responsive (HTML/CSS).', 'Refonte 2026 : thème luxe sombre, filtres, simulateur de réservation, chatbot.', 'Code validé W3C.'],
       highlights: ['Mises en page responsive', 'Filtres & simulateur de réservation', 'Chatbot FAQ en JavaScript natif'],
       build: [
         { title: 'HTML/CSS', detail: 'Pages sémantiques, mises en page Flexbox & Grid.' },
-        { title: 'JavaScript natif', detail: 'Filtres, simulateur de prix, chatbot — sans framework.' },
+        { title: 'JavaScript natif', detail: 'Filtres, simulateur de prix, chatbot, sans framework.' },
         { title: 'Validation', detail: 'Validation W3C et tests multi-appareils.' },
       ],
     },
@@ -321,10 +331,10 @@ export const fr: FrOverlay = {
       ],
     },
     librairie: {
-      title: 'Librairie Canaules — cahier des charges',
+      title: 'Librairie Canaules : cahier des charges',
       context: 'IUT d’Orsay · Académique',
       description: 'Recueil des besoins (AMOA) pour une librairie et cahier des charges détaillé de son futur système de gestion.',
-      problem: 'Transformer les besoins d’un petit commerce en un cahier des charges exploitable par des développeurs — le cœur du conseil IT.',
+      problem: 'Transformer les besoins d’un petit commerce en un cahier des charges exploitable par des développeurs : le cœur du conseil IT.',
       outcome: ['Analyse des besoins.', 'Diagrammes UML de cas d’utilisation et d’activité.', 'Spécifications fonctionnelles et techniques.'],
       highlights: ['Analyse des besoins', 'Modélisation UML', 'Rédaction de spécifications'],
       build: [
@@ -373,7 +383,7 @@ export const fr: FrOverlay = {
       ],
     },
     bac: {
-      degree: 'Baccalauréat général — Mathématiques & NSI',
+      degree: 'Baccalauréat général, Mathématiques & NSI',
       details: ['Spécialités : Mathématiques et NSI (informatique).', 'Options : Mathématiques expertes, Théâtre.'],
     },
   },
@@ -390,9 +400,40 @@ export const fr: FrOverlay = {
     points: ['Activités de plein air et projets de groupe.', 'Accueil et formation de nouveaux membres.', 'Participation à des événements caritatifs et des collectes de fonds.'],
   },
 
-  interests: ['Volley & beach-volley', 'Tennis', 'Lutte', 'Piano', 'Voyages — Roumanie, Angleterre, Espagne', 'Vulgarisation scientifique'],
+  interests: ['Volley & beach-volley', 'Tennis', 'Lutte', 'Piano', 'Voyages : Roumanie, Angleterre, Espagne', 'Vulgarisation scientifique'],
 
   skillGroups: {
+    data: {
+      title: 'Bases de données',
+      skills: {
+        'Data modelling (MCD, MLD)': 'Modélisation (MCD, MLD)',
+        'Advanced SQL': 'SQL avancé',
+        'Indexes & query tuning': 'Index & optimisation de requêtes',
+      },
+    },
+    network: {
+      title: 'Réseaux & DevOps',
+      skills: {
+        'TCP/IP & subnetting': 'TCP/IP & sous-réseaux',
+        'Routing & switching': 'Routage & commutation',
+        'Linux administration': 'Administration Linux',
+        'SSH: keys & tunnels': 'SSH : clés & tunnels',
+        Virtualisation: 'Virtualisation',
+      },
+    },
+    maths: {
+      title: 'Maths',
+      skills: {
+        'Linear algebra': 'Algèbre linéaire',
+        'Probability & statistics': 'Probabilités & statistiques',
+        'Graph theory': 'Théorie des graphes',
+        'Analysis & numerical methods': 'Analyse & méthodes numériques',
+        'Operations research & optimisation': 'Recherche opérationnelle & optimisation',
+        'Discrete maths & logic': 'Maths discrètes & logique',
+        Cryptography: 'Cryptographie',
+        'Machine learning basics': 'Bases du machine learning',
+      },
+    },
     business: {
       title: 'Métier & conseil',
       skills: {
@@ -401,21 +442,10 @@ export const fr: FrOverlay = {
         'Security: MFA, access control': 'Sécurité : MFA, contrôle d’accès',
         'Regulated environments': 'Environnements réglementés',
         'Team & project management': 'Gestion d’équipe & de projet',
-        'Cryptography basics': 'Bases de cryptographie',
       },
     },
-    backend: { title: 'Back-end' },
+    backend: { title: 'Back-end', skills: { 'Algorithms & OOP': 'Algorithmique & POO' } },
     frontend: { title: 'Front-end' },
-    data: { title: 'Données & systèmes' },
-    foundations: {
-      title: 'Fondamentaux',
-      skills: {
-        'Algorithms & recursion': 'Algorithmique & récursivité',
-        'Object-oriented design': 'Conception orientée objet',
-        'Numerical optimisation': 'Optimisation numérique',
-        'Human–machine interfaces': 'Interfaces homme-machine',
-      },
-    },
   },
 
   languages: {

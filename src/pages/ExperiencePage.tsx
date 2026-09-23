@@ -232,6 +232,19 @@ export function ExperiencePage({ id }: { id: string }) {
           </section>
         )}
 
+        {exp.report && (
+          <motion.a
+            {...fade()}
+            href={exp.report}
+            target="_blank"
+            rel="noopener"
+            className="glass spotlight flex items-center justify-between gap-4 rounded-2xl p-5 text-white transition hover:-translate-y-0.5"
+          >
+            <span className="font-semibold">{t('page.report')}</span>
+            <ArrowUpRight className="size-5" aria-hidden="true" />
+          </motion.a>
+        )}
+
         {/* Website CTA — the company site comes last, after the story */}
         {company.url && (
           <motion.div {...fade()} className="glass spotlight relative overflow-hidden rounded-3xl p-8 text-center">
