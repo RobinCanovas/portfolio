@@ -35,7 +35,7 @@ describe('language switch', () => {
 describe('<App />', () => {
   it('renders every home section', () => {
     render(<App />);
-    for (const id of ['home', 'experience', 'projects', 'skills', 'lab', 'education', 'goals', 'contact']) {
+    for (const id of ['home', 'experience', 'projects', 'skills', 'education', 'goals', 'contact']) {
       expect(document.getElementById(id), id).not.toBeNull();
     }
   });
@@ -56,6 +56,26 @@ describe('<App />', () => {
     goTo('#/projects/edu-accommodation');
     expect(await screen.findByRole('heading', { level: 1, name: 'Student accommodation files app' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'How it’s built' })).toBeInTheDocument();
+  });
+
+  it('opens the education detail pages', async () => {
+    render(<App />);
+    goTo('#/education/iut');
+    expect(await screen.findByRole('heading', { level: 1, name: 'IUT d’Orsay' })).toBeInTheDocument();
+    expect(screen.getByText(/13th in the 2026 Shanghai ranking/)).toBeInTheDocument();
+    goTo('#/education/eedf');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Éclaireuses Éclaireurs de France' })).toBeInTheDocument();
+    goTo('#/education/bac');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Lycée Françoise Combes' })).toBeInTheDocument();
+  });
+
+  it('shows the interactive demos inside their projects', async () => {
+    render(<App />);
+    goTo('#/projects/gradient-descent');
+    expect(await screen.findByRole('heading', { name: 'Gradient descent on a linear regression' })).toBeInTheDocument();
+    goTo('#/projects/acelys-deploy');
+    expect(await screen.findByRole('heading', { name: 'Deployment pipeline' })).toBeInTheDocument();
+    expect(document.getElementById('lab')).toBeNull();
   });
 
   it('goes back home from a detail page', async () => {

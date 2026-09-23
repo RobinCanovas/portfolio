@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ExperiencePage } from './pages/ExperiencePage';
 import { ProjectPage } from './pages/ProjectPage';
+import { EducationPage } from './pages/EducationPage';
+import { findEducationPage } from './data/educationPages';
 import { href, navigate, useRoute } from './router';
 import { CommandPalette } from './components/CommandPalette';
 import { Contact } from './components/Contact';
 import { Education } from './components/Education';
 import { Goals } from './components/Goals';
-import { Lab } from './components/lab/Lab';
 import { LangProvider, useLang } from './i18n';
 import { Experience } from './components/Experience';
 import { Hero } from './components/Hero';
@@ -115,6 +116,7 @@ function Portfolio() {
     if (route.name === 'project') {
       if (findProject(route.id)) return <ProjectPage key={route.id} id={route.id} />;
     }
+    if (route.name === 'education' && findEducationPage(route.id)) return <EducationPage key={route.id} id={route.id} />;
     return null;
   })();
 
@@ -151,9 +153,8 @@ function Portfolio() {
             <Experience />
             <Projects filter={filter} onFilter={setFilter} />
             <Skills />
-            <Lab />
             <Education />
-            <Goals />
+            <Goals onContact={openContact} />
           </>
         )}
         <Contact open={contactOpen} onOpen={openContact} onClose={closeContact} />

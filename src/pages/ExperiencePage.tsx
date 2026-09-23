@@ -4,6 +4,7 @@ import { useContent, useLang } from '../i18n';
 import { href } from '../router';
 import type { Client, KeyFact } from '../types';
 import { Magnetic } from '../components/fx/effects';
+import { ShareButton } from '../components/ShareButton';
 import { Badge, CompanyLogo, LogoTile } from '../components/ui';
 
 const fade = (delay = 0) => ({
@@ -99,9 +100,12 @@ export function ExperiencePage({ id }: { id: string }) {
         </div>
 
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <a href={href.section('experience')} className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition hover:text-white">
-            <ArrowLeft className="size-4" aria-hidden="true" /> {t('page.allExperience')}
-          </a>
+          <div className="flex items-center justify-between gap-3">
+            <a href={href.section('experience')} className="inline-flex items-center gap-1.5 text-sm text-zinc-300 transition hover:text-white">
+              <ArrowLeft className="size-4" aria-hidden="true" /> {t('page.allExperience')}
+            </a>
+            <ShareButton title={`${company.name} · Robin Canovas`} />
+          </div>
 
           <div className="mt-8 grid items-center gap-10 lg:grid-cols-[1fr_auto]">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
@@ -230,19 +234,6 @@ export function ExperiencePage({ id }: { id: string }) {
               ))}
             </div>
           </section>
-        )}
-
-        {exp.report && (
-          <motion.a
-            {...fade()}
-            href={exp.report}
-            target="_blank"
-            rel="noopener"
-            className="glass spotlight flex items-center justify-between gap-4 rounded-2xl p-5 text-white transition hover:-translate-y-0.5"
-          >
-            <span className="font-semibold">{t('page.report')}</span>
-            <ArrowUpRight className="size-5" aria-hidden="true" />
-          </motion.a>
         )}
 
         {/* Website CTA — the company site comes last, after the story */}

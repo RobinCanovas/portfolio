@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
-import { Copy, FileText, Mail, Send, UserRound } from 'lucide-react';
+import { Contact2, Copy, FileText, Mail, Send, UserRound } from 'lucide-react';
+import { buildVCard, downloadVCard } from '../lib/share';
 import { useContent, useLang } from '../i18n';
 import { LinkedinIcon } from './BrandIcons';
 import { Modal, Section } from './ui';
@@ -73,10 +74,10 @@ function ContactForm() {
 
 function QuickLinks() {
   const { t } = useLang();
-  const { links } = useContent();
+  const { links, profile } = useContent();
   const [copied, setCopied] = useState(false);
   return (
-    <div className="grid gap-2 sm:grid-cols-3">
+    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
       <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl bg-[#0a66c2] px-4 py-3 text-sm font-semibold text-white shadow-[0_0_24px_rgb(10_102_194/0.4)] transition hover:brightness-110">
         <LinkedinIcon className="size-5" /> {t('contact.linkedin')}
       </a>
@@ -91,6 +92,18 @@ function QuickLinks() {
       <a href={links.cv} target="_blank" rel="noopener" className="glass spotlight flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white hover:bg-white/10">
         <FileText className="size-5" aria-hidden="true" /> {t('contact.cv')}
       </a>
+      <button
+        type="button"
+        onClick={() =>
+          downloadVCard(
+            buildVCard({ name: profile.name, title: profile.title, email: links.email, linkedin: links.linkedin, org: 'Éditions Ellipses' }),
+            'robin-canovas.vcf',
+          )
+        }
+        className="glass spotlight flex items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold text-white hover:bg-white/10"
+      >
+        <Contact2 className="size-5" aria-hidden="true" /> {t('contact.vcard')}
+      </button>
     </div>
   );
 }
