@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import type { Company } from '../types';
@@ -38,14 +38,17 @@ export function Section({
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } } }}
           className="relative mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl"
         >
-          {title.split(' ').map((word, i) => (
-            <motion.span
-              key={i}
-              variants={{ hidden: { opacity: 0, y: 24, filter: 'blur(10px)' }, show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}
-              className="mr-[0.25em] inline-block last:mr-0"
-            >
-              {word}
-            </motion.span>
+          {title.split(' ').map((word, i, words) => (
+            <Fragment key={i}>
+              <motion.span
+                variants={{ hidden: { opacity: 0, y: 24, filter: 'blur(10px)' }, show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}
+                className="inline-block"
+              >
+                {word}
+              </motion.span>
+              {/* Real spaces keep the accessible name readable ("Let’s build something"). */}
+              {i < words.length - 1 && ' '}
+            </Fragment>
           ))}
         </motion.h2>
       </motion.header>
@@ -82,11 +85,14 @@ export function LogoTile({
   fallback: ReactNode;
 }) {
   const [index, setIndex] = useState(0);
+  // Wide wordmarks (e.g. BNP Paribas) get a wider tile instead of shrinking to a sliver.
+  const [ratio, setRatio] = useState(1);
   if (index >= sources.length) return <>{fallback}</>;
+  const width = ratio > 1.4 ? Math.round(size * Math.min(ratio * 0.75, 2.6)) : size;
   return (
     <span
-      className="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 shadow-lg ring-1 shadow-black/30 ring-white/20"
-      style={{ width: size, height: size }}
+      className="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 shadow-lg ring-1 shadow-black/30 ring-white/20 transition-[width] duration-300"
+      style={{ width, height: size }}
     >
       <img
         key={sources[index]}
@@ -96,6 +102,10 @@ export function LogoTile({
         decoding="async"
         referrerPolicy="no-referrer"
         onError={() => setIndex((i) => i + 1)}
+        onLoad={(e) => {
+          const img = e.currentTarget;
+          if (img.naturalHeight) setRatio(img.naturalWidth / img.naturalHeight);
+        }}
         className="max-h-full max-w-full object-contain"
       />
     </span>

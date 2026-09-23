@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Languages } from 'lucide-react';
-import { languages, skillGroups } from '../data/profile';
+import { languages, profile, skillGroups } from '../data/profile';
+import { Terminal } from './Terminal';
 import type { SkillLevel } from '../types';
 import { SimpleIcon } from './TechIcon';
 import { Section } from './ui';
@@ -68,19 +69,40 @@ export function Skills() {
         </motion.ul>
       </AnimatePresence>
 
-      <div className="glass mt-8 flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center">
-        <h3 className="flex shrink-0 items-center gap-2 font-semibold text-white">
-          <Languages className="size-4 text-cyan-300" aria-hidden="true" /> Languages
-        </h3>
-        <ul className="flex flex-wrap gap-2">
-          {languages.map((l) => (
-            <li key={l.name} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1 pr-3 pl-1 text-sm">
-              <span className="rounded-full bg-white/10 px-2 py-0.5 font-mono text-[10px] text-zinc-300">{l.code}</span>
-              <span className="text-zinc-200">{l.name}</span>
-              <span className="text-xs text-zinc-500">{l.level}</span>
-            </li>
-          ))}
-        </ul>
+      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+        <div className="space-y-6">
+          <div className="glass spotlight rounded-2xl p-5">
+            <h3 className="flex items-center gap-2 font-semibold text-white">
+              <Languages className="size-4 text-cyan-300" aria-hidden="true" /> Languages
+            </h3>
+            <ul className="mt-4 space-y-3">
+              {languages.map((l) => (
+                <li key={l.name} className="flex items-center gap-3 text-sm">
+                  <span className="w-8 rounded-md bg-white/10 py-0.5 text-center font-mono text-[10px] text-zinc-300">{l.code}</span>
+                  <span className="w-20 text-zinc-200">{l.name}</span>
+                  <span className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                    <motion.span
+                      initial={{ width: 0 }}
+                      whileInView={{ width: l.level === 'Native' ? '100%' : l.level === 'B2' ? '72%' : '40%' }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-violet-500 to-cyan-400 shadow-[0_0_10px_rgb(34_211_238/0.6)]"
+                    />
+                  </span>
+                  <span className="w-12 text-right font-mono text-xs text-zinc-400">{l.level}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="glass rounded-2xl p-5 text-sm leading-relaxed text-zinc-300">
+            <span className="mb-1 block font-mono text-[10px] tracking-widest text-violet-300 uppercase">Direction</span>
+            {profile.ambition}
+          </p>
+        </div>
+        <div>
+          <p className="mb-2 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">Prefer the terminal? Type “help”.</p>
+          <Terminal />
+        </div>
       </div>
     </Section>
   );

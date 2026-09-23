@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ExperiencePage } from './pages/ExperiencePage';
+import { ProjectPage } from './pages/ProjectPage';
+import { href, navigate, useRoute } from './router';
 import { CommandPalette } from './components/CommandPalette';
 import { Contact } from './components/Contact';
 import { Education } from './components/Education';
@@ -11,7 +14,7 @@ import { CursorFx } from './components/fx/CursorFx';
 import { HYPER_EVENT, triggerHyperMode, useKonami } from './components/fx/effects';
 import { TechMarquee } from './components/fx/TechMarquee';
 import { AnimatePresence, motion } from 'framer-motion';
-import { profile } from './data/profile';
+import { findExperience, findProject, profile } from './data/profile';
 import type { Tech } from './types';
 
 function Backdrop() {
@@ -59,30 +62,50 @@ function HyperToast() {
 
 export default function App() {
   useKonami(triggerHyperMode);
+  const route = useRoute();
   const [filter, setFilter] = useState<Tech | 'All'>('All');
-  const [experienceId, setExperienceId] = useState<string | null>(null);
-  const [highlightId, setHighlightId] = useState<string | null>(null);
   const [contactOpen, setContactOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const previousRoute = useRef(route.name);
 
   const openContact = useCallback(() => setContactOpen(true), []);
   const closeContact = useCallback(() => setContactOpen(false), []);
   const openPalette = useCallback(() => setPaletteOpen(true), []);
   const closePalette = useCallback(() => setPaletteOpen(false), []);
-  const openExperience = useCallback((id: string) => setExperienceId(id), []);
-
-  const focusProject = useCallback((id: string) => {
-    setFilter('All');
-    setHighlightId(id);
-    // Wait for the grid to re-render with every project before scrolling.
-    window.setTimeout(() => document.getElementById(`project-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+  const openExperience = useCallback((id: string) => navigate(href.experience(id)), []);
+  const openProject = useCallback((id: string) => navigate(href.project(id)), []);
+  const filterProjects = useCallback((tech: Tech | 'All') => {
+    setFilter(tech);
+    navigate(href.section('projects'));
   }, []);
 
-  useEffect(() => {
-    if (!highlightId) return;
-    const t = window.setTimeout(() => setHighlightId(null), 2400);
-    return () => window.clearTimeout(t);
-  }, [highlightId]);
+  // Scroll management between the home page and detail pages.
+  useLayoutEffect(() => {
+    const fromPage = previousRoute.current !== 'home';
+    previousRoute.current = route.name;
+    if (route.name !== 'home') {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+      return;
+    }
+    if (route.anchor) {
+      const el = document.getElementById(route.anchor);
+      el?.scrollIntoView({ behavior: fromPage ? ('instant' as ScrollBehavior) : 'smooth', block: 'start' });
+    } else if (fromPage) {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    }
+  }, [route]);
+
+  const page = (() => {
+    if (route.name === 'experience') {
+      const exp = findExperience(route.id);
+      if (exp) return <ExperiencePage key={exp.id} exp={exp} />;
+    }
+    if (route.name === 'project') {
+      const project = findProject(route.id);
+      if (project) return <ProjectPage key={project.id} project={project} />;
+    }
+    return null;
+  })();
 
   // Ctrl/Cmd + K toggles the command palette from anywhere.
   useEffect(() => {
@@ -98,23 +121,31 @@ export default function App() {
 
   return (
     <>
-      <a href="#main" className="sr-only z-50 rounded-lg bg-white px-4 py-2 text-zinc-900 focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
+      <button
+        type="button"
+        onClick={() => document.getElementById('main')?.focus()}
+        className="sr-only z-50 rounded-lg bg-white px-4 py-2 text-zinc-900 focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      >
         Skip to content
-      </a>
+      </button>
       <Backdrop />
       <CursorFx />
       <HyperToast />
-      <Navbar onFilter={setFilter} onOpenExperience={openExperience} onFocusProject={focusProject} onContact={openContact} onPalette={openPalette} />
-      <main id="main">
-        <Hero onContact={openContact} />
-        <TechMarquee />
-        <Experience selectedId={experienceId} onSelect={setExperienceId} />
-        <Projects filter={filter} onFilter={setFilter} highlightId={highlightId} />
-        <Skills />
-        <Education />
+      <Navbar key={route.name} onHome={route.name === 'home'} onFilter={filterProjects} onOpenExperience={openExperience} onFocusProject={openProject} onContact={openContact} onPalette={openPalette} />
+      <main id="main" tabIndex={-1} className="outline-none">
+        {page ?? (
+          <>
+            <Hero onContact={openContact} />
+            <TechMarquee />
+            <Experience />
+            <Projects filter={filter} onFilter={setFilter} />
+            <Skills />
+            <Education />
+          </>
+        )}
         <Contact open={contactOpen} onOpen={openContact} onClose={closeContact} />
       </main>
-      <CommandPalette open={paletteOpen} onClose={closePalette} onOpenExperience={openExperience} onFocusProject={focusProject} onContact={openContact} />
+      <CommandPalette open={paletteOpen} onClose={closePalette} onOpenExperience={openExperience} onFocusProject={openProject} onContact={openContact} />
       <footer className="border-t border-white/10 py-8 text-center font-mono text-xs text-zinc-500">
         © {new Date().getFullYear()} {profile.name} · Built with React, TypeScript, Tailwind & Framer Motion ·{' '}
         <button type="button" onClick={openPalette} className="underline decoration-dotted underline-offset-4 hover:text-zinc-300">

@@ -4,12 +4,12 @@ import { experiences, links, profile, projects, skillGroups, volunteering } from
 import { GithubIcon, LinkedinIcon } from './BrandIcons';
 import { CountUp, Magnetic, RotatingWords, ScrambleText } from './fx/effects';
 import { ParticleField } from './fx/ParticleField';
-import { Terminal } from './Terminal';
+import { Portrait } from './Portrait';
 
-const ROLES = ['Symfony developer', 'React engineer', 'API security builder', 'Database modeller', 'Scout leader'];
+const ROLES = ['Development analyst', 'Symfony & React developer', 'Security & quality minded', 'Business ↔ tech bridge', 'Future banking consultant'];
 
 const STATS = [
-  { value: experiences.length, suffix: '', label: 'companies' },
+  { value: experiences.filter((e) => !e.minor).length, suffix: '', label: 'companies' },
   { value: projects.length, suffix: '', label: 'projects' },
   { value: skillGroups.reduce((n, g) => n + g.skills.length, 0), suffix: '+', label: 'skills' },
   { value: volunteering.years, suffix: '+', label: 'years leading' },
@@ -106,7 +106,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
         >
           {/* Float lives on a plain div: a CSS animation would override Framer's inline transform. */}
           <div className="animate-float">
-            <Terminal />
+            <Portrait />
           </div>
         </motion.div>
       </div>

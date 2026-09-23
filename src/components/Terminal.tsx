@@ -1,19 +1,20 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
-import { experiences, links, profile } from '../data/profile';
+import { experiences, findExperience, findProject, links, profile } from '../data/profile';
+import { href, navigate } from '../router';
 import { triggerHyperMode } from './fx/effects';
 
 type Line = { kind: 'in' | 'out'; text: string };
 
 const COMMANDS: Record<string, () => string[]> = {
-  help: () => ['Available: whoami, stack, experience, now, contact, clear', 'psst… there is a hidden one. Try the Konami code too.'],
+  help: () => ['Available: whoami, stack, experience, now, contact, open <company>, clear', 'psst… there is a hidden one. Try the Konami code too.'],
   hyper: () => {
     triggerHyperMode();
     return ['⚡ HYPER MODE ENGAGED ⚡'];
   },
   sudo: () => ['Nice try. This incident will be reported to the scout leader. 🏕️'],
   whoami: () => [`${profile.name} — ${profile.title}`, `Based in ${profile.location}.`],
-  stack: () => ['backend  → PHP · Symfony · API Platform · Java', 'frontend → React · TypeScript · HTML/CSS', 'data     → MySQL · SQL modelling', 'method   → Agile/Scrum · V-Model'],
-  experience: () => experiences.map((e) => `${e.period.padEnd(24)} ${e.company.name}`),
+  stack: () => ['business → specs · QA · security (MFA)', 'backend  → PHP · Symfony · API Platform · Java', 'frontend → React · TypeScript · HTML/CSS', 'data     → MySQL · PL/SQL · SQLite', 'method   → Agile/Scrum · V-Model · UML'],
+  experience: () => [...experiences.filter((e) => !e.minor).map((e) => `${e.period.padEnd(24)} ${e.company.name}  → open ${e.id}`)],
   now: () => [`${profile.currentRole} — Symfony / PHP`, 'Status: open to opportunities ✔'],
   contact: () => [`email    ${links.email}`, `linkedin ${links.linkedin}`],
 };
@@ -45,6 +46,13 @@ export function Terminal() {
     setCursor(-1);
     setInput('');
     if (cmd === 'clear') return setLines([]);
+    if (cmd.startsWith('open ')) {
+      const id = cmd.slice(5).trim();
+      const target = findExperience(id) ? href.experience(id) : findProject(id) ? href.project(id) : null;
+      setLines((l) => [...l, { kind: 'in', text: cmd }, { kind: 'out', text: target ? `opening ${id}…` : `unknown: ${id}. Try 'experience'.` }]);
+      if (target) window.setTimeout(() => navigate(target), 350);
+      return;
+    }
     const out = Object.hasOwn(COMMANDS, cmd) ? COMMANDS[cmd]() : [`command not found: ${cmd}. Try 'help'.`];
     setLines((l) => [...l, { kind: 'in', text: cmd }, ...out.map((text) => ({ kind: 'out' as const, text }))]);
   };

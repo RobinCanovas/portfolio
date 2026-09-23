@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import { ArrowRight, ChevronDown, Command, GraduationCap, Menu, Sparkles, Tent, X } from 'lucide-react';
 import { education, experiences, projectFilters, projects, volunteering } from '../data/profile';
 import { useActiveSection } from '../hooks/useActiveSection';
+import { href, navigate } from '../router';
 import type { Tech } from '../types';
 import { TechIcon } from './TechIcon';
 import { CompanyLogo, LogoTile } from './ui';
@@ -24,13 +25,11 @@ export interface NavActions {
   onFocusProject: (id: string) => void;
   onContact: () => void;
   onPalette: () => void;
+  /** False on detail pages: no home section is highlighted there. */
+  onHome?: boolean;
 }
 
 const countFor = (tech: Tech | 'All') => (tech === 'All' ? projects.length : projects.filter((p) => p.stack.includes(tech)).length);
-
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
 
 /* ------------------------------------------------------------------ */
 /* Mega-menu panels                                                    */
@@ -43,7 +42,7 @@ function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperien
       <div>
         <p className="px-3 pt-2 pb-1 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">Career</p>
         <ul>
-          {experiences.map((exp, i) => (
+          {experiences.filter((e) => !e.minor).map((exp, i) => (
             <motion.li key={exp.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.035 }}>
               <button
                 type="button"
@@ -78,7 +77,7 @@ function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperien
           data-menu-item
           onClick={() => {
             close();
-            scrollTo('education');
+            navigate(href.section('education'));
           }}
           className="group flex items-center gap-3 rounded-xl p-2.5 text-left transition hover:bg-white/[0.06]"
         >
@@ -93,7 +92,7 @@ function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperien
           data-menu-item
           onClick={() => {
             close();
-            scrollTo('education');
+            navigate(href.section('education'));
           }}
           className="group flex items-center gap-3 rounded-xl p-2.5 text-left transition hover:bg-white/[0.06]"
         >
@@ -140,7 +139,6 @@ function ProjectsPanel({ onFilter, onFocusProject, close }: { onFilter: NavActio
                 onClick={() => {
                   close();
                   onFilter(tech);
-                  scrollTo('projects');
                 }}
                 className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-zinc-300 transition hover:bg-white/[0.06] hover:text-white"
               >
@@ -212,8 +210,9 @@ function Accordion({ title, open, onToggle, children }: { title: string; open: b
 /* Navbar                                                              */
 /* ------------------------------------------------------------------ */
 
-export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, onPalette }: NavActions) {
-  const active = useActiveSection(SECTION_IDS);
+export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, onPalette, onHome = true }: NavActions) {
+  const sectionInView = useActiveSection(SECTION_IDS);
+  const active = onHome ? sectionInView : null;
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState<MenuId | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -456,7 +455,7 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
               </a>
               <Accordion title="Experience" open={section === 'experience'} onToggle={() => setSection((s) => (s === 'experience' ? null : 'experience'))}>
                 <ul className="space-y-1">
-                  {experiences.map((exp) => (
+                  {experiences.filter((e) => !e.minor).map((exp) => (
                     <li key={exp.id}>
                       <button type="button" onClick={mobilePick(() => onOpenExperience(exp.id))} className="flex w-full items-center gap-3 rounded-xl p-2 text-left hover:bg-white/5">
                         <CompanyLogo company={exp.company} size={36} />
@@ -477,7 +476,6 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
                       type="button"
                       onClick={mobilePick(() => {
                         onFilter(tech);
-                        scrollTo('projects');
                       })}
                       className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs text-zinc-300 hover:border-violet-400"
                     >

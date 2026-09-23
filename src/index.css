@@ -12,6 +12,17 @@
   --animate-shine: shine 4s linear infinite;
   --animate-spin-border: spin-border 6s linear infinite;
   --animate-float: float 7s ease-in-out infinite;
+  --animate-rail: rail 3.2s linear infinite;
+  --animate-rail-y: rail-y 3.2s linear infinite;
+
+  @keyframes rail {
+    from { left: -25%; }
+    to { left: 100%; }
+  }
+  @keyframes rail-y {
+    from { top: -25%; }
+    to { top: 100%; }
+  }
 
   @keyframes aurora {
     0% { transform: translate3d(-10%, -5%, 0) rotate(0deg) scale(1); }

@@ -37,8 +37,14 @@ export function ScrambleText({ text, className = '' }: { text: string; className
   }, [text]);
 
   return (
-    <span className={className} onMouseEnter={run} aria-label={text}>
-      <span aria-hidden="true">{out}</span>
+    <span className={`inline-grid ${className}`} onMouseEnter={run} aria-label={text}>
+      {/* The real text reserves the space so scrambled glyphs never reflow the layout. */}
+      <span aria-hidden="true" className="invisible col-start-1 row-start-1">
+        {text}
+      </span>
+      <span aria-hidden="true" className="col-start-1 row-start-1 overflow-hidden whitespace-nowrap">
+        {out}
+      </span>
     </span>
   );
 }

@@ -28,9 +28,9 @@ describe('<Projects />', () => {
     expect(javaButton).toHaveAttribute('aria-pressed', 'true');
   });
 
-  it('opens the code snippet modal', async () => {
+  it('links every card to its case-study page', () => {
     render(<Harness />);
-    await userEvent.click(screen.getAllByRole('button', { name: /View code/ })[0]);
-    expect(await screen.findByRole('dialog')).toHaveTextContent('OwnerScopeExtension');
+    const card = screen.getByRole('link', { name: /VogMerveille/ });
+    expect(card).toHaveAttribute('href', '#/projects/cwad');
   });
 });
