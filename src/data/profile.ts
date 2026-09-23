@@ -699,7 +699,7 @@ export const targetSchools = [
   { id: 'centrale', name: 'CentraleSupélec', logos: ['./logos/centralesupelec.svg', 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Ecole_Centrale_Supelec_logo.svg'] },
   { id: 'telecom-paris', name: 'Télécom Paris', logos: ['./logos/telecom-paris.svg'] },
   { id: 'telecom-sudparis', name: 'Télécom SudParis', logos: ['./logos/telecom-sudparis.svg', 'https://upload.wikimedia.org/wikipedia/fr/1/1d/Logo_T%C3%A9l%C3%A9com_SudParis.svg'] },
-  { id: 'paris-saclay', name: 'Université Paris-Saclay', logos: ['./logos/paris-saclay.png'] },
+  { id: 'paris-cite', name: 'Université Paris Cité', logos: ['./logos/paris-cite.png', 'https://u-paris.fr/wp-content/uploads/2026/01/logo-universite-paris-cite.png'] },
 ];
 
 export const languages = [
