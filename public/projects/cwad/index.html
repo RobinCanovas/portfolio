@@ -1,154 +1,289 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="utf-8" />
-    <title>VogMerveille : Destination de rêve</title>
-    <link rel="stylesheet" href="./Style/Index.css" />
-    <link rel="icon" href="./Image/Icon1.ico" type="image/x-icon" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VogMerveille — Voyagez à travers le temps</title>
+    <meta name="description" content="VogMerveille : croisières à travers le temps vers les merveilles du monde, actuelles et disparues." />
+    <meta name="theme-color" content="#07060a" />
+    <link rel="icon" href="Image/Icon1.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <div class="demo-banner" role="note">
+      Démo — refonte 2026 d’un projet IUT réalisé en HTML/CSS · <a href="original/index.html">voir la version originale (2024)</a>
+    </div>
 
-<body>
-    <header>
-        <div class="header-container">
-            <div class="logo-container">
-                <a href="./index.html">
-                    <img class="ImageLogo" src="Image/Image_Logo2.PNG" alt="Logo VogMerveille">
-                </a>
+    <header class="nav" id="top">
+      <a class="nav__brand" href="#top" aria-label="VogMerveille — accueil">
+        <img src="Image/Image_Logo2bis.png" alt="" width="44" height="34" />
+        <span>VogMerveille</span>
+      </a>
+      <nav class="nav__links" aria-label="Navigation principale">
+        <a href="#experience">L’expérience</a>
+        <a href="#destinations">Destinations</a>
+        <a href="#formules">Formules</a>
+        <a href="#reserver">Réserver</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="btn btn--ghost nav__login" type="button" data-open="login">Se connecter</button>
+      <button class="nav__burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </header>
+
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Menu mobile" hidden>
+      <a href="#experience">L’expérience</a>
+      <a href="#destinations">Destinations</a>
+      <a href="#formules">Formules</a>
+      <a href="#reserver">Réserver</a>
+      <a href="#contact">Contact</a>
+      <button class="btn btn--gold" type="button" data-open="login">Se connecter</button>
+    </nav>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero" aria-labelledby="hero-title">
+        <video class="hero__video" autoplay muted loop playsinline preload="metadata" poster="Image/disparu.png" aria-hidden="true">
+          <source src="Image/Video_Fond1.mp4" type="video/mp4" />
+        </video>
+        <div class="hero__veil"></div>
+        <div class="hero__clock" aria-hidden="true"><span class="hand hand--h"></span><span class="hand hand--m"></span></div>
+        <div class="hero__content">
+          <p class="eyebrow reveal">Croisières temporelles · depuis l’an 3000 av. J.-C.</p>
+          <h1 id="hero-title" class="reveal">Traversez le temps.<br /><em>Contemplez les merveilles.</em></h1>
+          <p class="hero__lead reveal">Une aventure inédite à travers l’histoire et le monde, ouverte à toute la famille — là où le temps s’écoule différemment.</p>
+          <div class="hero__cta reveal">
+            <a class="btn btn--gold" href="#reserver">Composer mon voyage</a>
+            <a class="btn btn--ghost" href="#destinations">Explorer les destinations</a>
+          </div>
+          <dl class="hero__stats reveal">
+            <div><dt>Merveilles actuelles</dt><dd data-count="7">0</dd></div>
+            <div><dt>Merveilles disparues</dt><dd data-count="6">0</dd></div>
+            <div><dt>Formules</dt><dd data-count="3">0</dd></div>
+          </dl>
+        </div>
+        <a class="hero__scroll" href="#experience" aria-label="Défiler vers l’expérience"><span></span></a>
+      </section>
+
+      <!-- EXPERIENCE -->
+      <section class="section" id="experience" aria-labelledby="exp-title">
+        <header class="section__head reveal">
+          <p class="eyebrow">L’expérience VogMerveille</p>
+          <h2 id="exp-title">Bien plus qu’une croisière</h2>
+          <p>Plongez au cœur de l’ère humaine et découvrez les prouesses de l’humanité à travers les âges, à un prix abordable.</p>
+        </header>
+        <div class="features">
+          <article class="feature reveal">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+            <h3>Histoire vivante</h3>
+            <p>Reconstitutions vivantes et uniques, avec des guides passionnés — dont Fred de <em>C’est pas sorcier</em>.</p>
+          </article>
+          <article class="feature reveal">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h16M6 11v7a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-7M9 4c0 2-2 2-2 4M13 4c0 2-2 2-2 4M17 4c0 2-2 2-2 4" /></svg>
+            <h3>La vraie vie d’antan</h3>
+            <p>Redécouvrez des saveurs d’antan avec nos recettes authentiques, puis profitez de nos piscines, spas et spectacles.</p>
+          </article>
+          <article class="feature reveal">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z" /><path d="m9 12 2 2 4-4" /></svg>
+            <h3>Sécurité avant tout</h3>
+            <p>Voyagez en toute sérénité grâce à nos technologies avancées et à nos équipes spécialisées.</p>
+          </article>
+          <article class="feature reveal">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM21 20v-2a4 4 0 0 0-3-3.87M16 2.13a4 4 0 0 1 0 7.75" /></svg>
+            <h3>Pour toute la famille</h3>
+            <p>Des formules dès 3 ans, pensées pour émerveiller petits et grands, du plus curieux au plus expert.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- DESTINATIONS -->
+      <section class="section" id="destinations" aria-labelledby="dest-title">
+        <header class="section__head reveal">
+          <p class="eyebrow">Destinations</p>
+          <h2 id="dest-title">Treize merveilles, deux époques</h2>
+          <p>Cliquez sur une merveille pour en savoir plus et l’ajouter à votre voyage.</p>
+        </header>
+        <div class="filters" role="toolbar" aria-label="Filtrer les destinations">
+          <button type="button" class="chip is-active" data-filter="all" aria-pressed="true">Toutes</button>
+          <button type="button" class="chip" data-filter="actuelle" aria-pressed="false">Actuelles</button>
+          <button type="button" class="chip" data-filter="disparue" aria-pressed="false">Disparues</button>
+        </div>
+        <div class="gallery" id="gallery" aria-live="polite"></div>
+      </section>
+
+      <!-- FORMULES -->
+      <section class="section" id="formules" aria-labelledby="form-title">
+        <header class="section__head reveal">
+          <p class="eyebrow">Nos formules</p>
+          <h2 id="form-title">Choisissez votre époque</h2>
+        </header>
+        <div class="packages" id="packages"></div>
+      </section>
+
+      <!-- SIMULATEUR -->
+      <section class="section" id="reserver" aria-labelledby="sim-title">
+        <header class="section__head reveal">
+          <p class="eyebrow">Réservation</p>
+          <h2 id="sim-title">Composez votre voyage</h2>
+          <p>Le prix se met à jour en direct. Les enfants de moins de 12 ans bénéficient de 40 % de réduction.</p>
+        </header>
+        <form class="sim reveal" id="simulator" novalidate>
+          <fieldset class="sim__panel">
+            <legend>Votre voyage</legend>
+            <label class="field">
+              <span>Formule</span>
+              <select name="package" id="sim-package"></select>
+            </label>
+            <div class="sim__row">
+              <label class="field">
+                <span>Adultes</span>
+                <div class="stepper">
+                  <button type="button" data-step="adults" data-delta="-1" aria-label="Retirer un adulte">−</button>
+                  <input name="adults" type="number" min="1" max="10" value="2" inputmode="numeric" />
+                  <button type="button" data-step="adults" data-delta="1" aria-label="Ajouter un adulte">+</button>
+                </div>
+              </label>
+              <label class="field">
+                <span>Enfants</span>
+                <div class="stepper">
+                  <button type="button" data-step="children" data-delta="-1" aria-label="Retirer un enfant">−</button>
+                  <input name="children" type="number" min="0" max="10" value="1" inputmode="numeric" />
+                  <button type="button" data-step="children" data-delta="1" aria-label="Ajouter un enfant">+</button>
+                </div>
+              </label>
             </div>
-            <nav class="nav-links">
-                <a href="./index.html"><img class="ImageIcon" src="Image/Icon2.png" alt="Icon acceuil">	 Accueil</a>
-                <a href="./activite.html"><img class="ImageIcon" src="Image/Icon3.png" alt="Icon Activités">  Activités</a>
-                <a href="./contact.html"><img class="ImageIcon" src="Image/Icon4.png" alt="Icon Contact">  Contact</a>
-			</nav>
-				<div class="user-options">
-					<a href="./login.html">Se connecter</a>
-				</div>
-			</div>
-		</header>
+            <label class="field">
+              <span>Date de départ</span>
+              <input name="date" type="date" required />
+            </label>
+            <div class="field">
+              <span>Options</span>
+              <label class="check"><input type="checkbox" name="spa" /> Accès spa & piscines <small>+120 € / pers.</small></label>
+              <label class="check"><input type="checkbox" name="dinner" checked /> Dîner d’antan <small>+80 € / pers.</small></label>
+              <label class="check"><input type="checkbox" name="guide" /> Guide privé <small>+250 € / voyage</small></label>
+            </div>
+          </fieldset>
+          <aside class="sim__summary" aria-live="polite">
+            <p class="eyebrow">Récapitulatif</p>
+            <h3 id="sum-title">—</h3>
+            <ul id="sum-lines"></ul>
+            <p class="sim__total"><span>Total</span><strong id="sum-total">0 €</strong></p>
+            <p class="sim__error" id="sim-error" role="alert"></p>
+            <button class="btn btn--gold btn--block" type="submit">Réserver ce voyage</button>
+            <p class="sim__note">Démo — aucune réservation réelle n’est effectuée.</p>
+          </aside>
+        </form>
+      </section>
 
-		<nav>
-			<video autoplay muted loop class="background-video">
-				<source src="Image/Video_Fond1.mp4" type="video/mp4">
-				Votre navigateur ne supporte pas la vidéo.
-			</video>
-			<div class="video-overlay">
-				<h1>Bienvenue à VogMerveille</h1>
-				<p>Découvrez votre destination de rêve.</p>
-				<div class="containerbtm">
-					<button>
-						<a href="./activite.html" class="text">Explorer maintenant</a>
-					</button>
-				</div>
-			</div>
+      <!-- AVIS -->
+      <section class="section section--tight" aria-labelledby="avis-title">
+        <header class="section__head reveal">
+          <p class="eyebrow">Ils ont voyagé</p>
+          <h2 id="avis-title">Ce que disent nos visiteurs</h2>
+        </header>
+        <div class="reviews" id="reviews">
+          <div class="reviews__track"></div>
+        </div>
+      </section>
 
-		</nav>
-		<main>
-			<p class="para1" >Une aventure inédite à travers l'histoire et le monde.
-			Offrez-vous une expérience unique à un prix abordable, ouverte à toute la famille.</p>
-			<p>Contrairement à une simple croisière, partez pour une véritable exploration dans un monde inconnu où le temps s’écoule différemment. Plongez au cœur de l’ère humaine et découvrez les prouesses de l'humanité à travers les âges.</p>
-		
-		<div class="image-promo-container">
-			<div class="Image_Promo">
-				<div class="image-container">
-				<img src="Image/ImageAce.png" alt="bagage cabine1">
-				<div class="filter"></div> 
-				<div class="Text_Promo">
-					<h4>Découvrez la vraie vie :</h4>
-					<p>Redécouvrez des saveurs d’antan avec nos recettes authentiques et profitez de nos piscines, spas et spectacles.</p>
-				
-				</div>
-			</div>
-		</div>
+      <!-- CONTACT -->
+      <section class="section" id="contact" aria-labelledby="contact-title">
+        <header class="section__head reveal">
+          <p class="eyebrow">Contact</p>
+          <h2 id="contact-title">Une question avant le départ ?</h2>
+        </header>
+        <div class="contact">
+          <form class="contact__form reveal" id="contact-form" novalidate>
+            <label class="field"><span>Nom</span><input name="name" required autocomplete="name" /></label>
+            <label class="field"><span>Email</span><input name="email" type="email" required autocomplete="email" /></label>
+            <label class="field"><span>Message</span><textarea name="message" rows="5" required></textarea></label>
+            <button class="btn btn--gold" type="submit">Envoyer</button>
+            <p class="form-status" role="status"></p>
+          </form>
+          <div class="contact__map reveal">
+            <iframe
+              title="Carte : notre agence à Paris"
+              loading="lazy"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=2.2885%2C48.8528%2C2.3005%2C48.8608&amp;layer=mapnik&amp;marker=48.8584%2C2.2945"
+            ></iframe>
+            <p>Agence VogMerveille · Champ-de-Mars, Paris · <a href="#" data-open="chat">Poser une question au chatbot</a></p>
+          </div>
+        </div>
+      </section>
+    </main>
 
-			<div class="Image_Promo">
-				<div class="image-container">
-				<img src="Image/ImageAce1.png" alt="bagage cabine2">
-				<div class="filter"></div> 
-				<div class="Text_Promo">
-					<h4>Une expérience exceptionnelle : </h4>
-					<p>plongez dans l’histoire avec nos guides passionnés, comme Fred de C’est pas sorcier, et des reconstitutions vivantes et uniques.</p>
-				</div>
-			</div>
-		</div>
-			<div class="Image_Promo">
-				<div class="image-container">
-				<img src="Image/ImageAce.webp" alt="bagage cabine3">
-				<div class="filter"></div> 
-				<div class="Text_Promo">
-					<h4>Sécurité avant tout : </h4>
-					<p>profitez de chaque voyage en toute sérénité grâce à nos technologies avancées et nos équipes spécialisées.</p>
-				</div>
-			</div>
-		</div>
-		</div>
+    <footer class="footer">
+      <div class="footer__brand">
+        <img src="Image/Image_Logo2bis.png" alt="" width="44" height="34" />
+        <span>VogMerveille</span>
+      </div>
+      <p>Projet CWAD — IUT d’Orsay, Université Paris-Saclay · Robin Canovas-Andrieu & Safwan Ziani</p>
+      <p><a href="original/Rapport/Rapport_Projet.pdf">Rapport (PDF)</a> · <a href="original/index.html">Version originale 2024</a> · Refonte 2026</p>
+    </footer>
 
-		<div class="additional-content">
-			<section class="testimonials">
-				<h2>Ce que disent nos visiteurs</h2>
-				<div class="testimonial">
-					<blockquote>
-						"Une expérience inoubliable, entre détente et découverte. Les guides sont incroyables !"
-					</blockquote>
-					<p>- Clara, Paris</p>
-				</div>
-				<div class="testimonial">
-					<blockquote>
-						"Une plongée fascinante dans l’histoire. Mes enfants ont adoré !"
-					</blockquote>
-					<p>- Marc, Lyon</p>
-				</div>
-			</section>
-		
+    <!-- Destination / package detail -->
+    <dialog class="modal" id="detail-modal" aria-labelledby="detail-title">
+      <button class="modal__close" type="button" data-close aria-label="Fermer">×</button>
+      <div class="modal__media" id="detail-media"></div>
+      <div class="modal__body">
+        <p class="eyebrow" id="detail-kicker"></p>
+        <h2 id="detail-title"></h2>
+        <p id="detail-text"></p>
+        <a class="btn btn--gold" href="#reserver" data-close>Réserver un voyage</a>
+      </div>
+    </dialog>
 
-		<iframe src="https://www.youtube.com/embed/WXtXzvSsCvM?si=XrLJozlmbFTaxgSu" title="YouTube video player" frameborder="0" 
-			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-		</iframe>
+    <!-- Login -->
+    <dialog class="modal modal--login" id="login-modal" aria-labelledby="login-title">
+      <button class="modal__close" type="button" data-close aria-label="Fermer">×</button>
+      <div class="modal__body">
+        <img class="login__logo" src="Image/Image_Logo2bis.png" alt="" width="88" height="67" />
+        <h2 id="login-title">Connexion à votre compte</h2>
+        <p class="muted">Retrouvez vos voyages et vos réservations.</p>
+        <form id="login-form" novalidate>
+          <label class="field"><span>Email</span><input name="email" type="email" required autocomplete="email" /></label>
+          <label class="field">
+            <span>Mot de passe</span>
+            <div class="password">
+              <input name="password" type="password" required minlength="8" autocomplete="current-password" />
+              <button type="button" class="password__toggle" aria-label="Afficher le mot de passe">👁</button>
+            </div>
+          </label>
+          <button class="btn btn--gold btn--block" type="submit">Se connecter</button>
+          <p class="form-status" role="status"></p>
+        </form>
+        <div class="divider"><span>ou</span></div>
+        <div class="social-login">
+          <button type="button" class="btn btn--ghost btn--block">Continuer avec Google</button>
+          <button type="button" class="btn btn--ghost btn--block">Continuer avec Apple</button>
+        </div>
+      </div>
+    </dialog>
 
-		<section class="social-media">
-			<h2>Suivez-nous</h2>
-			<div class="icons">
-				<a href="https://www.facebook.com" target="_blank"><img src="Image/IconFacebook.png" alt="Facebook"></a>
-				<a href="https://www.instagram.com" target="_blank"><img src="Image/IconInstagram.png" alt="Instagram"></a>
-				<a href="https://www.twitter.com" target="_blank"><img src="Image/IconTwitter.png" alt="Twitter"></a>
-			</div>
-		</section>
-		</div>
+    <!-- Chatbot -->
+    <button class="chat-fab" type="button" data-open="chat" aria-label="Ouvrir la FAQ chatbot">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /></svg>
+    </button>
+    <section class="chat" id="chat" aria-label="FAQ chatbot" hidden>
+      <header class="chat__head">
+        <strong>Assistant VogMerveille</strong>
+        <button type="button" data-close-chat aria-label="Fermer le chatbot">×</button>
+      </header>
+      <div class="chat__messages" id="chat-messages" aria-live="polite"></div>
+      <div class="chat__chips" id="chat-chips"></div>
+      <form class="chat__form" id="chat-form">
+        <label class="sr-only" for="chat-input">Votre question</label>
+        <input id="chat-input" autocomplete="off" placeholder="Tapez « info », « prix », « sécurité »…" />
+        <button type="submit" aria-label="Envoyer">➤</button>
+      </form>
+    </section>
 
-		</main>
-		<footer>
-			<section>
-				<p>All rights reserved Metatron</p>
-			</section>
-			<section>
-				<h4>Membres du projet :</h4>
-			<ul>
-				<li>Robin Canovas 1K</li>
-				<li>Safwan Ziani 1K</li>
-			</ul>
-			</section>
-    
-			<section>
-				<h4>Rapports :</h4>
-			<ul>
-				<ul>
-					<li>
-						<a href="Rapport/Rapport_Projet.docx" download="rapport.docx">
-							Rapport (format Word)
-						</a>
-					</li>
-					<li>
-						<a href="Rapport/Rapport_Projet.pdf" download="rapport.pdf">Rapport (format PDF)</a>
-					</li>
-				</ul>
-			</ul>
-			</section>
-			<section>
-				<img src="Image/Image_Logo1.png" alt="Logo IUT d'Orsay" class="logoIUT">
-			</section>
-		</footer>
-	</body>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/app.js" defer></script>
+  </body>
 </html>

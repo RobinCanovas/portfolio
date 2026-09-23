@@ -10,7 +10,7 @@ const run = async (cmd: string) => {
 describe('<Terminal />', () => {
   it('boots with whoami output', () => {
     render(<Terminal />);
-    expect(screen.getByText(/Robin Canovas — Software Engineer/)).toBeInTheDocument();
+    expect(screen.getByText(/Robin Canovas — Development Analyst/)).toBeInTheDocument();
   });
 
   it('runs a known command', async () => {
@@ -28,7 +28,7 @@ describe('<Terminal />', () => {
   it('clears the screen', async () => {
     render(<Terminal />);
     await run('clear');
-    expect(screen.queryByText(/Robin Canovas — Software Engineer/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Robin Canovas — Development Analyst/)).not.toBeInTheDocument();
   });
 
   it('unlocks hyper mode with the hidden command', async () => {
