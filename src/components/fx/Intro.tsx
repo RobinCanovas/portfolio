@@ -50,6 +50,9 @@ const easeOut = (t: number) => 1 - (1 - t) ** 3;
 const easeIn = (t: number) => t * t * t;
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
+/** Rounded min and max: they bend over about one unit instead of stopping dead. */
+const smoothMin = (a: number, b: number) => (a + b - Math.hypot(a - b, 0.8)) / 2;
+const smoothMax = (a: number, b: number) => (a + b + Math.hypot(a - b, 0.8)) / 2;
 const mix = (a: number[], b: number[], t: number) => a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(',');
 
 /** Violet at the input, cyan at the output. */
@@ -100,14 +103,20 @@ interface Clock {
   out: [number, number];
 }
 
-const DIST = 7;
 const STARS = 70;
+const MOTES = 45;
+/** Half the length of the network (world units): one layer every 1.2. */
+const XH = 2.4;
+const layerX = (l: number) => -XH + (l * 2 * XH) / (LAYERS.length - 1);
+/** Points closer to the camera than this fade out, so nothing pops when the camera passes them. */
+const NEAR = 0.45;
 
 /**
- * Night scene: a network floating in the dark, seen by a slow camera. The signal enters the inputs,
- * then crosses the network layer by layer: pulses run along the connections that carry it (cyan for
- * positive weights, pink for negative ones) and each neuron lights up as bright as its activation.
- * On exit every neuron flows into the output, where the brand mark takes over.
+ * Night scene: a network floating in the dark, filmed by a camera that travels along with the signal,
+ * just behind it. The signal enters the inputs, then crosses the network layer by layer: pulses run
+ * along the connections that carry it (cyan for positive weights, pink for negative ones) and each
+ * neuron lights up as bright as its activation. Once the output fires the camera pulls back; on exit
+ * every neuron flows into the output, where the brand mark takes over.
  */
 function Network({ clock }: { clock: MutableRefObject<Clock> }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -133,47 +142,56 @@ function Network({ clock }: { clock: MutableRefObject<Clock> }) {
     const rand = seeded(3);
     const stars = Array.from({ length: STARS }, () => ({ x: rand(), y: rand(), r: 0.3 + rand() * 0.9, phase: rand() * 6.28 }));
     const depth = LAYERS.map((n) => Array.from({ length: n }, () => ({ z: (rand() - 0.5) * 0.6, phase: rand() * 6.28 })));
-    const tallest = Math.max(...LAYERS);
+    // Dust floating around the network: it drifts past the camera and makes the travel felt.
+    const motes = Array.from({ length: MOTES }, () => ({ x: -XH - 2 + rand() * (2 * XH + 4), y: (rand() - 0.5) * 4.4, z: (rand() - 0.5) * 4, r: 0.5 + rand() }));
+    const last = LAYERS.length - 1;
 
     let raf = 0;
     const frame = (now: number) => {
       const { start, exitStart } = clock.current;
       const elapsed = now - start;
       // The camera stops when the landing starts, so the mark blooms where the output is.
-      const play = easeInOut(clamp01((exitStart === null ? elapsed : exitStart - start) / TOTAL));
+      const ct = exitStart === null ? elapsed : exitStart - start;
       const exitT = exitStart === null ? 0 : clamp01((now - exitStart) / EXIT_MS);
       const gather = easeIn(clamp01(exitT / 0.42));
       const fadeOut = 1 - exitT;
 
-      // Camera: a slow swing around the network and a gentle dolly in.
-      const base = Math.min(0.25 * w, 0.19 * h);
-      const S = base * (0.95 + 0.07 * play);
-      const XH = Math.min(2.4, Math.max(1.4, (0.36 * w) / base));
-      const GAP = 0.34 * Math.min(1.6, Math.max(1, h / w / 1.2));
-      const yaw = -0.34 + 0.46 * play;
+      // Tracking camera: close behind the signal, looking ahead along the network. It moves in while
+      // the signal reaches the inputs, travels with it, then pulls back once the output has fired.
+      // Where it looks, in layers: just ahead of the signal, easing in before the inputs and out at the output.
+      const follow = smoothMin(smoothMax((ct - FIRE[0]) / STEP + 0.2, -0.6), last);
+      const arrive = easeInOut(clamp01(ct / FIRE[0]));
+      const settle = easeInOut(clamp01((ct - FIRE[last]) / (TOTAL - FIRE[last])));
+      const D = 4.6 - 1.6 * arrive + 1.4 * settle;
+      const yaw = 0.34 + 0.22 * arrive - 0.1 * settle + 0.03 * Math.sin((start + ct) / 1400);
+      const pitch = 0.16 + 0.02 * Math.sin((start + ct) / 1700);
+      const tx = layerX(follow) - 0.9 * settle;
       const cosY = Math.cos(yaw);
       const sinY = Math.sin(yaw);
-      const pitch = 0.14;
       const cosP = Math.cos(pitch);
       const sinP = Math.sin(pitch);
-      const size = Math.min(1.3, Math.max(0.75, base / 150));
+      const S = Math.min(0.36 * w, 0.3 * h);
+      const GAP = 0.34 * Math.min(1.3, Math.max(1, h / w / 1.2));
+      const size = Math.min(1.3, Math.max(0.75, S / 230));
       const cx = w / 2;
       const cy = h * 0.55;
-      const project = (x: number, y: number, z: number): [number, number, number] => {
-        const xr = x * cosY - z * sinY;
-        const zr = x * sinY + z * cosY;
-        const yr = y * cosP - zr * sinP;
-        const p = DIST / (DIST + y * sinP + zr * cosP);
-        return [cx + xr * S * p, cy - yr * S * p, p];
+      /** Screen x, screen y, perspective scale, and visibility (0 when too close to the camera). */
+      const project = (x: number, y: number, z: number): [number, number, number, number] => {
+        const x1 = x - tx;
+        const xr = x1 * cosY - z * sinY;
+        const zr = x1 * sinY + z * cosY;
+        const yr = y * cosP + zr * sinP;
+        const d = D - y * sinP + zr * cosP;
+        const p = D / Math.max(d, 0.05);
+        return [cx + xr * S * p, cy - yr * S * p, Math.min(p, 3.5), clamp01((d - NEAR) / 0.8)];
       };
-      const layerX = (l: number) => -XH + (l * 2 * XH) / (LAYERS.length - 1);
 
       // Where every neuron is on screen this frame (flowing into the output during the landing).
       const pts = LAYERS.map((n, l) =>
         depth[l].map(({ z, phase }, i) => project(layerX(l), ((n - 1) / 2 - i) * GAP + 0.035 * Math.sin(now / 1100 + phase), z)),
       );
-      const [ox, oy] = pts[LAYERS.length - 1][0];
-      if (exitStart === null) clock.current.out = [ox, oy];
+      const [ox, oy] = pts[last][0];
+      if (exitStart === null) clock.current.out = [Math.min(w - 48, Math.max(48, ox)), Math.min(h - 48, Math.max(80, oy))];
       for (const layer of pts) for (const pt of layer) {
         pt[0] += (ox - pt[0]) * gather;
         pt[1] += (oy - pt[1]) * gather;
@@ -190,33 +208,47 @@ function Network({ clock }: { clock: MutableRefObject<Clock> }) {
       ctx.globalCompositeOperation = 'source-over';
       ctx.fillStyle = '#07070d';
       ctx.fillRect(0, 0, w, h);
+      // Far away, the stars barely move with the camera.
+      const drift = follow * 14;
       for (const s of stars) {
         ctx.fillStyle = `rgba(226,232,255,${0.4 * (0.5 + 0.5 * Math.sin(now / 900 + s.phase)) * fadeOut})`;
         ctx.beginPath();
-        ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
+        ctx.arc((((s.x * w - drift * (0.4 + s.r)) % w) + w) % w, s.y * h, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
       // A soft light travelling with the signal, violet at the inputs and cyan at the output.
-      const wave = Math.min(LAYERS.length - 1, Math.max(-0.6, (elapsed - FIRE[0]) / STEP));
+      const wave = Math.min(last, Math.max(-0.6, (elapsed - FIRE[0]) / STEP));
       const [nx, ny] = project(layerX(wave), 0, 0);
       const nebula = ctx.createRadialGradient(nx, ny, 0, nx, ny, Math.max(w, h) * 0.42);
-      const nc = mix(VIOLET, CYAN, clamp01(wave / (LAYERS.length - 1)));
+      const nc = mix(VIOLET, CYAN, clamp01(wave / last));
       nebula.addColorStop(0, `rgba(${nc},${0.15 * appear(0) * fadeOut})`);
       nebula.addColorStop(1, `rgba(${nc},0)`);
       ctx.fillStyle = nebula;
       ctx.fillRect(0, 0, w, h);
 
+      // Dust, close to the camera: it slides past faster than the network.
+      for (const m of motes) {
+        const [mx, my, mp, near] = project(m.x, m.y, m.z);
+        if (near <= 0) continue;
+        ctx.fillStyle = `rgba(216,200,255,${0.22 * near * appear(0) * fadeOut})`;
+        ctx.beginPath();
+        ctx.arc(mx, my, m.r * mp * 0.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
       // Connections: faint at rest, glowing once the signal has gone through them.
       ctx.lineCap = 'round';
       for (const e of EDGES) {
-        const [ax, ay] = pts[e.l][e.k];
-        const [bx, by] = pts[e.l + 1][e.j];
+        const [ax, ay, ap, an] = pts[e.l][e.k];
+        const [bx, by, bp, bn] = pts[e.l + 1][e.j];
+        const near = Math.min(an, bn);
+        if (near <= 0) continue;
         const p = clamp01((elapsed - e.t0) / (e.t1 - e.t0));
         const lit = e.s > CARRIES ? p : 0;
-        const a = (0.07 * Math.min(appear(e.l), appear(e.l + 1)) + 0.26 * e.s * lit) * (1 - gather);
+        const a = (0.07 * Math.min(appear(e.l), appear(e.l + 1)) + 0.26 * e.s * lit) * (1 - gather) * near;
         ctx.strokeStyle = lit > 0 ? `rgba(${e.positive ? POSITIVE : NEGATIVE},${a})` : `rgba(167,139,250,${a})`;
-        ctx.lineWidth = 0.7 + 0.8 * e.s * lit;
+        ctx.lineWidth = (0.7 + 0.8 * e.s * lit) * Math.min(2.5, (ap + bp) / 2);
         ctx.beginPath();
         ctx.moveTo(ax, ay);
         ctx.lineTo(bx, by);
@@ -225,57 +257,58 @@ function Network({ clock }: { clock: MutableRefObject<Clock> }) {
 
       // Pulses: the signal on its way, a bright head with a fading tail.
       ctx.globalCompositeOperation = 'lighter';
-      const pulse = (ax: number, ay: number, bx: number, by: number, p: number, s: number, col: string) => {
+      type Pt = [number, number, number, number];
+      const pulse = ([ax, ay, ap, an]: Pt, [bx, by, bp, bn]: Pt, p: number, s: number, col: string) => {
+        const near = Math.min(an, bn);
+        if (near <= 0) return;
         const hx = ax + (bx - ax) * p;
         const hy = ay + (by - ay) * p;
         const tp = Math.max(0, p - 0.25);
         const tx = ax + (bx - ax) * tp;
         const ty = ay + (by - ay) * tp;
-        const alpha = (0.4 + 0.6 * s) * (1 - gather);
+        const alpha = (0.4 + 0.6 * s) * (1 - gather) * near;
+        // Closer to the camera, bigger.
+        const k = Math.min(2.5, ap + (bp - ap) * p);
         const tail = ctx.createLinearGradient(tx, ty, hx, hy);
         tail.addColorStop(0, `rgba(${col},0)`);
         tail.addColorStop(1, `rgba(${col},${0.9 * alpha})`);
         ctx.strokeStyle = tail;
-        ctx.lineWidth = 1 + 1.6 * s;
+        ctx.lineWidth = (1 + 1.6 * s) * k;
         ctx.beginPath();
         ctx.moveTo(tx, ty);
         ctx.lineTo(hx, hy);
         ctx.stroke();
         ctx.fillStyle = `rgba(${col},${0.18 * alpha})`;
         ctx.beginPath();
-        ctx.arc(hx, hy, 4 + 3 * s, 0, Math.PI * 2);
+        ctx.arc(hx, hy, (4 + 3 * s) * k, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = `rgba(255,255,255,${0.95 * alpha})`;
         ctx.beginPath();
-        ctx.arc(hx, hy, 1.2 + 1.3 * s, 0, Math.PI * 2);
+        ctx.arc(hx, hy, (1.2 + 1.3 * s) * k, 0, Math.PI * 2);
         ctx.fill();
       };
-      // The input signal comes in from the left edge of the screen.
+      // The input signal comes in from behind the camera, on the left.
       depth[0].forEach(({ z }, k) => {
         const t0 = 150 + k * 80;
         const p = easeInOut(clamp01((elapsed - t0) / (FIRE[0] - 30 - t0)));
         if (p <= 0 || p >= 1) return;
-        const [sx, sy] = project(layerX(0) - 1.6, ((LAYERS[0] - 1) / 2 - k) * GAP * 1.3, z);
-        pulse(sx, sy, pts[0][k][0], pts[0][k][1], p, INPUT[k], '216,180,254');
+        pulse(project(layerX(0) - 1.6, ((LAYERS[0] - 1) / 2 - k) * GAP * 1.3, z), pts[0][k], p, INPUT[k], '216,180,254');
       });
       for (const e of EDGES) {
         if (e.s <= CARRIES) continue;
         const p = easeInOut(clamp01((elapsed - e.t0) / (e.t1 - e.t0)));
         if (p <= 0 || p >= 1) continue;
-        const [ax, ay] = pts[e.l][e.k];
-        const [bx, by] = pts[e.l + 1][e.j];
-        pulse(ax, ay, bx, by, p, e.s, e.positive ? POSITIVE : NEGATIVE);
+        pulse(pts[e.l][e.k], pts[e.l + 1][e.j], p, e.s, e.positive ? POSITIVE : NEGATIVE);
       }
 
       // Neurons: dark at rest, lit as bright as their activation when the signal arrives.
-      const last = LAYERS.length - 1;
       pts.forEach((layer, l) =>
-        layer.forEach(([x, y, persp], i) => {
+        layer.forEach(([x, y, persp, near], i) => {
           const isOut = l === last;
           const a = ACTIVATIONS[l][i];
           const col = isOut ? '165,243,252' : COLORS[l];
           const R = (isOut ? 7.5 : l === 0 ? 4 : 4.6) * size * persp;
-          const vis = appear(l) * (isOut ? 1 - clamp01((exitT - 0.3) / 0.1) : 1 - gather * 0.9);
+          const vis = appear(l) * near * (isOut ? 1 - clamp01((exitT - 0.3) / 0.1) : 1 - gather * 0.9);
           if (vis <= 0) return;
           const fb = fired(l, a);
           if (fb > 0.01) {
@@ -314,15 +347,9 @@ function Network({ clock }: { clock: MutableRefObject<Clock> }) {
         }),
       );
 
-      // Layer names under the columns, and the value of the output once it has fired.
+      // The value of the output once it has fired.
       const labels = 1 - clamp01(exitT / 0.2);
       ctx.textAlign = 'center';
-      ctx.font = '500 12px ui-monospace, SFMono-Regular, Menlo, monospace';
-      ['x', 'a¹', 'a²', 'a³', 'ŷ'].forEach((name, l) => {
-        const [lx, ly] = project(layerX(l), -((tallest - 1) / 2) * GAP - 0.3, 0);
-        ctx.fillStyle = `rgba(212,212,216,${(0.22 + 0.45 * clamp01((elapsed - FIRE[l]) / 300)) * appear(l) * labels})`;
-        ctx.fillText(name, lx, ly);
-      });
       const shown = clamp01((elapsed - FIRE[last]) / 400);
       if (shown > 0) {
         ctx.font = '600 13px ui-monospace, SFMono-Regular, Menlo, monospace';
