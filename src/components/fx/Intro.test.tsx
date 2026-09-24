@@ -3,14 +3,22 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { projects } from '../../data/profile';
 import { hasProjectArt, ProjectArt } from '../ProjectArt';
-import { Intro, loss, PATH, shouldPlayIntro } from './Intro';
+import { ACTIVATIONS, INPUT, Intro, LAYERS, shouldPlayIntro } from './Intro';
 
-describe('intro gradient descent', () => {
-  it('really descends: the loss goes down at every step, toward the minimum at the origin', () => {
-    expect(PATH).toHaveLength(7);
-    for (let i = 1; i < PATH.length; i++) expect(loss(...PATH[i]), `step ${i}`).toBeLessThan(loss(...PATH[i - 1]));
-    expect(loss(0, 0)).toBe(0);
-    expect(loss(...PATH[6])).toBeLessThan(0.1);
+describe('intro forward pass', () => {
+  it('runs a real forward pass that lights the output up', () => {
+    expect(ACTIVATIONS.map((layer) => layer.length)).toEqual(LAYERS);
+    expect(ACTIVATIONS[0]).toEqual(INPUT);
+    for (const a of ACTIVATIONS.slice(1).flat()) {
+      expect(a).toBeGreaterThan(0);
+      expect(a).toBeLessThan(1);
+    }
+    // Some neurons stay dark and others shine, so the signal visibly picks its way through.
+    for (const layer of ACTIVATIONS.slice(1, -1)) {
+      expect(Math.min(...layer)).toBeLessThan(0.3);
+      expect(Math.max(...layer)).toBeGreaterThan(0.7);
+    }
+    expect(ACTIVATIONS[LAYERS.length - 1][0]).toBeGreaterThan(0.9);
   });
 });
 
