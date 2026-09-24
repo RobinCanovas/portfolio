@@ -624,6 +624,70 @@ function Game() {
   );
 }
 
+/** Neural network: weights coloured by sign, neurons lighting up layer after layer (forward propagation). */
+function Neural() {
+  const layers = [
+    { x: 44, n: 3 },
+    { x: 116, n: 5 },
+    { x: 188, n: 5 },
+    { x: 256, n: 1 },
+  ];
+  const ys = (n: number) => Array.from({ length: n }, (_, j) => (n === 1 ? 78 : 28 + (j * 100) / (n - 1)));
+  return (
+    <Frame hue={[F, C]}>
+      {() => (
+        <>
+          {layers.slice(1).map((layer, c) =>
+            ys(layer.n).map((y2, j) =>
+              ys(layers[c].n).map((y1, k) => {
+                // Deterministic "weights": sign gives the colour, size the thickness.
+                const w = Math.sin((c + 1) * 12.9 + j * 7.3 + k * 3.1);
+                return (
+                  <line
+                    key={`${c}-${j}-${k}`}
+                    x1={layers[c].x}
+                    y1={y1}
+                    x2={layer.x}
+                    y2={y2}
+                    stroke={w > 0 ? C : F}
+                    strokeOpacity={0.15 + 0.45 * Math.abs(w)}
+                    strokeWidth={0.6 + 1.3 * Math.abs(w)}
+                    className={Math.abs(w) > 0.85 ? 'art-dash' : undefined}
+                  />
+                );
+              }),
+            ),
+          )}
+          {layers.map((layer, c) =>
+            ys(layer.n).map((y, j) => (
+              <circle
+                key={`n-${c}-${j}`}
+                cx={layer.x}
+                cy={y}
+                r={c === layers.length - 1 ? 9 : 6}
+                fill={PANEL}
+                stroke={c === layers.length - 1 ? A : VL}
+                strokeWidth="1.6"
+                className="art-blink"
+                style={delay(c * 0.35 + j * 0.06)}
+              />
+            )),
+          )}
+          <text x="272" y="82" fill="rgb(255 255 255 / 0.7)" fontFamily="JetBrains Mono, monospace" fontSize="11">
+            ŷ
+          </text>
+          {/* The sigmoid, in a corner */}
+          <path d="M268 146 H312 M290 150 V116" stroke={LINE} />
+          <path d="M270 142 C 284 142, 286 120, 300 120 S 308 119, 312 119" fill="none" stroke={F} strokeWidth="1.8" />
+          <text x="272" y="126" fill={F} fontFamily="JetBrains Mono, monospace" fontSize="9">
+            σ
+          </text>
+        </>
+      )}
+    </Frame>
+  );
+}
+
 function Generic() {
   return (
     <Frame hue={[V, C]}>
@@ -652,6 +716,7 @@ const ART: Record<string, () => ReactNode> = {
   'solstice-dahs': Environmental,
   'aeroboat-site': Ekranoplan,
   'gradient-descent': Gradient,
+  'neural-network': Neural,
   'subnet-calculator': Subnet,
   'ac-motors': Schema,
   cwad: TimeCruise,

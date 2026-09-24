@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, ArrowUpRight, CheckCircle2, Loader2, Lock, Sparkles, Target } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, CheckCircle2, Loader2, Lock, PlayCircle, Sparkles, Target } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { href } from '../router';
 import { BuildDiagram } from '../components/BuildDiagram';
@@ -8,6 +8,8 @@ import { DevicePreview } from '../components/demos/DevicePreview';
 import { DeployPipeline } from '../components/lab/DeployPipeline';
 import { GradientDescent } from '../components/lab/GradientDescent';
 import { SubnetCalculator } from '../components/lab/SubnetCalculator';
+import { NeuralNetwork } from '../components/lab/NeuralNetwork';
+import { CodeBlock } from '../components/CodeBlock';
 import { ProjectArt } from '../components/ProjectArt';
 import { ShareButton } from '../components/ShareButton';
 import { TechIcon } from '../components/TechIcon';
@@ -143,6 +145,27 @@ export function ProjectPage({ id }: { id: string }) {
           </div>
         </section>
 
+        {/* The maths, formula by formula */}
+        {project.maths && (
+          <section aria-labelledby="maths-title">
+            <SectionTitle kicker={t('page.mathsKicker')} title={t('page.maths')} id="maths-title" />
+            <ol className="grid gap-4 md:grid-cols-2">
+              {project.maths.map((m, i) => (
+                <motion.li key={m.title} {...fade(i * 0.05)} className="glass spotlight rounded-2xl p-5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 font-mono text-xs font-bold text-white">
+                      {i + 1}
+                    </span>
+                    <h3 className="font-semibold text-white">{m.title}</h3>
+                  </div>
+                  <p className="mt-3 overflow-x-auto rounded-xl border border-white/10 bg-black/40 px-4 py-3 font-mono text-[13px] whitespace-pre text-cyan-200">{m.formula}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-300">{m.text}</p>
+                </motion.li>
+              ))}
+            </ol>
+          </section>
+        )}
+
         {/* Demos */}
         {project.demo === 'sql' && (
           <section aria-labelledby="demo-title">
@@ -158,14 +181,56 @@ export function ProjectPage({ id }: { id: string }) {
             </Suspense>
           </section>
         )}
-        {(project.demo === 'deploy' || project.demo === 'gradient' || project.demo === 'subnet') && (
+        {(project.demo === 'deploy' || project.demo === 'gradient' || project.demo === 'subnet' || project.demo === 'neural') && (
           <section aria-labelledby="demo-title">
             <SectionTitle kicker={t('page.tryIt')} title={t('page.liveDemo')} id="demo-title" />
             <div className="glass spotlight rounded-3xl p-5 sm:p-8">
               {project.demo === 'deploy' && <DeployPipeline />}
               {project.demo === 'gradient' && <GradientDescent />}
               {project.demo === 'subnet' && <SubnetCalculator />}
+              {project.demo === 'neural' && <NeuralNetwork />}
             </div>
+          </section>
+        )}
+
+        {project.snippet && (
+          <section aria-labelledby="code-title">
+            <SectionTitle kicker={t('page.codeKicker')} title={t('page.code')} id="code-title" />
+            <motion.div {...fade()}>
+              <CodeBlock snippet={project.snippet} />
+            </motion.div>
+          </section>
+        )}
+
+        {project.course && (
+          <section aria-labelledby="course-title">
+            <SectionTitle kicker={t('page.courseKicker')} title={t('page.course')} id="course-title" />
+            <motion.div {...fade()} className="glass relative overflow-hidden rounded-3xl p-6 sm:p-8">
+              <div aria-hidden="true" className="absolute -top-20 -right-20 size-60 rounded-full bg-fuchsia-500/15 blur-3xl" />
+              <div className="relative flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="text-xl font-semibold text-white">{project.course.name}</p>
+                  <p className="mt-1 text-sm text-zinc-400">{project.course.author}</p>
+                </div>
+                <a
+                  href={project.course.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/5 hover:text-white"
+                >
+                  <PlayCircle className="size-4 text-red-400" aria-hidden="true" /> {t('page.courseWatch')} <ArrowUpRight className="size-4" aria-hidden="true" />
+                </a>
+              </div>
+              <ol className="relative mt-6 space-y-3 border-l border-violet-400/30 pl-6">
+                {project.course.steps.map((s, i) => (
+                  <li key={s} className="relative text-zinc-200">
+                    <span aria-hidden="true" className="absolute top-1.5 -left-[29px] size-2.5 rounded-full bg-violet-400 shadow-[0_0_10px_rgb(168_85_247)]" />
+                    <span className="mr-2 font-mono text-xs text-violet-300">{String(i + 1).padStart(2, '0')}</span>
+                    {s}
+                  </li>
+                ))}
+              </ol>
+            </motion.div>
           </section>
         )}
         {project.demo === 'cwad' && project.demoUrl && (
