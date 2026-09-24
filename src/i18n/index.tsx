@@ -11,14 +11,16 @@ interface LangState {
 }
 
 // Default value keeps components usable (and testable) without a provider: English.
+// The site itself (inside LangProvider) opens in French.
 const LangContext = createContext<LangState>({ lang: 'en', setLang: () => undefined, toggle: () => undefined });
 
+/** French unless the visitor switched to English before. */
 function readStoredLang(): Lang {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    return stored === 'fr' ? 'fr' : 'en';
+    return stored === 'en' ? 'en' : 'fr';
   } catch {
-    return 'en';
+    return 'fr';
   }
 }
 

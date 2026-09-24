@@ -1,6 +1,6 @@
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
 
 const goTo = (hash: string) =>
@@ -16,14 +16,21 @@ afterEach(() => {
 });
 
 describe('language switch', () => {
-  it('defaults to English and switches the whole site to French', async () => {
+  it('opens in French and switches the whole site to English', async () => {
     render(<App />);
-    expect(screen.getByRole('heading', { level: 2, name: 'Where I’m heading' })).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Passer le site en français' }));
-    expect(await screen.findByRole('heading', { level: 2, name: 'Où je vais' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Où je vais' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: 'Expériences' })).toBeInTheDocument();
     expect(document.documentElement.lang).toBe('fr');
-    expect(window.localStorage.getItem('portfolio-lang')).toBe('fr');
+    await userEvent.click(screen.getByRole('button', { name: 'Switch the site to English' }));
+    expect(await screen.findByRole('heading', { level: 2, name: 'Where I’m heading' })).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe('en');
+    expect(window.localStorage.getItem('portfolio-lang')).toBe('en');
+  });
+
+  it('remembers a visitor who chose English', () => {
+    window.localStorage.setItem('portfolio-lang', 'en');
+    render(<App />);
+    expect(screen.getByRole('heading', { level: 2, name: 'Where I’m heading' })).toBeInTheDocument();
   });
 
   it('never links to GitHub', () => {
@@ -33,6 +40,9 @@ describe('language switch', () => {
 });
 
 describe('<App />', () => {
+  // These scenarios read the English labels.
+  beforeEach(() => window.localStorage.setItem('portfolio-lang', 'en'));
+
   it('renders every home section', () => {
     render(<App />);
     for (const id of ['home', 'experience', 'projects', 'skills', 'education', 'goals', 'contact']) {
