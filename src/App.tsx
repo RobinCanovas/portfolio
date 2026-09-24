@@ -16,6 +16,8 @@ import { Projects } from './components/Projects';
 import { Skills } from './components/Skills';
 import { CursorFx } from './components/fx/CursorFx';
 import { HYPER_EVENT, triggerHyperMode, useKonami } from './components/fx/effects';
+import { Intro, IntroContext, shouldPlayIntro } from './components/fx/Intro';
+import { BackToTop, LocalTime } from './components/fx/Extras';
 import { TechMarquee } from './components/fx/TechMarquee';
 import { AnimatePresence, motion } from 'framer-motion';
 import { findExperience, findProject, profile } from './data/profile';
@@ -81,6 +83,10 @@ function Portfolio() {
   const [contactOpen, setContactOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const previousRoute = useRef(route.name);
+  // Decided once, on arrival: later visits to home never replay the intro.
+  const [playIntro] = useState(shouldPlayIntro);
+  const [revealed, setRevealed] = useState(!playIntro);
+  const reveal = useCallback(() => setRevealed(true), []);
 
   const openContact = useCallback(() => setContactOpen(true), []);
   const closeContact = useCallback(() => setContactOpen(false), []);
@@ -133,7 +139,8 @@ function Portfolio() {
   }, []);
 
   return (
-    <>
+    <IntroContext.Provider value={revealed}>
+      {playIntro && <Intro onReveal={reveal} />}
       <button
         type="button"
         onClick={() => document.getElementById('main')?.focus()}
@@ -160,12 +167,20 @@ function Portfolio() {
         <Contact open={contactOpen} onOpen={openContact} onClose={closeContact} />
       </main>
       <CommandPalette open={paletteOpen} onClose={closePalette} onOpenExperience={openExperience} onFocusProject={openProject} onContact={openContact} />
-      <footer className="border-t border-white/10 py-8 text-center font-mono text-xs text-zinc-500">
-        © {new Date().getFullYear()} {profile.name} · {t('footer.built')} ·{' '}
-        <button type="button" onClick={openPalette} className="underline decoration-dotted underline-offset-4 hover:text-zinc-300">
-          Ctrl K
-        </button>
+      <BackToTop />
+      <footer className="border-t border-white/10 py-8 font-mono text-xs text-zinc-500">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 sm:flex-row sm:px-6">
+          <span>
+            © {new Date().getFullYear()} {profile.name} · {t('footer.built')}
+          </span>
+          <span className="flex items-center gap-4">
+            <LocalTime />
+            <button type="button" onClick={openPalette} className="underline decoration-dotted underline-offset-4 hover:text-zinc-300">
+              Ctrl K
+            </button>
+          </span>
+        </div>
       </footer>
-    </>
+    </IntroContext.Provider>
   );
 }

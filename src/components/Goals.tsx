@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Briefcase, Building2, Calculator, GraduationCap, Landmark, MessagesSquare, ShieldCheck, Trophy } from 'lucide-react';
 import { Magnetic } from './fx/effects';
+import { ScrollRevealText } from './fx/Extras';
 import { useState } from 'react';
 import { targetSchools } from '../data/profile';
 import { useLang } from '../i18n';
@@ -32,10 +33,10 @@ export function Goals({ onContact }: { onContact?: () => void }) {
 
   return (
     <Section id="goals" eyebrow={t('section.goals')} title={t('section.goals.title')}>
-      <p className="-mt-4 mb-12 max-w-3xl text-lg leading-relaxed text-zinc-200">{t('goals.intro')}</p>
+      <ScrollRevealText key={t('goals.intro')} text={t('goals.intro')} className="-mt-4 mb-14 max-w-4xl text-2xl leading-snug font-semibold tracking-tight text-white sm:text-3xl" />
 
       <div className="relative grid gap-10 lg:grid-cols-[1.15fr_1fr]">
-        <div aria-hidden="true" className="pointer-events-none absolute -inset-x-10 -inset-y-6 -z-10 rounded-[3rem] bg-[radial-gradient(ellipse_at_10%_20%,rgb(52_211_153/0.12),transparent_45%),radial-gradient(ellipse_at_90%_30%,rgb(217_70_239/0.12),transparent_45%),radial-gradient(ellipse_at_40%_100%,rgb(251_191_36/0.12),transparent_50%)] blur-2xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -inset-x-4 -inset-y-6 -z-10 rounded-[3rem] sm:-inset-x-6 xl:-inset-x-10 bg-[radial-gradient(ellipse_at_10%_20%,rgb(52_211_153/0.12),transparent_45%),radial-gradient(ellipse_at_90%_30%,rgb(217_70_239/0.12),transparent_45%),radial-gradient(ellipse_at_40%_100%,rgb(251_191_36/0.12),transparent_50%)] blur-2xl" />
         {/* Roadmap */}
         <div>
           <h3 className="mb-6 flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-cyan-300 uppercase">

@@ -3,6 +3,7 @@ import { FileText, Mail, MapPin } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { LinkedinIcon } from './BrandIcons';
 import { CountUp, Magnetic, RotatingWords, ScrambleText } from './fx/effects';
+import { useRevealed } from './fx/Intro';
 import { ParticleField } from './fx/ParticleField';
 import { Portrait } from './Portrait';
 
@@ -12,6 +13,8 @@ const item: Variants = { hidden: { opacity: 0, y: 24, filter: 'blur(8px)' }, sho
 export function Hero({ onContact }: { onContact: () => void }) {
   const { t, lang } = useLang();
   const { profile, links, experiences, projects } = useContent();
+  // Entrance animations wait until the opening curtain lifts.
+  const revealed = useRevealed();
 
   const stats = [
     { value: experiences.filter((e) => !e.minor).length, label: t('hero.stat.experiences') },
@@ -29,7 +32,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
       </div>
 
       <div className="mx-auto grid min-h-dvh max-w-6xl items-center gap-12 px-4 pt-28 pb-20 sm:px-6 lg:grid-cols-[1.15fr_1fr]">
-        <motion.div variants={container} initial="hidden" animate="show">
+        <motion.div variants={container} initial="hidden" animate={revealed ? 'show' : 'hidden'}>
           <motion.div variants={item} className="inline-flex flex-wrap items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.08] px-3 py-1.5 text-xs shadow-[0_0_24px_rgb(52_211_153/0.2)]">
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -42,7 +45,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
 
           <motion.h1 variants={item} className="mt-7 text-5xl leading-[1.02] font-extrabold tracking-tight text-white sm:text-7xl">
             <span className="block text-2xl font-medium text-zinc-300 sm:text-3xl">{t('hero.hi')}</span>
-            <ScrambleText text={profile.name} className="text-shine cursor-default drop-shadow-[0_0_30px_rgb(168_85_247/0.5)]" />
+            <ScrambleText key={String(revealed)} text={profile.name} className="text-shine cursor-default drop-shadow-[0_0_30px_rgb(168_85_247/0.5)]" />
           </motion.h1>
 
           <motion.p variants={item} className="mt-5 text-xl font-medium text-zinc-100 sm:text-2xl">
@@ -79,7 +82,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
           </motion.div>
 
           <motion.div variants={item} className="mt-12 max-w-lg border-t border-white/[0.08] pt-6">
-            <dl className="grid grid-cols-4 gap-4">
+            <dl key={String(revealed)} className="grid grid-cols-4 gap-4">
               {stats.map((s) => (
                 <div key={s.label}>
                   <dt className="sr-only">{s.label}</dt>
@@ -96,7 +99,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
 
         <motion.div
           initial={{ opacity: 0, y: 40, rotateX: 18, rotateY: -12 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0, rotateY: 0 }}
+          animate={revealed ? { opacity: 1, y: 0, rotateX: 0, rotateY: 0 } : undefined}
           transition={{ duration: 1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
           style={{ transformPerspective: 1200 }}
         >

@@ -1,6 +1,9 @@
 /** Interface strings. `{name}` placeholders are filled by `t(key, { name })`. */
 export const ui = {
   en: {
+    'intro.skip': 'Skip',
+    'top': 'Back to top',
+    'footer.time': 'Local time in Paris',
     'portrait.clientLine': 'Client: BNP Paribas group',
     'share.button': 'Share',
     'share.copied': 'Link copied',
@@ -250,6 +253,9 @@ export const ui = {
     'modal.close': 'Close dialog',
   },
   fr: {
+    'intro.skip': 'Passer',
+    'top': 'Retour en haut',
+    'footer.time': 'Heure locale à Paris',
     'portrait.clientLine': 'Client : groupe BNP Paribas',
     'share.button': 'Partager',
     'share.copied': 'Lien copié',
