@@ -9,12 +9,12 @@ export const links: SocialLinks = {
 
 export const profile = {
   name: 'Robin Canovas',
-  title: 'Development Analyst & Web Developer',
+  title: 'Computer Science Student & Development Analyst',
   location: 'Paris, France',
   status: 'Open to opportunities',
   currentRole: 'Web Developer @ Éditions Ellipses',
   pitch:
-    'I turn business requirements into secure, reliable software, and I’m building a generalist profile for banking and consulting. After a mission on a BNP Paribas group subsidiary’s platform, my next steps are university, then an ambitious master’s-level degree.',
+    'Computer science student in a work-study BUT, I turn business requirements into secure, reliable software, and I’m building a generalist profile, with solid maths, for banking and consulting. After a mission on a BNP Paribas group subsidiary’s platform, my next steps are university, then an ambitious master’s-level degree.',
   ambition: 'Long-term goal: banking & IT consulting, where rigour, security and business understanding matter as much as code.',
   avatar: './robin-canovas.jpg',
 };
@@ -804,11 +804,15 @@ export const skillGroups: SkillGroup[] = [
 
 /** Schools targeted after the BUT (parallel admissions). Logos: local file first, then Wikimedia. */
 export const targetSchools = [
+  { id: 'paris-saclay', name: 'Université Paris-Saclay', logos: ['./logos/paris-saclay.png', 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Logo_Universit%C3%A9_Paris-Saclay_2019-12.svg'] },
+  { id: 'sorbonne', name: 'Sorbonne Université', logos: ['https://upload.wikimedia.org/wikipedia/commons/0/0e/Logo_of_Sorbonne_University.svg'] },
   { id: 'dauphine', name: 'Université Paris Dauphine-PSL', logos: ['./logos/dauphine.png', 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Dauphine_logo_2019_-_Bleu.png'] },
+  { id: 'paris-cite', name: 'Université Paris Cité', logos: ['./logos/paris-cite.png', 'https://u-paris.fr/wp-content/uploads/2026/01/logo-universite-paris-cite.png'] },
   { id: 'centrale', name: 'CentraleSupélec', logos: ['./logos/centralesupelec.svg', 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Ecole_Centrale_Supelec_logo.svg'] },
+  { id: 'centrale-med', name: 'Centrale Méditerranée', logos: ['https://upload.wikimedia.org/wikipedia/commons/6/60/Logo_Centrale_M%C3%A9diterrann%C3%A9e.png'] },
+  { id: 'ensta', name: 'ENSTA Paris', logos: ['https://upload.wikimedia.org/wikipedia/commons/4/45/Logo_ENSTA_Paris.jpg'] },
   { id: 'telecom-paris', name: 'Télécom Paris', logos: ['./logos/telecom-paris.svg'] },
   { id: 'telecom-sudparis', name: 'Télécom SudParis', logos: ['./logos/telecom-sudparis.svg', 'https://upload.wikimedia.org/wikipedia/fr/1/1d/Logo_T%C3%A9l%C3%A9com_SudParis.svg'] },
-  { id: 'paris-cite', name: 'Université Paris Cité', logos: ['./logos/paris-cite.png', 'https://u-paris.fr/wp-content/uploads/2026/01/logo-universite-paris-cite.png'] },
 ];
 
 export const languages = [

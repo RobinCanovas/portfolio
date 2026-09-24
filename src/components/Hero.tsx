@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, type Variants } from 'framer-motion';
-import { FileText, Mail, MapPin } from 'lucide-react';
+import { FileText, GraduationCap, Mail, MapPin } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { LinkedinIcon } from './BrandIcons';
 import { CountUp, Magnetic, RotatingWords, ScrambleText } from './fx/effects';
@@ -62,7 +62,10 @@ export function Hero({ onContact }: { onContact: () => void }) {
           <motion.p variants={item} className="mt-5 text-xl font-medium text-zinc-100 sm:text-2xl">
             <RotatingWords key={lang} words={t('hero.roles').split('|')} className="text-white" />
           </motion.p>
-          <motion.p variants={item} className="mt-2 inline-flex items-center gap-1.5 text-sm text-zinc-400">
+          <motion.p variants={item} className="mt-3 flex items-start gap-1.5 text-sm text-zinc-200">
+            <GraduationCap className="mt-px size-4 shrink-0 text-amber-300" aria-hidden="true" /> {t('hero.student')}
+          </motion.p>
+          <motion.p variants={item} className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-zinc-400">
             <MapPin className="size-4" aria-hidden="true" /> {profile.location}
           </motion.p>
           <motion.p variants={item} className="mt-5 max-w-xl text-base leading-relaxed text-zinc-300 sm:text-lg">
