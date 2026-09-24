@@ -45,8 +45,8 @@ export function Portrait() {
               src={profile.avatar}
               alt={t('portrait.alt', { name: profile.name })}
               onError={() => setFailed(true)}
-              width={800}
-              height={800}
+              width={1000}
+              height={1340}
               className="aspect-[4/5] w-full scale-[1.12] object-cover object-[50%_18%] [image-rendering:high-quality]"
               fetchPriority="high"
             />
