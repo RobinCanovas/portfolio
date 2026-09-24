@@ -1,16 +1,15 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type MutableRefObject } from 'react';
-import { animate, motion, useMotionTemplate, useMotionValue, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useLang } from '../../i18n';
 
 const SEEN_KEY = 'portfolio-intro';
-const EASE = [0.76, 0, 0.24, 1] as const;
 /** Greetings from the places I’ve travelled to (Spain, Romania, England) and a few neighbours. */
 const GREETINGS = ['Hola', 'Bună', 'Ciao', 'Hallo', 'Olá'];
-/** How long each greeting stays on screen (ms): a slow start, a quick run, then the visitor’s own language. */
-const HOLD = [560, 170, 170, 170, 170, 170, 760];
+/** One greeting per gradient step (ms): the start point, six steps, then the minimum. */
+const HOLD = [650, 300, 300, 300, 300, 300, 720];
 const TOTAL = HOLD.reduce((a, b) => a + b, 0);
-/** Duration of the dive through the portal at the end (ms). */
-const EXIT_MS = 1000;
+/** Duration of the landing: the landscape flattens into the page grid (ms). */
+const EXIT_MS = 1100;
 
 /** True while the home page may play its entrance animations (false while the intro covers it). */
 export const IntroContext = createContext(true);
@@ -28,25 +27,93 @@ export function shouldPlayIntro(): boolean {
   }
 }
 
-/** Ship speed over the intro (t from 0 to 1): cruise, jump to light speed, then slow down on arrival. */
-function warpSpeed(t: number) {
-  if (t < 0.12) return 0.7;
-  if (t < 0.62) {
-    const k = (t - 0.12) / 0.5;
-    return 0.7 + 10.3 * k * k;
+/* ------------------------------------------------------------------ */
+/* The maths: a loss landscape and a real gradient descent on it      */
+/* ------------------------------------------------------------------ */
+
+/** Loss surface: a stretched valley (so the descent zig-zags) with soft ripples; global minimum 0 at the origin. */
+export const loss = (x: number, y: number) => {
+  const r2 = x * x + y * y;
+  return Math.log(1 + 0.3 * x * x + 1.6 * y * y) + 0.14 * Math.sin(1.7 * x) * Math.cos(1.3 * y) * (1 - Math.exp(-r2 / 2.5));
+};
+const grad = (x: number, y: number): [number, number] => {
+  const h = 1e-4;
+  return [(loss(x + h, y) - loss(x - h, y)) / (2 * h), (loss(x, y + h) - loss(x, y - h)) / (2 * h)];
+};
+export const LEARNING_RATE = 1;
+/** θ ← θ − η∇f(θ), six steps from a high start point. */
+export const PATH: [number, number][] = (() => {
+  const pts: [number, number][] = [[2.7, -1.5]];
+  for (let i = 0; i < 6; i++) {
+    const [x, y] = pts[pts.length - 1];
+    const [gx, gy] = grad(x, y);
+    pts.push([x - LEARNING_RATE * gx, y - LEARNING_RATE * gy]);
   }
-  const k = Math.min(1, (t - 0.62) / 0.38);
-  return 11 - 9.6 * (1 - (1 - k) ** 3);
+  return pts;
+})();
+const LOSS0 = loss(...PATH[0]);
+
+const easeOut = (t: number) => 1 - (1 - t) ** 3;
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
+
+/** Where the ball is at a given time: dropping on the start point, hopping from step to step, then settling in the minimum. */
+function timeline(elapsed: number) {
+  let acc = 0;
+  let i = 0;
+  while (i < HOLD.length - 1 && elapsed > acc + HOLD[i]) acc += HOLD[i++];
+  const s = clamp01((elapsed - acc) / HOLD[i]);
+  let x: number;
+  let y: number;
+  let lift = 0;
+  let resting = false;
+  if (i === 0) {
+    [x, y] = PATH[0];
+    lift = (1 - easeOut(clamp01(s / 0.6))) * 1.6;
+    resting = s > 0.6;
+  } else {
+    const [ax, ay] = PATH[i - 1];
+    const [bx, by] = PATH[i];
+    const k = easeInOut(clamp01(s / 0.45));
+    x = ax + (bx - ax) * k;
+    y = ay + (by - ay) * k;
+    lift = Math.sin(Math.PI * k) * 0.35;
+    resting = s > 0.45;
+    if (i === HOLD.length - 1 && s > 0.5) {
+      // Last word: the remaining iterations, shown as a slide into the exact minimum.
+      const m = easeInOut(clamp01((s - 0.5) / 0.4));
+      x = bx * (1 - m);
+      y = by * (1 - m);
+      resting = m >= 1;
+    }
+  }
+  const converged = i === HOLD.length - 1 && s >= 0.9;
+  // Steps already reached: the current one counts once the hop (or the initial drop) is over.
+  const landed = s > (i === 0 ? 0.6 : 0.45) ? i : i - 1;
+  return { word: i, x, y, lift, resting, converged, landed, loss: converged ? 0 : Math.max(0, loss(x, y)) };
 }
 
-const STAR_COLORS = ['196,181,253', '240,171,252', '103,232,249', '255,255,255', '255,255,255'];
-const Z_MAX = 3.5;
+/* ------------------------------------------------------------------ */
+/* Rendering                                                           */
+/* ------------------------------------------------------------------ */
+
+interface Clock {
+  start: number;
+  exitStart: number | null;
+}
+
+const EXTENT = 3.2;
+const LINES = 25;
+const SAMPLES = 48;
+const HEIGHT = 0.55;
+const DIST = 9;
 
 /**
- * Stars flying toward the camera. Slow, they are points; fast, they stretch into light-speed streaks
- * around a glowing vanishing point, with a slight roll of the camera. `speed` is read every frame.
+ * Wireframe loss landscape seen from above at an angle, slowly turning. The ball follows the gradient
+ * descent, leaving a trail and showing −∇f while it rests. On exit the landscape flattens and the camera
+ * rises to a top-down view: the surface becomes a plain grid, like the page background.
  */
-function Starfield({ speed }: { speed: MutableRefObject<number> }) {
+function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -57,80 +124,173 @@ function Starfield({ speed }: { speed: MutableRefObject<number> }) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w = 0;
     let h = 0;
-    let focal = 0;
     const resize = () => {
       w = window.innerWidth;
       h = window.innerHeight;
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      focal = Math.max(w, h) * 0.5;
     };
     resize();
 
-    type Star = { x: number; y: number; z: number; c: string };
-    const spawn = (s: Star, anywhere = false) => {
-      s.x = (Math.random() - 0.5) * 2.2;
-      s.y = (Math.random() - 0.5) * 2.2;
-      s.z = anywhere ? 0.1 + Math.random() * (Z_MAX - 0.1) : Z_MAX;
-      s.c = STAR_COLORS[(Math.random() * STAR_COLORS.length) | 0];
-      return s;
-    };
-    const stars = Array.from({ length: w < 640 ? 260 : 620 }, () => spawn({} as Star, true));
-
+    // Ball position when the exit started (the dive to the minimum starts from there).
+    let exitFrom: [number, number] | null = null;
     let raf = 0;
-    let last = performance.now();
-    let roll = 0;
+
     const frame = (now: number) => {
-      const dt = Math.min(50, now - last);
-      last = now;
-      const s = speed.current;
-      const v = s * 0.0006 * dt;
-      roll += s * 0.000035 * dt;
-      const cos = Math.cos(roll);
-      const sin = Math.sin(roll);
+      const { start, exitStart } = clock.current;
+      const elapsed = now - start;
+      const exitT = exitStart === null ? 0 : clamp01((now - exitStart) / EXIT_MS);
+      const tl = timeline(Math.min(elapsed, TOTAL));
+
+      const flatten = easeInOut(clamp01(exitT / 0.75));
+      const H = HEIGHT * (1 - flatten);
+      // The valley runs away from the camera: the ball starts far back and zig-zags toward the viewer.
+      const yaw = 2.2 + 0.28 * clamp01(elapsed / TOTAL) + 0.2 * flatten;
+      const elev = (0.62 + 0.08 * clamp01(elapsed / TOTAL)) * (1 - flatten) + (Math.PI / 2) * flatten;
+      const cosY = Math.cos(yaw);
+      const sinY = Math.sin(yaw);
+      const cosE = Math.cos(elev);
+      const sinE = Math.sin(elev);
+      const S = 0.12 * Math.min(w, h * 1.6) * (1 + 0.25 * flatten);
       const cx = w / 2;
-      const cy = h / 2;
+      const cy = h * 0.6;
+
+      const project = (x: number, y: number, z: number): [number, number] => {
+        const xr = x * cosY - y * sinY;
+        const yr = x * sinY + y * cosY;
+        const c = -yr * cosE + z * sinE;
+        const p = S * (DIST / (DIST - c));
+        return [cx + xr * p, cy - (yr * sinE + z * cosE) * p];
+      };
 
       ctx.fillStyle = '#0a0a10';
       ctx.fillRect(0, 0, w, h);
 
-      // The vanishing point glows brighter as the ship speeds up.
-      const glow = Math.min(1, s / 11);
-      if (glow > 0.04) {
-        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, focal * (0.3 + glow * 0.6));
-        g.addColorStop(0, `rgba(168,85,247,${0.38 * glow})`);
-        g.addColorStop(0.45, `rgba(34,211,238,${0.1 * glow})`);
-        g.addColorStop(1, 'rgba(10,10,16,0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, w, h);
+      // Soft glow under the valley floor.
+      const [mx, my] = project(0, 0, 0);
+      const glow = ctx.createRadialGradient(mx, my, 0, mx, my, S * 2.6);
+      glow.addColorStop(0, 'rgba(168,85,247,0.22)');
+      glow.addColorStop(0.5, 'rgba(34,211,238,0.06)');
+      glow.addColorStop(1, 'rgba(10,10,16,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, w, h);
+
+      // Wireframe: lines along x and along y, coloured by height (cyan valley, violet ridges),
+      // fading out toward a circular edge.
+      ctx.lineWidth = 1;
+      const step = (2 * EXTENT) / (LINES - 1);
+      const sub = (2 * EXTENT) / SAMPLES;
+      for (let dir = 0; dir < 2; dir++) {
+        for (let l = 0; l < LINES; l++) {
+          const fixed = -EXTENT + l * step;
+          let prev: [number, number] | null = null;
+          for (let k = 0; k <= SAMPLES; k++) {
+            const t = -EXTENT + k * sub;
+            const x = dir === 0 ? t : fixed;
+            const y = dir === 0 ? fixed : t;
+            const r = Math.hypot(x, y);
+            const fade = clamp01((EXTENT - r) / 1.1);
+            if (fade <= 0) {
+              prev = null;
+              continue;
+            }
+            const f = loss(x, y);
+            const pt = project(x, y, f * H);
+            if (prev) {
+              const hn = clamp01(f / 2.2);
+              const red = Math.round(34 + (168 - 34) * hn);
+              const green = Math.round(211 + (85 - 211) * hn);
+              const blue = Math.round(238 + (247 - 238) * hn);
+              ctx.strokeStyle = `rgba(${red},${green},${blue},${(0.28 + 0.5 * (1 - hn)) * fade * (1 - 0.6 * flatten)})`;
+              ctx.beginPath();
+              ctx.moveTo(prev[0], prev[1]);
+              ctx.lineTo(pt[0], pt[1]);
+              ctx.stroke();
+            }
+            prev = pt;
+          }
+        }
       }
 
-      ctx.lineCap = 'round';
-      const trail = Math.max(v * 7, 0.004);
-      for (const star of stars) {
-        star.z -= v;
-        if (star.z <= 0.05) {
-          spawn(star);
-          continue;
-        }
-        const x = star.x * cos - star.y * sin;
-        const y = star.x * sin + star.y * cos;
-        const sx = cx + (x / star.z) * focal;
-        const sy = cy + (y / star.z) * focal;
-        if (sx < -80 || sx > w + 80 || sy < -80 || sy > h + 80) {
-          spawn(star);
-          continue;
-        }
-        const tz = Math.min(Z_MAX, star.z + trail);
-        const near = 1 - star.z / Z_MAX;
-        ctx.strokeStyle = `rgba(${star.c},${Math.min(1, near * near * 1.4)})`;
-        ctx.lineWidth = 0.5 + near * 2.4;
+      // Ball: on the timeline while playing, then a quick slide into the minimum during the exit.
+      let bx = tl.x;
+      let by = tl.y;
+      let lift = tl.lift;
+      if (exitStart !== null) {
+        exitFrom ??= [bx, by];
+        const m = easeOut(clamp01(exitT / 0.45));
+        bx = exitFrom[0] * (1 - m);
+        by = exitFrom[1] * (1 - m);
+        lift *= 1 - m;
+      }
+      const surface = (x: number, y: number) => loss(x, y) * H + 0.04;
+      const alpha = clamp01(elapsed / 250);
+
+      // Trail through the landed steps.
+      ctx.save();
+      ctx.shadowColor = 'rgba(232,121,249,0.9)';
+      ctx.shadowBlur = 10;
+      ctx.strokeStyle = `rgba(240,171,252,${0.85 * alpha * (1 - flatten)})`;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      for (let i = 0; i <= Math.max(0, tl.landed); i++) {
+        const [px, py] = project(PATH[i][0], PATH[i][1], surface(PATH[i][0], PATH[i][1]));
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      const [ballX, ballY] = project(bx, by, surface(bx, by) + lift);
+      ctx.lineTo(ballX, ballY);
+      ctx.stroke();
+      ctx.restore();
+      for (let i = 0; i <= Math.max(0, tl.landed); i++) {
+        const [px, py] = project(PATH[i][0], PATH[i][1], surface(PATH[i][0], PATH[i][1]));
+        ctx.fillStyle = `rgba(240,171,252,${0.9 * alpha * (1 - flatten)})`;
         ctx.beginPath();
-        ctx.moveTo(cx + (x / tz) * focal, cy + (y / tz) * focal);
-        ctx.lineTo(sx, sy);
+        ctx.arc(px, py, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // −∇f while the ball rests: where the next step will go.
+      if (tl.resting && !tl.converged && exitStart === null) {
+        const [gx, gy] = grad(bx, by);
+        const n = Math.hypot(gx, gy) || 1;
+        const tx = bx - (gx / n) * 0.7;
+        const ty = by - (gy / n) * 0.7;
+        const [ax, ay] = project(tx, ty, surface(tx, ty));
+        const ang = Math.atan2(ay - ballY, ax - ballX);
+        ctx.strokeStyle = 'rgba(103,232,249,0.9)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(ballX, ballY);
+        ctx.lineTo(ax, ay);
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(ax - 8 * Math.cos(ang - 0.45), ay - 8 * Math.sin(ang - 0.45));
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(ax - 8 * Math.cos(ang + 0.45), ay - 8 * Math.sin(ang + 0.45));
         ctx.stroke();
       }
+
+      // The ball itself.
+      const halo = ctx.createRadialGradient(ballX, ballY, 0, ballX, ballY, 22);
+      halo.addColorStop(0, `rgba(255,255,255,${alpha})`);
+      halo.addColorStop(0.25, `rgba(240,171,252,${0.8 * alpha})`);
+      halo.addColorStop(1, 'rgba(232,121,249,0)');
+      ctx.fillStyle = halo;
+      ctx.beginPath();
+      ctx.arc(ballX, ballY, 22, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Convergence: a ring of light spreading from the minimum.
+      if (exitStart !== null) {
+        const ring = easeOut(exitT);
+        ctx.strokeStyle = `rgba(103,232,249,${0.8 * (1 - ring)})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(mx, my, 10 + ring * Math.max(w, h) * 0.5, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
@@ -139,104 +299,102 @@ function Starfield({ speed }: { speed: MutableRefObject<number> }) {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', resize);
     };
-  }, [speed]);
+  }, [clock]);
 
   return <canvas ref={ref} aria-hidden="true" className="absolute inset-0 size-full" />;
 }
 
-/** The brand mark arriving from deep space: frame and links draw themselves, then the nodes light up. */
-function DrawnLogo() {
-  const draw = (delay: number) => ({
-    initial: { pathLength: 0, opacity: 0 },
-    animate: { pathLength: 1, opacity: 1 },
-    transition: { pathLength: { delay, duration: 0.9, ease: EASE }, opacity: { delay, duration: 0.01 } },
+const BLOOM_SIZE = 96;
+
+/**
+ * The brand mark blooming at the minimum once the descent has converged, then flying to the logo
+ * of the navigation bar and landing exactly on it: the real logo takes over when the intro unmounts.
+ */
+function Bloom() {
+  const [flight] = useState(() => {
+    const r = document.querySelector('[data-brand-logo]')?.getBoundingClientRect();
+    if (!r || r.width === 0) return null;
+    return {
+      x: r.left + r.width / 2 - window.innerWidth / 2,
+      y: r.top + r.height / 2 - window.innerHeight * 0.6,
+      scale: r.width / BLOOM_SIZE,
+    };
   });
-  const node = (delay: number) => ({
-    initial: { scale: 0, opacity: 0 },
-    animate: { scale: 1, opacity: 1 },
-    transition: { delay, type: 'spring' as const, stiffness: 320, damping: 14 },
-    style: { transformBox: 'fill-box' as const, transformOrigin: 'center' },
-  });
+  const duration = EXIT_MS / 1000;
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.15, rotateX: 70, rotateZ: -40 }}
-      animate={{ opacity: 1, scale: 1, rotateX: 0, rotateZ: 0 }}
-      transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-      style={{ transformPerspective: 800 }}
+      aria-hidden="true"
+      className="pointer-events-none fixed top-[60%] left-1/2 -mt-12 -ml-12 size-24"
+      initial={{ scale: 0, opacity: 0, rotate: -30, x: 0, y: 0 }}
+      animate={
+        flight
+          ? { scale: [0, 1.15, 1, 1, flight.scale], opacity: [0, 1, 1, 1, 1], rotate: [-30, 0, 0, 0, 0], x: [0, 0, 0, 0, flight.x], y: [0, 0, 0, 0, flight.y] }
+          : { scale: [0, 1.15, 1, 1.6], opacity: [0, 1, 1, 0], rotate: [-30, 0, 0, 0] }
+      }
+      transition={{ duration, times: flight ? [0, 0.2, 0.32, 0.45, 1] : [0, 0.2, 0.45, 1], ease: 'easeInOut' }}
     >
-      <svg viewBox="0 0 32 32" className="size-16 drop-shadow-[0_0_24px_rgb(168_85_247/0.8)] sm:size-20" aria-hidden="true">
-        <defs>
-          <linearGradient id="intro-g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#c084fc" />
-            <stop offset="1" stopColor="#22d3ee" />
-          </linearGradient>
-        </defs>
-        <rect x="1" y="1" width="30" height="30" rx="9" fill="#0a0a12" opacity="0.85" />
-        <motion.path d="M10 1 H22 A9 9 0 0 1 31 10 V22 A9 9 0 0 1 22 31 H10 A9 9 0 0 1 1 22 V10 A9 9 0 0 1 10 1 Z" fill="none" stroke="url(#intro-g)" strokeWidth="1.2" {...draw(0.1)} />
-        <motion.path d="M16 16 L16 8.5 M16 16 L9.5 21.5 M16 16 L22.5 21.5 M9.5 21.5 L22.5 21.5" fill="none" stroke="url(#intro-g)" strokeWidth="1.6" strokeLinecap="round" {...draw(0.45)} />
-        <motion.circle cx="16" cy="8.5" r="2.6" fill="#c084fc" {...node(0.8)} />
-        <motion.circle cx="9.5" cy="21.5" r="2.6" fill="#a78bfa" {...node(0.9)} />
-        <motion.circle cx="22.5" cy="21.5" r="2.6" fill="#22d3ee" {...node(1)} />
-        <motion.circle cx="16" cy="16" r="3.2" fill="#fff" {...node(1.1)} />
-      </svg>
+      <BrandMark />
     </motion.div>
   );
 }
 
+function BrandMark() {
+  return (
+    <svg viewBox="0 0 32 32" className="size-full drop-shadow-[0_0_30px_rgb(168_85_247/0.9)]">
+
+      <defs>
+        <linearGradient id="intro-g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#c084fc" />
+          <stop offset="1" stopColor="#22d3ee" />
+        </linearGradient>
+      </defs>
+      <rect x="1" y="1" width="30" height="30" rx="9" fill="#0a0a12" stroke="url(#intro-g)" strokeWidth="1.5" />
+      <path d="M16 16 L16 8.5 M16 16 L9.5 21.5 M16 16 L22.5 21.5 M9.5 21.5 L22.5 21.5" fill="none" stroke="url(#intro-g)" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="16" cy="8.5" r="2.6" fill="#c084fc" />
+      <circle cx="9.5" cy="21.5" r="2.6" fill="#a78bfa" />
+      <circle cx="22.5" cy="21.5" r="2.6" fill="#22d3ee" />
+      <circle cx="16" cy="16" r="3.2" fill="#fff" />
+    </svg>
+  );
+}
+
 /**
- * Opening sequence, played once when a visitor lands on the home page: a jump to light speed.
- * Stars stream past, the logo arrives from deep space, greetings fly out of the distance and land on
- * the visitor’s own language while a counter runs to 100. Then the ship dives through a glowing portal
- * that opens from the centre onto the site. Click, Escape, Enter or the Skip button start the dive early.
+ * Opening sequence, played once when a visitor lands on the home page: "Convergence".
+ * A ball descends a loss landscape by real gradient descent; each step brings a greeting from a
+ * country I’ve travelled to, and the counter shows the loss falling to zero. At the minimum the
+ * brand mark blooms and the landscape flattens into the page grid. Click, Escape, Enter or Skip land early.
  */
 export function Intro({ onReveal }: { onReveal: () => void }) {
   const { t, lang } = useLang();
   const [open, setOpen] = useState(true);
   const [leaving, setLeaving] = useState(false);
-  const [word, setWord] = useState(0);
-  const [pct, setPct] = useState(0);
+  const [state, setState] = useState(() => timeline(0));
   const done = useRef(false);
-  const speed = useRef(warpSpeed(0));
+  const clock = useRef<Clock>({ start: performance.now(), exitStart: null });
   const words = lang === 'fr' ? ['Hello', ...GREETINGS, 'Bonjour'] : ['Bonjour', ...GREETINGS, 'Hello'];
-
-  // Portal: a hole grows from the centre of the screen (radius in vmax), with a glowing ring on its edge.
-  const hole = useMotionValue(0);
-  // Soft edge that only exists once the hole opens (no see-through dot before the dive).
-  const edge = useTransform(hole, (r) => r + Math.min(7, r * 2));
-  const mask = useMotionTemplate`radial-gradient(circle at 50% 50%, transparent ${hole}vmax, #000 ${edge}vmax)`;
-  const ringScale = useTransform(hole, (r) => r / 50);
-  const ringOpacity = useTransform(hole, [0, 4, 110, 150], [0, 1, 0.6, 0]);
 
   const finish = useCallback(() => {
     if (done.current) return;
     done.current = true;
+    clock.current.exitStart = performance.now();
     setLeaving(true);
     onReveal();
-    // Final burst of speed while diving through the portal.
-    animate(speed.current, 26, { duration: 0.6, ease: 'easeIn', onUpdate: (v) => (speed.current = v) });
-    animate(hole, 150, { duration: EXIT_MS / 1000, ease: [0.7, 0, 0.84, 0] });
     window.setTimeout(() => setOpen(false), EXIT_MS);
-  }, [onReveal, hole]);
+  }, [onReveal]);
 
-  // One clock drives the greeting, the counter and the ship speed.
+  // One clock drives the words, the loss readout and the landscape.
   useEffect(() => {
     try {
       window.sessionStorage.setItem(SEEN_KEY, '1');
     } catch {
       /* private mode: the intro may play again, no harm */
     }
-    const start = performance.now();
+    clock.current.start = performance.now();
     let frame = 0;
     const tick = (now: number) => {
       if (done.current) return;
-      const elapsed = now - start;
-      let acc = 0;
-      let i = 0;
-      while (i < HOLD.length - 1 && elapsed > acc + HOLD[i]) acc += HOLD[i++];
-      setWord(i);
-      const p = Math.min(1, elapsed / TOTAL);
-      setPct(Math.round(100 * (1 - Math.pow(1 - p, 3))));
-      speed.current = warpSpeed(p);
+      const elapsed = now - clock.current.start;
+      setState(timeline(Math.min(elapsed, TOTAL)));
       if (elapsed >= TOTAL) finish();
       else frame = requestAnimationFrame(tick);
     };
@@ -261,51 +419,62 @@ export function Intro({ onReveal }: { onReveal: () => void }) {
   }, [open, finish]);
 
   if (!open) return null;
+  const shownLoss = leaving ? 0 : state.loss;
+  const stepNo = Math.min(6, Math.max(0, state.landed));
   return (
     <div role="presentation" data-testid="intro" onClick={finish} className="fixed inset-0 z-[65] cursor-pointer text-white">
-      <motion.div className="absolute inset-0 flex flex-col bg-ink" style={{ maskImage: mask, WebkitMaskImage: mask }}>
-        <Starfield speed={speed} />
+      <motion.div
+        animate={{ opacity: leaving ? 0 : 1 }}
+        // Fade out over the second half of the landing, once the landscape has flattened.
+        transition={{ duration: (EXIT_MS * 0.5) / 1000, delay: leaving ? (EXIT_MS * 0.45) / 1000 : 0, ease: 'easeInOut' }}
+        className="absolute inset-0 bg-ink"
+      >
+        <Landscape clock={clock} />
 
-        {/* Logo and greeting: they fly past the camera when the ship dives. */}
+        {/* Greeting: one per step of the descent. */}
         <motion.div
-          animate={leaving ? { scale: 3.2, opacity: 0, filter: 'blur(10px)' } : { scale: 1, opacity: 1, filter: 'blur(0px)' }}
-          transition={{ duration: 0.75, ease: [0.55, 0, 1, 0.45] }}
-          className="relative flex flex-1 flex-col items-center justify-center gap-7 px-6"
+          animate={{ opacity: leaving ? 0 : 1, y: leaving ? -20 : 0 }}
+          transition={{ duration: 0.35 }}
+          className="pointer-events-none absolute inset-x-0 top-[13%] flex justify-center px-6"
         >
-          <DrawnLogo />
-          <p className="flex h-16 items-center gap-4 text-5xl font-semibold tracking-tight sm:h-20 sm:text-7xl" aria-live="off">
+          <p className="flex items-center gap-4 text-5xl font-semibold tracking-tight sm:text-7xl" aria-live="off">
+            <span aria-hidden="true" className="size-3 shrink-0 rounded-full bg-fuchsia-300 shadow-[0_0_18px_4px_rgb(232_121_249/0.7)] sm:size-4" />
             <motion.span
-              aria-hidden="true"
-              className="size-3 shrink-0 rounded-full bg-cyan-300 shadow-[0_0_18px_4px_rgb(34_211_238/0.7)] sm:size-4"
-              animate={{ scale: [1, 1.35, 1] }}
-              transition={{ duration: 0.9, repeat: Infinity }}
-            />
-            <motion.span
-              key={word}
-              initial={{ scale: 0.35, opacity: 0, filter: 'blur(10px)' }}
-              animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
-              transition={{ duration: word === 0 ? 0.55 : word === words.length - 1 ? 0.4 : 0.14, ease: [0.16, 1, 0.3, 1] }}
-              className={`pb-2 drop-shadow-[0_0_24px_rgb(0_0_0/0.8)] ${word === words.length - 1 ? 'text-shine' : ''}`}
+              key={state.word}
+              initial={{ y: -14, opacity: 0, filter: 'blur(8px)' }}
+              animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+              transition={{ duration: state.word === 0 ? 0.5 : 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className={`pb-2 drop-shadow-[0_0_24px_rgb(0_0_0/0.9)] ${state.word === words.length - 1 ? 'text-shine' : ''}`}
             >
-              {words[word]}
+              {words[state.word]}
             </motion.span>
           </p>
         </motion.div>
 
-        <motion.div
-          animate={{ opacity: leaving ? 0 : 1 }}
-          transition={{ duration: 0.3 }}
-          className="relative flex items-end justify-between gap-4 px-5 pb-6 font-mono text-xs text-zinc-400 sm:px-10 sm:pb-9"
-        >
-          <span className="tracking-[0.25em] uppercase">Robin Canovas · Portfolio</span>
-          <span className="text-4xl font-bold text-white tabular-nums sm:text-6xl" aria-hidden="true">
-            {String(pct).padStart(3, '0')}
-            <span className="text-lg text-zinc-500 sm:text-2xl">%</span>
-          </span>
+        {/* Readouts */}
+        <motion.div animate={{ opacity: leaving ? 0 : 1 }} transition={{ duration: 0.3 }} className="pointer-events-none">
+          <div className="absolute top-5 left-5 font-mono text-[11px] leading-relaxed text-zinc-400 sm:top-8 sm:left-10">
+            <p className="tracking-[0.25em] text-fuchsia-300 uppercase">∇ {t('intro.method')}</p>
+            <p className="mt-1 text-zinc-200">θ ← θ − η·∇f(θ)</p>
+            <p>η = {LEARNING_RATE.toFixed(1)}</p>
+          </div>
+          <div className="absolute bottom-7 left-5 font-mono text-xs text-zinc-400 sm:bottom-10 sm:left-10">
+            <p className={state.converged ? 'text-emerald-300' : ''}>
+              {state.converged ? `✓ ${t('intro.converged')}` : `${t('intro.step')} ${stepNo}/6`}
+            </p>
+            <p className="mt-1 tracking-[0.25em] uppercase">Robin Canovas · Portfolio</p>
+          </div>
+          <div className="absolute right-5 bottom-7 text-right sm:right-10 sm:bottom-10" aria-hidden="true">
+            <p className="font-mono text-[11px] tracking-[0.25em] text-zinc-400 uppercase">{t('intro.loss')}</p>
+            <p className="font-mono text-4xl font-bold text-white tabular-nums sm:text-6xl">{shownLoss.toFixed(3)}</p>
+          </div>
+          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-white/10">
+            <div
+              className="h-full origin-left bg-gradient-to-r from-fuchsia-500 via-violet-400 to-cyan-400 shadow-[0_0_12px_rgb(34_211_238)]"
+              style={{ transform: `scaleX(${1 - shownLoss / LOSS0})` }}
+            />
+          </div>
         </motion.div>
-        <div aria-hidden="true" className="relative h-px w-full bg-white/10">
-          <div className="h-full origin-left bg-gradient-to-r from-violet-500 via-fuchsia-400 to-cyan-400 shadow-[0_0_12px_rgb(34_211_238)]" style={{ transform: `scaleX(${pct / 100})` }} />
-        </div>
 
         <button
           type="button"
@@ -313,18 +482,14 @@ export function Intro({ onReveal }: { onReveal: () => void }) {
             e.stopPropagation();
             finish();
           }}
-          className="absolute top-5 right-5 rounded-full border border-white/15 bg-black/30 px-4 py-1.5 font-mono text-[11px] tracking-widest text-zinc-300 uppercase backdrop-blur transition hover:border-white/40 hover:text-white sm:top-8 sm:right-10"
+          className="absolute top-5 right-5 rounded-full border border-white/15 bg-black/30 px-4 py-1.5 font-mono text-[11px] tracking-widest text-zinc-300 uppercase transition hover:border-white/40 hover:text-white sm:top-8 sm:right-10"
         >
           {t('intro.skip')}
         </button>
       </motion.div>
 
-      {/* Glowing edge of the portal. */}
-      <motion.div
-        aria-hidden="true"
-        style={{ scale: ringScale, opacity: ringOpacity }}
-        className="pointer-events-none absolute top-1/2 left-1/2 -mt-[50vmax] -ml-[50vmax] size-[100vmax] rounded-full border-2 border-cyan-200/80 shadow-[0_0_60px_10px_rgb(168_85_247/0.55),inset_0_0_60px_10px_rgb(34_211_238/0.45)]"
-      />
+      {/* The mark blooms at the minimum, then lands on the navigation logo (outside the fading layer). */}
+      {leaving && <Bloom />}
     </div>
   );
 }
