@@ -55,7 +55,7 @@ describe('profile data', () => {
     for (const p of projects.filter((x) => x.demoUrl)) {
       expect(p.demoUrl).toMatch(/^(https:\/\/|\.\/projects\/)/);
     }
-    expect(links.cv).toBe('./Robin-Canovas-CV.pdf');
+    expect(links.cv).toBe('./Robin-Canovas-CV-EN.pdf');
   });
 
   it('has non-empty skill groups', () => {

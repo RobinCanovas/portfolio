@@ -1,0 +1,123 @@
+% ---------------------------------------------------------------------------
+%  Resume of Robin Canovas, English version (one A4 page).
+%  Layout in cv-layout.tex, French version in cv-robin-canovas.tex.
+%  Compile with XeLaTeX.
+% ---------------------------------------------------------------------------
+\def\cvenglish{}
+\input{cv-layout}
+
+\begin{document}
+\makeheader
+
+% ============================== Main column ================================
+\begin{minipage}[t]{\mainwidth}
+\raggedright
+
+\cvsection{Profile}
+Third-year Computer Science student (BUT) on a work-study programme, with \textbf{five professional
+experiences in just over a year}, including an internship for a \textbf{BNP Paribas group} subsidiary.
+Next step: a \textbf{master's degree or a grande école}, aiming at banking and consulting.
+\keyfigures
+
+\cvsection{Professional experience}
+
+\experience{Web Developer}{Sept. 2026\dateto Present}
+  {Éditions Ellipses}{Apprenticeship}{Paris}
+  {France's leading publisher for universities and preparatory classes}
+\begin{itemize}
+  \item Maintained and extended the web platform (Symfony, PHP, MySQL).
+  \item Code reviews, testing and quality practices within the in-house tech team.
+\end{itemize}
+
+\experience{Development Analyst}{Apr. 2026\dateto Jul. 2026}
+  {Acelys Services Numériques}{Internship · 4 months}{Montpellier}
+  {IT services company · Client: Domofinance, BNP Paribas Personal Finance group}
+\begin{itemize}
+  \item Gathered business requirements and wrote specifications, in Scrum.
+  \item Implemented \textbf{multi-factor authentication} and e-mail filtering.
+  \item Tested partner deliverables, debugged Symfony and React issues.
+  \item \textbf{Ansible deployment pipelines} triggered from Bitbucket (dependencies, migrations, go-live), with server access through \textbf{SSH keys and tunnels}.
+\end{itemize}
+
+\experience{Full-Stack Developer}{Jan. 2026\dateto Feb. 2026}
+  {French Ministry of Education}{Freelance}{Alès, remote}
+  {Student accommodation files, schools in the Gard area}
+\begin{itemize}
+  \item \textbf{Designed the database} and built a dedicated PHP application.
+  \item Automated workflows, centralised data, trained staff on the tool.
+\end{itemize}
+
+\experience{Full-Stack Developer}{Sept. 2025\dateto Jan. 2026}
+  {Solutions Solstice}{Apprenticeship}{Paris region}
+  {Publisher of environmental monitoring software (DAHS)}
+\begin{itemize}
+  \item Java features and contribution to the \textbf{software certification}.
+  \item Automated SQL queries and AI-assisted analysis of system diagnostics.
+\end{itemize}
+
+\experience{IT Systems Manager}{Sept. 2025\dateto Jan. 2026}
+  {Aeroboat France}{Fixed-term}{Toulouse, remote}
+  {Aeronautics association, ground-effect craft models}
+\begin{itemize}
+  \item Built the association's website (WordPress), responsive and SEO-ready.
+\end{itemize}
+
+\experience{Retail Sales \& Service Advisor}{Jul. 2025\dateto Aug. 2025}
+  {Boulanger}{Summer job}{Lattes}{}
+\begin{itemize}
+  \item Customer service, after-sales support and financing options.
+\end{itemize}
+
+\cvsection{Selected projects}
+\begin{itemize}[itemsep=1pt]
+  \item \textbf{Gradient descent} {\color{muted}· linear regression, partial derivatives, live demo}
+  \item \textbf{IPv4 subnetting} {\color{muted}· mask, broadcast and host range, bit by bit}
+  \item \textbf{AC-Motors database} {\color{muted}· data models, SQL queries, online playground}
+  \item \textbf{Requirements specification} {\color{muted}· needs analysis, UML, functional specs}
+\end{itemize}
+{\small\color{muted}Interactive demos on my portfolio (QR code, top right).}
+
+\end{minipage}%
+\hfill%
+% ============================== Side column ================================
+\begin{minipage}[t]{\sidewidth}
+\raggedright
+
+\sidesection[6pt]{Education}
+\degree{BUT in Computer Science}{2024\dateto 2027}{IUT d'Orsay, Université Paris-Saclay}
+  {13th worldwide, Shanghai Ranking 2026}
+  {3-year degree: databases, networks, systems, software engineering, maths.}
+\vspace{5pt}
+\degree{French Baccalauréat}{2024}{Lycée Françoise Combes}
+  {Internat d'Excellence de Montpellier}
+  {Mathematics and Computer Science, Advanced Mathematics option.}
+
+\sidesection{Academic plans}
+{\small After the BUT (2027): a \textbf{selective master's or a grande école}, towards banking and consulting.}
+
+\sidesection{Skills}
+\skillgroup{Databases}{Advanced SQL, MySQL, PL/SQL, SQLite, data modelling, indexing, Doctrine}
+\skillgroup{Networks \& DevOps}{TCP/IP, subnetting, routing, Linux, SSH, Ansible, Bitbucket Pipelines, Git}
+\skillgroup{Mathematics}{Linear algebra, probability, statistics, graph theory, optimisation}
+\skillgroup{Development}{PHP, Symfony, API Platform, Java, Python, C and C++, React, TypeScript}
+\skillgroup{Consulting \& methods}{Specifications, testing, security (MFA), Agile (Scrum), UML, project management}
+
+\sidesection{Languages}
+\langitem{French}{native}{5}
+\langitem{English}{B2}{4}
+\langitem{Spanish}{B1}{3}
+
+\sidesection{Volunteering}
+{\small\bfseries\color{ink}Scout with EEDF since 2013}\par
+{\footnotesize\color{muted}French scouting association, Gard}\par\vspace{1.5pt}
+{\small Welcoming and training new members, charity events and fundraising.}
+
+\sidesection{Interests}
+\interest{\drawball}{Volleyball, beach volley, tennis, wrestling}
+\interest{\drawnote}{Piano}
+\interest{\drawglobe}{Travel: Romania, England, Spain}
+\interest{\drawatom}{Science popularisation}
+
+\end{minipage}
+
+\end{document}

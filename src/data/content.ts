@@ -50,7 +50,7 @@ function build(lang: Lang) {
   const projects = isFr ? en.projects.map(localizeProject) : en.projects;
   return {
     lang,
-    links: en.links,
+    links: isFr ? { ...en.links, ...fr.links } : en.links,
     targetSchools: en.targetSchools,
     profile: isFr ? { ...en.profile, ...fr.profile } : en.profile,
     experiences,
