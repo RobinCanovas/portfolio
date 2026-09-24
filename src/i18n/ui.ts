@@ -1,10 +1,9 @@
 /** Interface strings. `{name}` placeholders are filled by `t(key, { name })`. */
 export const ui = {
   en: {
-    'intro.method': 'Gradient descent',
-    'intro.step': 'Step',
-    'intro.loss': 'Loss',
-    'intro.converged': 'Converged',
+    'intro.method': 'Forward pass',
+    'intro.layer': 'Layer',
+    'intro.received': 'Signal received',
     'nn.title': 'A neural network learning live',
     'nn.help': 'Pick the data and the model, then train: the background shows what the network predicts at every point of the plane.',
     'nn.data': 'Data',
@@ -279,10 +278,9 @@ export const ui = {
     'modal.close': 'Close dialog',
   },
   fr: {
-    'intro.method': 'Descente de gradient',
-    'intro.step': 'Itération',
-    'intro.loss': 'Erreur',
-    'intro.converged': 'Convergé',
+    'intro.method': 'Propagation avant',
+    'intro.layer': 'Couche',
+    'intro.received': 'Signal reçu',
     'nn.title': 'Un réseau de neurones qui apprend en direct',
     'nn.help': 'Choisissez les données et le modèle, puis entraînez : le fond montre ce que prédit le réseau en chaque point du plan.',
     'nn.data': 'Données',

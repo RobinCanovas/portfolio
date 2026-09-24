@@ -1,15 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type MutableRefObject } from 'react';
 import { motion } from 'framer-motion';
 import { useLang } from '../../i18n';
+import { createNetwork, forward, seeded } from '../../lib/neural';
 
 const SEEN_KEY = 'portfolio-intro';
 /** Greetings from the places I’ve travelled to (Spain, Romania, England) and a few neighbours. */
-const GREETINGS = ['Hola', 'Bună', 'Ciao', 'Hallo', 'Olá'];
-/** One greeting per gradient step (ms): the start point, six steps, then the minimum. */
-const HOLD = [650, 300, 300, 300, 300, 300, 720];
-const TOTAL = HOLD.reduce((a, b) => a + b, 0);
-/** Duration of the landing: the landscape flattens into the page grid (ms). */
-const EXIT_MS = 1100;
+const GREETINGS = ['Hola', 'Bună', 'Ciao', 'Hallo'];
 
 /** True while the home page may play its entrance animations (false while the intro covers it). */
 export const IntroContext = createContext(true);
@@ -28,70 +24,70 @@ export function shouldPlayIntro(): boolean {
 }
 
 /* ------------------------------------------------------------------ */
-/* The maths: a loss landscape and a real gradient descent on it      */
+/* The maths: a real network and a real forward pass                   */
 /* ------------------------------------------------------------------ */
 
-/** Loss surface: a stretched valley (so the descent zig-zags) with soft ripples; global minimum 0 at the origin. */
-export const loss = (x: number, y: number) => {
-  const r2 = x * x + y * y;
-  return Math.log(1 + 0.3 * x * x + 1.6 * y * y) + 0.14 * Math.sin(1.7 * x) * Math.cos(1.3 * y) * (1 - Math.exp(-r2 / 2.5));
-};
-const grad = (x: number, y: number): [number, number] => {
-  const h = 1e-4;
-  return [(loss(x + h, y) - loss(x - h, y)) / (2 * h), (loss(x, y + h) - loss(x, y - h)) / (2 * h)];
-};
-export const LEARNING_RATE = 1;
-/** θ ← θ − η∇f(θ), six steps from a high start point. */
-export const PATH: [number, number][] = (() => {
-  const pts: [number, number][] = [[2.7, -1.5]];
-  for (let i = 0; i < 6; i++) {
-    const [x, y] = pts[pts.length - 1];
-    const [gx, gy] = grad(x, y);
-    pts.push([x - LEARNING_RATE * gx, y - LEARNING_RATE * gy]);
-  }
-  return pts;
-})();
-const LOSS0 = loss(...PATH[0]);
+/** Five inputs, three hidden layers, one output: the same kind of network as the neural network project. */
+export const LAYERS = [5, 8, 8, 5, 1];
+/** What the network reads. */
+export const INPUT = [0.9, 0.35, 0.8, 0.15, 0.7];
+/** Weights drawn from N(0, 1) with a fixed seed, chosen so the output lights up. */
+const NET = createNetwork(LAYERS, seeded(305));
+/** Forward propagation, aˡ = σ(Wˡ·aˡ⁻¹ + bˡ): the activations of every layer, input first. */
+export const ACTIVATIONS = forward(NET, INPUT);
+const OUTPUT = ACTIVATIONS[LAYERS.length - 1][0];
+
+/** When each layer fires (ms): the signal reaches the inputs, then crosses one layer per step. */
+const STEP = 620;
+const FIRE = LAYERS.map((_, l) => 900 + l * STEP);
+const TOTAL = FIRE[FIRE.length - 1] + 650;
+/** Duration of the landing: the network gathers into the brand mark, which flies to the navigation bar (ms). */
+const EXIT_MS = 1300;
+/** How many layers have fired: 0 before the signal reaches the inputs, 5 once the output has fired. */
+const stageAt = (elapsed: number) => FIRE.filter((f) => elapsed >= f).length;
 
 const easeOut = (t: number) => 1 - (1 - t) ** 3;
+const easeIn = (t: number) => t * t * t;
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
+const mix = (a: number[], b: number[], t: number) => a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(',');
 
-/** Where the ball is at a given time: dropping on the start point, hopping from step to step, then settling in the minimum. */
-function timeline(elapsed: number) {
-  let acc = 0;
-  let i = 0;
-  while (i < HOLD.length - 1 && elapsed > acc + HOLD[i]) acc += HOLD[i++];
-  const s = clamp01((elapsed - acc) / HOLD[i]);
-  let x: number;
-  let y: number;
-  let lift = 0;
-  let resting = false;
-  if (i === 0) {
-    [x, y] = PATH[0];
-    lift = (1 - easeOut(clamp01(s / 0.6))) * 1.6;
-    resting = s > 0.6;
-  } else {
-    const [ax, ay] = PATH[i - 1];
-    const [bx, by] = PATH[i];
-    const k = easeInOut(clamp01(s / 0.45));
-    x = ax + (bx - ax) * k;
-    y = ay + (by - ay) * k;
-    lift = Math.sin(Math.PI * k) * 0.35;
-    resting = s > 0.45;
-    if (i === HOLD.length - 1 && s > 0.5) {
-      // Last word: the remaining iterations, shown as a slide into the exact minimum.
-      const m = easeInOut(clamp01((s - 0.5) / 0.4));
-      x = bx * (1 - m);
-      y = by * (1 - m);
-      resting = m >= 1;
-    }
-  }
-  const converged = i === HOLD.length - 1 && s >= 0.9;
-  // Steps already reached: the current one counts once the hop (or the initial drop) is over.
-  const landed = s > (i === 0 ? 0.6 : 0.45) ? i : i - 1;
-  return { word: i, x, y, lift, resting, converged, landed, loss: converged ? 0 : Math.max(0, loss(x, y)) };
+/** Violet at the input, cyan at the output. */
+const VIOLET = [192, 132, 252];
+const CYAN = [34, 211, 238];
+const COLORS = LAYERS.map((_, l) => mix(VIOLET, CYAN, l / (LAYERS.length - 1)));
+/** Connections by weight sign, like the diagram of the live demo. */
+const POSITIVE = '103,232,249';
+const NEGATIVE = '232,121,249';
+
+interface Edge {
+  l: number;
+  k: number;
+  j: number;
+  positive: boolean;
+  /** |w|·a of the source, relative to the strongest connection of the layer: how much signal it carries. */
+  s: number;
+  t0: number;
+  t1: number;
 }
+/** Only the connections that carry enough signal show a pulse. */
+const CARRIES = 0.22;
+
+const EDGES: Edge[] = (() => {
+  const rand = seeded(11);
+  const edges: Edge[] = [];
+  NET.forEach(({ W }, l) => {
+    const a = ACTIVATIONS[l];
+    const max = Math.max(...W.flatMap((row) => row.map((w, k) => Math.abs(w) * a[k])));
+    W.forEach((row, j) =>
+      row.forEach((w, k) => {
+        // Pulses leave one source after the other and all reach the next layer just before it fires.
+        edges.push({ l, k, j, positive: w > 0, s: (Math.abs(w) * a[k]) / max, t0: FIRE[l] + 50 + k * 22, t1: FIRE[l + 1] - 20 - rand() * 60 });
+      }),
+    );
+  });
+  return edges;
+})();
 
 /* ------------------------------------------------------------------ */
 /* Rendering                                                           */
@@ -100,24 +96,20 @@ function timeline(elapsed: number) {
 interface Clock {
   start: number;
   exitStart: number | null;
+  /** Screen position of the output neuron, where the brand mark blooms. */
+  out: [number, number];
 }
 
-const EXTENT = 3.2;
-const LINES = 25;
-const SAMPLES = 48;
-const HEIGHT = 0.55;
-const DIST = 9;
-const FIREFLIES = 220;
-const TRAIL = 6;
+const DIST = 7;
+const STARS = 70;
 
 /**
- * Night scene: a wireframe loss landscape under a starry sky, seen by a slow cinematic camera.
- * Hundreds of fireflies each run their own gradient descent and stream down into the valley like
- * luminous water; the main ball follows the step-by-step descent, leaving a trail and showing −∇f
- * while it rests. At convergence a flash and a ripple cross the surface, then the landscape flattens
- * and the camera rises to a top-down view: the surface becomes a plain grid, like the page background.
+ * Night scene: a network floating in the dark, seen by a slow camera. The signal enters the inputs,
+ * then crosses the network layer by layer: pulses run along the connections that carry it (cyan for
+ * positive weights, pink for negative ones) and each neuron lights up as bright as its activation.
+ * On exit every neuron flows into the output, where the brand mark takes over.
  */
-function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
+function Network({ clock }: { clock: MutableRefObject<Clock> }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -137,255 +129,225 @@ function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
     };
     resize();
 
-    // Deterministic randomness, so the scene is the same on every visit.
-    let seed = 7;
-    const rand = () => {
-      seed = (seed * 16807) % 2147483647;
-      return (seed - 1) / 2147483646;
-    };
-    const stars = Array.from({ length: 140 }, () => ({ x: rand(), y: rand() * 0.55, r: 0.4 + rand() * 1.1, phase: rand() * 6.28 }));
-    // Fireflies start on the slopes, far from the minimum, each with its own learning rate.
-    type Fly = { x: number; y: number; eta: number; bornAt: number; arrivedAt: number | null; trail: [number, number][] };
-    const place = (fly: Fly, bornAt: number) => {
-      const a = rand() * Math.PI * 2;
-      const r = 1.6 + rand() * 1.5;
-      fly.x = Math.cos(a) * r;
-      fly.y = Math.sin(a) * r;
-      fly.eta = 0.012 + rand() * 0.016;
-      fly.bornAt = bornAt;
-      fly.arrivedAt = null;
-      fly.trail = [[fly.x, fly.y]];
-      return fly;
-    };
-    const flies = Array.from({ length: FIREFLIES }, () => place({} as Fly, 200 + rand() * 900));
+    // Deterministic scene: the same stars and depths on every visit.
+    const rand = seeded(3);
+    const stars = Array.from({ length: STARS }, () => ({ x: rand(), y: rand(), r: 0.3 + rand() * 0.9, phase: rand() * 6.28 }));
+    const depth = LAYERS.map((n) => Array.from({ length: n }, () => ({ z: (rand() - 0.5) * 0.6, phase: rand() * 6.28 })));
+    const tallest = Math.max(...LAYERS);
 
-    // Ball position when the exit started (the dive to the minimum starts from there).
-    let exitFrom: [number, number] | null = null;
     let raf = 0;
-    let last = performance.now();
-
     const frame = (now: number) => {
-      const dt = Math.min(3, (now - last) / 16.7);
-      last = now;
       const { start, exitStart } = clock.current;
       const elapsed = now - start;
-      const play = clamp01(elapsed / TOTAL);
+      // The camera stops when the landing starts, so the mark blooms where the output is.
+      const play = easeInOut(clamp01((exitStart === null ? elapsed : exitStart - start) / TOTAL));
       const exitT = exitStart === null ? 0 : clamp01((now - exitStart) / EXIT_MS);
-      const tl = timeline(Math.min(elapsed, TOTAL));
+      const gather = easeIn(clamp01(exitT / 0.42));
+      const fadeOut = 1 - exitT;
 
-      const flatten = easeInOut(clamp01((exitT - 0.15) / 0.65));
-      const H = HEIGHT * (1 - flatten);
-      // Cinematic camera: a slow orbit and dolly in, then it rises to a top-down view on exit.
-      const yaw = 2.2 + 0.32 * easeInOut(play) + 0.2 * flatten;
-      const elev = (0.52 + 0.18 * easeInOut(play)) * (1 - flatten) + (Math.PI / 2) * flatten;
+      // Camera: a slow swing around the network and a gentle dolly in.
+      const base = Math.min(0.25 * w, 0.19 * h);
+      const S = base * (0.95 + 0.07 * play);
+      const XH = Math.min(2.4, Math.max(1.4, (0.36 * w) / base));
+      const GAP = 0.34 * Math.min(1.6, Math.max(1, h / w / 1.2));
+      const yaw = -0.34 + 0.46 * play;
       const cosY = Math.cos(yaw);
       const sinY = Math.sin(yaw);
-      const cosE = Math.cos(elev);
-      const sinE = Math.sin(elev);
-      const S = 0.12 * Math.min(w, h * 1.6) * (0.94 + 0.1 * easeInOut(play) + 0.22 * flatten);
+      const pitch = 0.14;
+      const cosP = Math.cos(pitch);
+      const sinP = Math.sin(pitch);
+      const size = Math.min(1.3, Math.max(0.75, base / 150));
       const cx = w / 2;
-      const cy = h * 0.6;
-
-      // Convergence ripple: a wave running across the surface, fading fast.
-      const rt = exitStart === null ? -1 : (now - exitStart) / 1000;
-      const ripple = (r: number) => (rt < 0 ? 0 : 0.32 * Math.sin(6 * r - 13 * rt) * Math.exp(-0.5 * r) * Math.exp(-2.6 * rt) * (r < rt * 2.2 ? 1 : 0));
-      const surface = (x: number, y: number) => loss(x, y) * H + ripple(Math.hypot(x, y));
-
+      const cy = h * 0.55;
       const project = (x: number, y: number, z: number): [number, number, number] => {
-        const xr = x * cosY - y * sinY;
-        const yr = x * sinY + y * cosY;
-        const c = -yr * cosE + z * sinE;
-        const p = S * (DIST / (DIST - c));
-        return [cx + xr * p, cy - (yr * sinE + z * cosE) * p, c];
+        const xr = x * cosY - z * sinY;
+        const zr = x * sinY + z * cosY;
+        const yr = y * cosP - zr * sinP;
+        const p = DIST / (DIST + y * sinP + zr * cosP);
+        return [cx + xr * S * p, cy - yr * S * p, p];
       };
-      const fog = (c: number) => clamp01(0.3 + (0.7 * (c + 2.6)) / 5.2);
+      const layerX = (l: number) => -XH + (l * 2 * XH) / (LAYERS.length - 1);
+
+      // Where every neuron is on screen this frame (flowing into the output during the landing).
+      const pts = LAYERS.map((n, l) =>
+        depth[l].map(({ z, phase }, i) => project(layerX(l), ((n - 1) / 2 - i) * GAP + 0.035 * Math.sin(now / 1100 + phase), z)),
+      );
+      const [ox, oy] = pts[LAYERS.length - 1][0];
+      if (exitStart === null) clock.current.out = [ox, oy];
+      for (const layer of pts) for (const pt of layer) {
+        pt[0] += (ox - pt[0]) * gather;
+        pt[1] += (oy - pt[1]) * gather;
+      }
+
+      const appear = (l: number) => easeOut(clamp01((elapsed - 100 - l * 110) / 550));
+      const fired = (l: number, a: number) => {
+        const lit = a * easeOut(clamp01((elapsed - FIRE[l]) / 260));
+        // Skipped early: the whole network lights up as it gathers.
+        return exitStart === null ? lit : Math.max(lit, a * easeOut(clamp01(exitT / 0.18)));
+      };
 
       // Night sky.
+      ctx.globalCompositeOperation = 'source-over';
       ctx.fillStyle = '#07070d';
       ctx.fillRect(0, 0, w, h);
       for (const s of stars) {
-        const tw = 0.45 + 0.55 * Math.sin(now / 600 + s.phase);
-        ctx.fillStyle = `rgba(226,232,255,${0.55 * tw * (1 - flatten)})`;
+        ctx.fillStyle = `rgba(226,232,255,${0.4 * (0.5 + 0.5 * Math.sin(now / 900 + s.phase)) * fadeOut})`;
         ctx.beginPath();
         ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
-      // Glow of the horizon behind the landscape, and of the valley floor.
-      const hx = cx;
-      const hy = cy - S * 2.3;
-      const horizon = ctx.createRadialGradient(hx, hy, 0, hx, hy, Math.max(w, h) * 0.55);
-      horizon.addColorStop(0, `rgba(192,38,211,${0.28 * (1 - flatten)})`);
-      horizon.addColorStop(0.4, `rgba(124,58,237,${0.12 * (1 - flatten)})`);
-      horizon.addColorStop(1, 'rgba(7,7,13,0)');
-      ctx.fillStyle = horizon;
-      ctx.fillRect(0, 0, w, h);
-      const [mx, my] = project(0, 0, 0);
-      const valley = ctx.createRadialGradient(mx, my, 0, mx, my, S * 2.6);
-      valley.addColorStop(0, 'rgba(34,211,238,0.2)');
-      valley.addColorStop(0.5, 'rgba(168,85,247,0.07)');
-      valley.addColorStop(1, 'rgba(7,7,13,0)');
-      ctx.fillStyle = valley;
+
+      // A soft light travelling with the signal, violet at the inputs and cyan at the output.
+      const wave = Math.min(LAYERS.length - 1, Math.max(-0.6, (elapsed - FIRE[0]) / STEP));
+      const [nx, ny] = project(layerX(wave), 0, 0);
+      const nebula = ctx.createRadialGradient(nx, ny, 0, nx, ny, Math.max(w, h) * 0.42);
+      const nc = mix(VIOLET, CYAN, clamp01(wave / (LAYERS.length - 1)));
+      nebula.addColorStop(0, `rgba(${nc},${0.15 * appear(0) * fadeOut})`);
+      nebula.addColorStop(1, `rgba(${nc},0)`);
+      ctx.fillStyle = nebula;
       ctx.fillRect(0, 0, w, h);
 
-      // Wireframe: coloured by height (cyan valley, violet ridges), fading into the fog far away
-      // and toward a circular edge.
-      ctx.lineWidth = 1;
-      const step = (2 * EXTENT) / (LINES - 1);
-      const sub = (2 * EXTENT) / SAMPLES;
-      for (let dir = 0; dir < 2; dir++) {
-        for (let l = 0; l < LINES; l++) {
-          const fixed = -EXTENT + l * step;
-          let prev: [number, number, number] | null = null;
-          for (let k = 0; k <= SAMPLES; k++) {
-            const t = -EXTENT + k * sub;
-            const x = dir === 0 ? t : fixed;
-            const y = dir === 0 ? fixed : t;
-            const r = Math.hypot(x, y);
-            const fade = clamp01((EXTENT - r) / 1.1);
-            if (fade <= 0) {
-              prev = null;
-              continue;
-            }
-            const f = loss(x, y);
-            const pt = project(x, y, f * H + ripple(r));
-            if (prev) {
-              const hn = clamp01(f / 2.2);
-              const red = Math.round(34 + (168 - 34) * hn);
-              const green = Math.round(211 + (85 - 211) * hn);
-              const blue = Math.round(238 + (247 - 238) * hn);
-              ctx.strokeStyle = `rgba(${red},${green},${blue},${(0.3 + 0.5 * (1 - hn)) * fade * fog(pt[2]) * (1 - 0.6 * flatten)})`;
+      // Connections: faint at rest, glowing once the signal has gone through them.
+      ctx.lineCap = 'round';
+      for (const e of EDGES) {
+        const [ax, ay] = pts[e.l][e.k];
+        const [bx, by] = pts[e.l + 1][e.j];
+        const p = clamp01((elapsed - e.t0) / (e.t1 - e.t0));
+        const lit = e.s > CARRIES ? p : 0;
+        const a = (0.07 * Math.min(appear(e.l), appear(e.l + 1)) + 0.26 * e.s * lit) * (1 - gather);
+        ctx.strokeStyle = lit > 0 ? `rgba(${e.positive ? POSITIVE : NEGATIVE},${a})` : `rgba(167,139,250,${a})`;
+        ctx.lineWidth = 0.7 + 0.8 * e.s * lit;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by);
+        ctx.stroke();
+      }
+
+      // Pulses: the signal on its way, a bright head with a fading tail.
+      ctx.globalCompositeOperation = 'lighter';
+      const pulse = (ax: number, ay: number, bx: number, by: number, p: number, s: number, col: string) => {
+        const hx = ax + (bx - ax) * p;
+        const hy = ay + (by - ay) * p;
+        const tp = Math.max(0, p - 0.25);
+        const tx = ax + (bx - ax) * tp;
+        const ty = ay + (by - ay) * tp;
+        const alpha = (0.4 + 0.6 * s) * (1 - gather);
+        const tail = ctx.createLinearGradient(tx, ty, hx, hy);
+        tail.addColorStop(0, `rgba(${col},0)`);
+        tail.addColorStop(1, `rgba(${col},${0.9 * alpha})`);
+        ctx.strokeStyle = tail;
+        ctx.lineWidth = 1 + 1.6 * s;
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(hx, hy);
+        ctx.stroke();
+        ctx.fillStyle = `rgba(${col},${0.18 * alpha})`;
+        ctx.beginPath();
+        ctx.arc(hx, hy, 4 + 3 * s, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(255,255,255,${0.95 * alpha})`;
+        ctx.beginPath();
+        ctx.arc(hx, hy, 1.2 + 1.3 * s, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      // The input signal comes in from the left edge of the screen.
+      depth[0].forEach(({ z }, k) => {
+        const t0 = 150 + k * 80;
+        const p = easeInOut(clamp01((elapsed - t0) / (FIRE[0] - 30 - t0)));
+        if (p <= 0 || p >= 1) return;
+        const [sx, sy] = project(layerX(0) - 1.6, ((LAYERS[0] - 1) / 2 - k) * GAP * 1.3, z);
+        pulse(sx, sy, pts[0][k][0], pts[0][k][1], p, INPUT[k], '216,180,254');
+      });
+      for (const e of EDGES) {
+        if (e.s <= CARRIES) continue;
+        const p = easeInOut(clamp01((elapsed - e.t0) / (e.t1 - e.t0)));
+        if (p <= 0 || p >= 1) continue;
+        const [ax, ay] = pts[e.l][e.k];
+        const [bx, by] = pts[e.l + 1][e.j];
+        pulse(ax, ay, bx, by, p, e.s, e.positive ? POSITIVE : NEGATIVE);
+      }
+
+      // Neurons: dark at rest, lit as bright as their activation when the signal arrives.
+      const last = LAYERS.length - 1;
+      pts.forEach((layer, l) =>
+        layer.forEach(([x, y, persp], i) => {
+          const isOut = l === last;
+          const a = ACTIVATIONS[l][i];
+          const col = isOut ? '165,243,252' : COLORS[l];
+          const R = (isOut ? 7.5 : l === 0 ? 4 : 4.6) * size * persp;
+          const vis = appear(l) * (isOut ? 1 - clamp01((exitT - 0.3) / 0.1) : 1 - gather * 0.9);
+          if (vis <= 0) return;
+          const fb = fired(l, a);
+          if (fb > 0.01) {
+            ctx.globalCompositeOperation = 'lighter';
+            const glow = ctx.createRadialGradient(x, y, 0, x, y, R * (isOut ? 4 + 6 * fb : 2.5 + 4 * fb));
+            glow.addColorStop(0, `rgba(${col},${0.55 * fb * vis})`);
+            glow.addColorStop(1, `rgba(${col},0)`);
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(x, y, R * (isOut ? 10 : 6.5), 0, Math.PI * 2);
+            ctx.fill();
+            // One ring when the neuron fires.
+            const q = (elapsed - FIRE[l]) / 700;
+            if (q > 0 && q < 1) {
+              ctx.strokeStyle = `rgba(${col},${0.5 * (1 - q) * (0.25 + 0.75 * a) * vis})`;
+              ctx.lineWidth = 1.2;
               ctx.beginPath();
-              ctx.moveTo(prev[0], prev[1]);
-              ctx.lineTo(pt[0], pt[1]);
+              ctx.arc(x, y, R + 22 * size * easeOut(q), 0, Math.PI * 2);
               ctx.stroke();
             }
-            prev = pt;
           }
-        }
-      }
-
-      // Fireflies: stochastic gradient descent, streaming down into the valley.
-      ctx.save();
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.lineCap = 'round';
-      for (const fly of flies) {
-        if (elapsed < fly.bornAt) continue;
-        const [gx, gy] = grad(fly.x, fly.y);
-        // Gradient step plus a little noise: a stochastic descent, like SGD.
-        fly.x -= fly.eta * gx * dt * 2 + (rand() - 0.5) * 0.012 * dt;
-        fly.y -= fly.eta * gy * dt * 2 + (rand() - 0.5) * 0.012 * dt;
-        fly.trail.push([fly.x, fly.y]);
-        if (fly.trail.length > TRAIL) fly.trail.shift();
-        const f = loss(fly.x, fly.y);
-        // Arrived in the valley: fade out, then start again high on the slopes (until the landing).
-        if (f < 0.05 && fly.arrivedAt === null) fly.arrivedAt = elapsed;
-        const gone = fly.arrivedAt === null ? 0 : clamp01((elapsed - fly.arrivedAt) / 600);
-        if (gone >= 1 && exitStart === null) {
-          place(fly, elapsed + rand() * 300);
-          continue;
-        }
-        const low = clamp01(1 - f / 1.2);
-        const born = clamp01((elapsed - fly.bornAt) / 400);
-        const a = born * (1 - gone * 0.8) * (1 - flatten) * (0.35 + 0.55 * low);
-        const col = low > 0.85 ? '220,250,255' : low > 0.5 ? '103,232,249' : '232,121,249';
-        ctx.strokeStyle = `rgba(${col},${a})`;
-        ctx.lineWidth = 1.4 + low;
-        ctx.beginPath();
-        fly.trail.forEach(([tx, ty], i) => {
-          const [px, py] = project(tx, ty, surface(tx, ty) + 0.03);
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        });
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      // Ball: on the timeline while playing, then a quick slide into the minimum during the exit.
-      let bx = tl.x;
-      let by = tl.y;
-      let lift = tl.lift;
-      if (exitStart !== null) {
-        exitFrom ??= [bx, by];
-        const m = easeOut(clamp01(exitT / 0.3));
-        bx = exitFrom[0] * (1 - m);
-        by = exitFrom[1] * (1 - m);
-        lift *= 1 - m;
-      }
-      const ballSurface = (x: number, y: number) => surface(x, y) + 0.04;
-      const alpha = clamp01(elapsed / 250);
-
-      // Trail through the landed steps.
-      ctx.save();
-      ctx.shadowColor = 'rgba(232,121,249,0.9)';
-      ctx.shadowBlur = 10;
-      ctx.strokeStyle = `rgba(240,171,252,${0.9 * alpha * (1 - flatten)})`;
-      ctx.lineWidth = 1.8;
-      ctx.beginPath();
-      for (let i = 0; i <= Math.max(0, tl.landed); i++) {
-        const [px, py] = project(PATH[i][0], PATH[i][1], ballSurface(PATH[i][0], PATH[i][1]));
-        if (i === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-      }
-      const [ballX, ballY] = project(bx, by, ballSurface(bx, by) + lift);
-      ctx.lineTo(ballX, ballY);
-      ctx.stroke();
-      ctx.restore();
-      for (let i = 0; i <= Math.max(0, tl.landed); i++) {
-        const [px, py] = project(PATH[i][0], PATH[i][1], ballSurface(PATH[i][0], PATH[i][1]));
-        ctx.fillStyle = `rgba(240,171,252,${0.9 * alpha * (1 - flatten)})`;
-        ctx.beginPath();
-        ctx.arc(px, py, 2.6, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // −∇f while the ball rests: where the next step will go.
-      if (tl.resting && !tl.converged && exitStart === null) {
-        const [gx, gy] = grad(bx, by);
-        const n = Math.hypot(gx, gy) || 1;
-        const tx = bx - (gx / n) * 0.7;
-        const ty = by - (gy / n) * 0.7;
-        const [ax, ay] = project(tx, ty, ballSurface(tx, ty));
-        const ang = Math.atan2(ay - ballY, ax - ballX);
-        ctx.strokeStyle = 'rgba(103,232,249,0.95)';
-        ctx.lineWidth = 1.8;
-        ctx.beginPath();
-        ctx.moveTo(ballX, ballY);
-        ctx.lineTo(ax, ay);
-        ctx.moveTo(ax, ay);
-        ctx.lineTo(ax - 8 * Math.cos(ang - 0.45), ay - 8 * Math.sin(ang - 0.45));
-        ctx.moveTo(ax, ay);
-        ctx.lineTo(ax - 8 * Math.cos(ang + 0.45), ay - 8 * Math.sin(ang + 0.45));
-        ctx.stroke();
-      }
-
-      // The ball itself.
-      const halo = ctx.createRadialGradient(ballX, ballY, 0, ballX, ballY, 26);
-      halo.addColorStop(0, `rgba(255,255,255,${alpha})`);
-      halo.addColorStop(0.22, `rgba(240,171,252,${0.85 * alpha})`);
-      halo.addColorStop(1, 'rgba(232,121,249,0)');
-      ctx.fillStyle = halo;
-      ctx.beginPath();
-      ctx.arc(ballX, ballY, 26, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Convergence: a flash of light, then rings spreading from the minimum.
-      if (exitStart !== null) {
-        const flash = Math.exp(-5 * exitT) * (1 - flatten * 0.5);
-        const burst = ctx.createRadialGradient(mx, my, 0, mx, my, S * 3.2);
-        burst.addColorStop(0, `rgba(255,255,255,${0.75 * flash})`);
-        burst.addColorStop(0.2, `rgba(103,232,249,${0.35 * flash})`);
-        burst.addColorStop(1, 'rgba(7,7,13,0)');
-        ctx.fillStyle = burst;
-        ctx.fillRect(0, 0, w, h);
-        for (let k = 0; k < 3; k++) {
-          const ring = easeOut(clamp01(exitT * 1.3 - k * 0.12));
-          if (ring <= 0) continue;
-          ctx.strokeStyle = `rgba(${k === 1 ? '232,121,249' : '103,232,249'},${0.7 * (1 - ring)})`;
-          ctx.lineWidth = 2 - k * 0.4;
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.fillStyle = `rgba(12,10,24,${vis})`;
+          ctx.strokeStyle = `rgba(${col},${(0.3 + 0.6 * fb) * vis})`;
+          ctx.lineWidth = 1.2;
           ctx.beginPath();
-          ctx.arc(mx, my, 10 + ring * Math.max(w, h) * (0.5 + k * 0.08), 0, Math.PI * 2);
+          ctx.arc(x, y, R, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          if (fb > 0.01) {
+            ctx.fillStyle = isOut ? `rgba(255,255,255,${fb * vis})` : `rgba(${mix(col.split(',').map(Number), [255, 255, 255], 0.5 * fb)},${fb * vis})`;
+            ctx.beginPath();
+            ctx.arc(x, y, R * 0.62, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }),
+      );
+
+      // Layer names under the columns, and the value of the output once it has fired.
+      const labels = 1 - clamp01(exitT / 0.2);
+      ctx.textAlign = 'center';
+      ctx.font = '500 12px ui-monospace, SFMono-Regular, Menlo, monospace';
+      ['x', 'a¹', 'a²', 'a³', 'ŷ'].forEach((name, l) => {
+        const [lx, ly] = project(layerX(l), -((tallest - 1) / 2) * GAP - 0.3, 0);
+        ctx.fillStyle = `rgba(212,212,216,${(0.22 + 0.45 * clamp01((elapsed - FIRE[l]) / 300)) * appear(l) * labels})`;
+        ctx.fillText(name, lx, ly);
+      });
+      const shown = clamp01((elapsed - FIRE[last]) / 400);
+      if (shown > 0) {
+        ctx.font = '600 13px ui-monospace, SFMono-Regular, Menlo, monospace';
+        ctx.fillStyle = `rgba(255,255,255,${shown * labels})`;
+        ctx.fillText(`ŷ = ${OUTPUT.toFixed(3)}`, ox, oy - 26 * size - 8 * shown);
+      }
+
+      // The network has gathered into the output: a burst of light and one ring.
+      if (exitStart !== null) {
+        ctx.globalCompositeOperation = 'lighter';
+        const burst = Math.exp(-(((exitT - 0.42) / 0.1) ** 2));
+        const flash = ctx.createRadialGradient(ox, oy, 0, ox, oy, Math.min(w, h) * 0.35);
+        flash.addColorStop(0, `rgba(165,243,252,${0.45 * burst})`);
+        flash.addColorStop(1, 'rgba(165,243,252,0)');
+        ctx.fillStyle = flash;
+        ctx.fillRect(0, 0, w, h);
+        const q = clamp01((exitT - 0.4) / 0.5);
+        if (q > 0 && q < 1) {
+          ctx.strokeStyle = `rgba(103,232,249,${0.45 * (1 - q) ** 1.5})`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(ox, oy, 12 + easeOut(q) * Math.max(w, h) * 0.55, 0, Math.PI * 2);
           ctx.stroke();
         }
+        ctx.globalCompositeOperation = 'source-over';
       }
 
       raf = requestAnimationFrame(frame);
@@ -404,31 +366,27 @@ function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
 const BLOOM_SIZE = 96;
 
 /**
- * The brand mark blooming at the minimum once the descent has converged, then flying to the logo
- * of the navigation bar and landing exactly on it: the real logo takes over when the intro unmounts.
+ * The brand mark (itself a tiny network) blooming where the output neuron was, then flying to the
+ * logo of the navigation bar and landing exactly on it: the real logo takes over when the intro unmounts.
  */
-function Bloom() {
+function Bloom({ from }: { from: [number, number] }) {
   const [flight] = useState(() => {
     const r = document.querySelector('[data-brand-logo]')?.getBoundingClientRect();
     if (!r || r.width === 0) return null;
-    return {
-      x: r.left + r.width / 2 - window.innerWidth / 2,
-      y: r.top + r.height / 2 - window.innerHeight * 0.6,
-      scale: r.width / BLOOM_SIZE,
-    };
+    return { x: r.left + r.width / 2 - from[0], y: r.top + r.height / 2 - from[1], scale: r.width / BLOOM_SIZE };
   });
-  const duration = EXIT_MS / 1000;
   return (
     <motion.div
       aria-hidden="true"
-      className="pointer-events-none fixed top-[60%] left-1/2 -mt-12 -ml-12 size-24"
+      style={{ left: from[0], top: from[1] }}
+      className="pointer-events-none fixed -mt-12 -ml-12 size-24"
       initial={{ scale: 0, opacity: 0, rotate: -30, x: 0, y: 0 }}
       animate={
         flight
-          ? { scale: [0, 1.15, 1, 1, flight.scale], opacity: [0, 1, 1, 1, 1], rotate: [-30, 0, 0, 0, 0], x: [0, 0, 0, 0, flight.x], y: [0, 0, 0, 0, flight.y] }
-          : { scale: [0, 1.15, 1, 1.6], opacity: [0, 1, 1, 0], rotate: [-30, 0, 0, 0] }
+          ? { scale: [0, 0, 1.12, 1, 1, flight.scale], opacity: [0, 0, 1, 1, 1, 1], rotate: [-30, -30, 0, 0, 0, 0], x: [0, 0, 0, 0, 0, flight.x], y: [0, 0, 0, 0, 0, flight.y] }
+          : { scale: [0, 0, 1.12, 1, 1.6], opacity: [0, 0, 1, 1, 0], rotate: [-30, -30, 0, 0, 0] }
       }
-      transition={{ duration, times: flight ? [0, 0.2, 0.32, 0.45, 1] : [0, 0.2, 0.45, 1], ease: 'easeInOut' }}
+      transition={{ duration: EXIT_MS / 1000, times: flight ? [0, 0.22, 0.36, 0.44, 0.52, 1] : [0, 0.22, 0.36, 0.52, 1], ease: 'easeInOut' }}
     >
       <BrandMark />
     </motion.div>
@@ -437,8 +395,7 @@ function Bloom() {
 
 function BrandMark() {
   return (
-    <svg viewBox="0 0 32 32" className="size-full drop-shadow-[0_0_30px_rgb(168_85_247/0.9)]">
-
+    <svg viewBox="0 0 32 32" className="size-full drop-shadow-[0_0_30px_rgb(34_211_238/0.8)]">
       <defs>
         <linearGradient id="intro-g" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#c084fc" />
@@ -456,30 +413,34 @@ function BrandMark() {
 }
 
 /**
- * Opening sequence, played once when a visitor lands on the home page: "Convergence".
- * A ball descends a loss landscape by real gradient descent; each step brings a greeting from a
- * country I’ve travelled to, and the counter shows the loss falling to zero. At the minimum the
- * brand mark blooms and the landscape flattens into the page grid. Click, Escape, Enter or Skip land early.
+ * Opening sequence, played once when a visitor lands on the home page: "Signal".
+ * A signal crosses a small neural network, layer by layer, computed by a real forward pass; each
+ * layer it reaches brings a greeting from a country I’ve travelled to. The output fires, the network
+ * gathers into the brand mark and the mark flies to its place in the navigation bar, opening the site.
+ * Click, Escape, Enter or Skip land early.
  */
 export function Intro({ onReveal }: { onReveal: () => void }) {
   const { t, lang } = useLang();
   const [open, setOpen] = useState(true);
-  const [leaving, setLeaving] = useState(false);
-  const [state, setState] = useState(() => timeline(0));
+  const [landing, setLanding] = useState<[number, number] | null>(null);
+  const [stage, setStage] = useState(0);
   const done = useRef(false);
-  const clock = useRef<Clock>({ start: performance.now(), exitStart: null });
+  const bar = useRef<HTMLDivElement>(null);
+  const clock = useRef<Clock>({ start: performance.now(), exitStart: null, out: [window.innerWidth / 2, window.innerHeight / 2] });
   const words = lang === 'fr' ? ['Hello', ...GREETINGS, 'Bonjour'] : ['Bonjour', ...GREETINGS, 'Hello'];
+  const leaving = landing !== null;
 
   const finish = useCallback(() => {
     if (done.current) return;
     done.current = true;
     clock.current.exitStart = performance.now();
-    setLeaving(true);
+    if (bar.current) bar.current.style.transform = 'scaleX(1)';
+    setLanding(clock.current.out);
     onReveal();
     window.setTimeout(() => setOpen(false), EXIT_MS);
   }, [onReveal]);
 
-  // One clock drives the words, the loss readout and the landscape.
+  // One clock drives the greetings, the readouts and the network.
   useEffect(() => {
     try {
       window.sessionStorage.setItem(SEEN_KEY, '1');
@@ -491,7 +452,8 @@ export function Intro({ onReveal }: { onReveal: () => void }) {
     const tick = (now: number) => {
       if (done.current) return;
       const elapsed = now - clock.current.start;
-      setState(timeline(Math.min(elapsed, TOTAL)));
+      setStage(stageAt(elapsed));
+      if (bar.current) bar.current.style.transform = `scaleX(${clamp01(elapsed / TOTAL)})`;
       if (elapsed >= TOTAL) finish();
       else frame = requestAnimationFrame(tick);
     };
@@ -516,34 +478,33 @@ export function Intro({ onReveal }: { onReveal: () => void }) {
   }, [open, finish]);
 
   if (!open) return null;
-  const shownLoss = leaving ? 0 : state.loss;
-  const stepNo = Math.min(6, Math.max(0, state.landed));
+  const received = stage >= LAYERS.length || leaving;
   return (
     <div role="presentation" data-testid="intro" onClick={finish} className="fixed inset-0 z-[65] cursor-pointer text-white">
       <motion.div
         animate={{ opacity: leaving ? 0 : 1 }}
-        // Fade out over the second half of the landing, once the landscape has flattened.
-        transition={{ duration: (EXIT_MS * 0.5) / 1000, delay: leaving ? (EXIT_MS * 0.45) / 1000 : 0, ease: 'easeInOut' }}
+        // Fade out over the second half of the landing, once the network has gathered into the mark.
+        transition={{ duration: (EXIT_MS * 0.45) / 1000, delay: leaving ? (EXIT_MS * 0.5) / 1000 : 0, ease: 'easeInOut' }}
         className="absolute inset-0 bg-ink"
       >
-        <Landscape clock={clock} />
+        <Network clock={clock} />
 
-        {/* Greeting: one per step of the descent. */}
+        {/* Greeting: one per layer reached by the signal. */}
         <motion.div
           animate={{ opacity: leaving ? 0 : 1, y: leaving ? -20 : 0 }}
           transition={{ duration: 0.35 }}
           className="pointer-events-none absolute inset-x-0 top-[13%] flex justify-center px-6"
         >
           <p className="flex items-center gap-4 text-5xl font-semibold tracking-tight sm:text-7xl" aria-live="off">
-            <span aria-hidden="true" className="size-3 shrink-0 rounded-full bg-fuchsia-300 shadow-[0_0_18px_4px_rgb(232_121_249/0.7)] sm:size-4" />
+            <span aria-hidden="true" className="size-3 shrink-0 rounded-full bg-cyan-300 shadow-[0_0_18px_4px_rgb(34_211_238/0.7)] sm:size-4" />
             <motion.span
-              key={state.word}
+              key={stage}
               initial={{ y: -14, opacity: 0, filter: 'blur(8px)' }}
               animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-              transition={{ duration: state.word === 0 ? 0.5 : 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className={`pb-2 drop-shadow-[0_0_24px_rgb(0_0_0/0.9)] ${state.word === words.length - 1 ? 'text-shine' : ''}`}
+              transition={{ duration: stage === 0 ? 0.6 : 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className={`pb-2 drop-shadow-[0_0_24px_rgb(0_0_0/0.9)] ${stage === words.length - 1 ? 'text-shine' : ''}`}
             >
-              {words[state.word]}
+              {words[stage]}
             </motion.span>
           </p>
         </motion.div>
@@ -551,24 +512,21 @@ export function Intro({ onReveal }: { onReveal: () => void }) {
         {/* Readouts */}
         <motion.div animate={{ opacity: leaving ? 0 : 1 }} transition={{ duration: 0.3 }} className="pointer-events-none">
           <div className="absolute top-5 left-5 font-mono text-[11px] leading-relaxed text-zinc-400 sm:top-8 sm:left-10">
-            <p className="tracking-[0.25em] text-fuchsia-300 uppercase">∇ {t('intro.method')}</p>
-            <p className="mt-1 text-zinc-200">θ ← θ − η·∇f(θ)</p>
-            <p>η = {LEARNING_RATE.toFixed(1)}</p>
+            <p className="tracking-[0.25em] text-cyan-300 uppercase">→ {t('intro.method')}</p>
+            <p className="mt-1 text-zinc-200">a[l] = σ(W[l]·a[l−1] + b[l])</p>
+            <p>σ(z) = 1 / (1 + e⁻ᶻ)</p>
           </div>
           <div className="absolute bottom-7 left-5 font-mono text-xs text-zinc-400 sm:bottom-10 sm:left-10">
-            <p className={state.converged ? 'text-emerald-300' : ''}>
-              {state.converged ? `✓ ${t('intro.converged')}` : `${t('intro.step')} ${stepNo}/6`}
+            <p className={received ? 'text-emerald-300' : ''}>
+              {received ? `✓ ${t('intro.received')}` : `${t('intro.layer')} ${Math.max(0, stage - 1)}/${LAYERS.length - 1}`}
             </p>
             <p className="mt-1 tracking-[0.25em] uppercase">Robin Canovas · Portfolio</p>
           </div>
-          <div className="absolute right-5 bottom-7 text-right sm:right-10 sm:bottom-10" aria-hidden="true">
-            <p className="font-mono text-[11px] tracking-[0.25em] text-zinc-400 uppercase">{t('intro.loss')}</p>
-            <p className="font-mono text-4xl font-bold text-white tabular-nums sm:text-6xl">{shownLoss.toFixed(3)}</p>
-          </div>
           <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-white/10">
             <div
-              className="h-full origin-left bg-gradient-to-r from-fuchsia-500 via-violet-400 to-cyan-400 shadow-[0_0_12px_rgb(34_211_238)]"
-              style={{ transform: `scaleX(${1 - shownLoss / LOSS0})` }}
+              ref={bar}
+              className="h-full origin-left bg-gradient-to-r from-violet-400 to-cyan-400 shadow-[0_0_12px_rgb(34_211_238)]"
+              style={{ transform: 'scaleX(0)' }}
             />
           </div>
         </motion.div>
@@ -585,8 +543,8 @@ export function Intro({ onReveal }: { onReveal: () => void }) {
         </button>
       </motion.div>
 
-      {/* The mark blooms at the minimum, then lands on the navigation logo (outside the fading layer). */}
-      {leaving && <Bloom />}
+      {/* The mark blooms where the output neuron was, then lands on the navigation logo (outside the fading layer). */}
+      {landing && <Bloom from={landing} />}
     </div>
   );
 }
