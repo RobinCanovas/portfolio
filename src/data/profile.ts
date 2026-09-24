@@ -442,6 +442,114 @@ export const projects: Project[] = [
     demo: 'gradient',
   },
   {
+    id: 'neural-network',
+    featured: true,
+    title: 'A neural network built by hand in Python',
+    context: 'Personal · Deep learning, Machine Learnia course',
+    year: '2026',
+    description:
+      'An artificial neuron, then a 2-layer network and a deep network, written with NumPy only: every derivative worked out by hand, following the Deep Learning course of the Machine Learnia channel.',
+    problem:
+      'Understand what really happens inside a neural network, without a library doing it for me: how a neuron decides, how it learns from its mistakes, and why several layers solve what a single neuron cannot.',
+    outcome: [
+      'An artificial neuron (sigmoid and log loss) trained by gradient descent, with its decision boundary.',
+      'Applied to real images: cats vs dogs, 64×64 pixels flattened into 4,096 inputs, normalised, with train and test curves.',
+      'A 2-layer network with forward and back propagation, which separates concentric circles where a single neuron fails.',
+      'Generalised to a deep network with any number of layers, all vectorised with NumPy.',
+    ],
+    highlights: ['Sigmoid and log loss', 'Gradients derived by hand', 'Forward and back propagation', 'NumPy vectorisation'],
+    build: [
+      { icon: 'cpu', title: 'Neuron', detail: 'z = w·x + b, then a = σ(z): a probability between 0 and 1.' },
+      { icon: 'search', title: 'Log loss', detail: 'Measures how wrong the predictions are, and punishes confident mistakes hard.' },
+      { icon: 'code', title: 'Gradients', detail: 'Chain rule: every derivative simplifies to (a − y).' },
+      { icon: 'rocket', title: 'Gradient descent', detail: 'W ← W − α·∂L/∂W, over hundreds of iterations.' },
+      { icon: 'layout', title: 'Layers', detail: 'Forward propagation layer by layer, then the error flows back.' },
+      { icon: 'check', title: 'Evaluation', detail: 'Learning curves, accuracy, train and test sets to spot overfitting.' },
+    ],
+    stack: ['Python', 'Maths', 'AI'],
+    demo: 'neural',
+    maths: [
+      {
+        title: 'The artificial neuron',
+        formula: 'z = w₁x₁ + w₂x₂ + b      a = σ(z) = 1 / (1 + e⁻ᶻ)',
+        text: 'A weighted sum of the inputs, squashed by the sigmoid into a probability. The frontier a = 0.5 is the line w·x + b = 0: one neuron can only draw a straight line.',
+      },
+      {
+        title: 'The cost: log loss',
+        formula: 'L = −(1/m) Σ [ y·log(a) + (1 − y)·log(1 − a) ]',
+        text: 'Comes from the likelihood of a Bernoulli law. It punishes a confident wrong answer very hard, and its derivative stays remarkably simple.',
+      },
+      {
+        title: 'The gradients',
+        formula: '∂L/∂w = (1/m)·Xᵀ(a − y)      ∂L/∂b = (1/m)·Σ(a − y)',
+        text: 'Chain rule ∂L/∂a · ∂a/∂z · ∂z/∂w, with σ′(z) = σ(z)(1 − σ(z)): the terms cancel out and only the error (a − y) remains.',
+      },
+      {
+        title: 'Gradient descent',
+        formula: 'w ← w − α·∂L/∂w      b ← b − α·∂L/∂b',
+        text: 'α is the learning rate. Too small and learning crawls, too large and the loss diverges: the demo lets you try both.',
+      },
+      {
+        title: 'Vectorisation',
+        formula: 'Z = W·X + b      X of shape (n, m)',
+        text: 'All m examples at once with matrix products instead of a Python loop: much faster, and the same code for 2 inputs or 4,096 pixels.',
+      },
+      {
+        title: 'Back-propagation (2 layers)',
+        formula: 'dZ² = A² − y      dZ¹ = W²ᵀ·dZ² ⊙ A¹(1 − A¹)      dW = (1/m)·dZ·Aᵀ',
+        text: 'The output error flows back through the network, layer by layer. Each layer receives its own gradients, then all weights are updated together.',
+      },
+    ],
+    snippet: {
+      language: 'python',
+      filename: 'neural_network.py',
+      code: `import numpy as np
+
+def sigmoid(Z):
+    return 1 / (1 + np.exp(-Z))
+
+def initialisation(n0, n1, n2):
+    return {'W1': np.random.randn(n1, n0), 'b1': np.zeros((n1, 1)),
+            'W2': np.random.randn(n2, n1), 'b2': np.zeros((n2, 1))}
+
+def forward_propagation(X, p):
+    A1 = sigmoid(p['W1'] @ X + p['b1'])
+    A2 = sigmoid(p['W2'] @ A1 + p['b2'])
+    return A1, A2
+
+def log_loss(A, y, eps=1e-15):
+    return -np.mean(y * np.log(A + eps) + (1 - y) * np.log(1 - A + eps))
+
+def back_propagation(X, y, p, A1, A2):
+    m = y.shape[1]
+    dZ2 = A2 - y
+    dZ1 = (p['W2'].T @ dZ2) * A1 * (1 - A1)
+    return {'W2': dZ2 @ A1.T / m, 'b2': dZ2.sum(axis=1, keepdims=True) / m,
+            'W1': dZ1 @ X.T / m,  'b1': dZ1.sum(axis=1, keepdims=True) / m}
+
+def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
+    p = initialisation(X.shape[0], n1, y.shape[0])
+    for i in range(n_iter):
+        A1, A2 = forward_propagation(X, p)
+        gradients = back_propagation(X, y, p, A1, A2)
+        for k in p:
+            p[k] -= learning_rate * gradients[k]
+    return p`,
+    },
+    course: {
+      name: 'Formation Deep Learning',
+      author: 'Guillaume Saint-Cirgue · Machine Learnia',
+      url: 'https://www.youtube.com/@MachineLearnia',
+      steps: [
+        'The perceptron and the artificial neuron.',
+        'Gradients of a neuron: log loss and gradient descent.',
+        'A first neuron in Python, then cats vs dogs on real images.',
+        'The 2-layer network: forward propagation and back-propagation.',
+        'Deep networks with any number of layers.',
+      ],
+    },
+  },
+  {
     id: 'subnet-calculator',
     title: 'IPv4 subnet calculator',
     context: 'Personal · Networks',

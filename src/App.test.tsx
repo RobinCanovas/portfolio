@@ -88,6 +88,11 @@ describe('<App />', () => {
     expect(await screen.findByRole('heading', { name: 'Gradient descent on a linear regression' })).toBeInTheDocument();
     goTo('#/projects/acelys-deploy');
     expect(await screen.findByRole('heading', { name: 'Deployment pipeline' })).toBeInTheDocument();
+    goTo('#/projects/neural-network');
+    expect(await screen.findByRole('heading', { name: 'A neural network learning live' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'How it learns' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'The course I followed' })).toBeInTheDocument();
+    expect(screen.getByText('neural_network.py')).toBeInTheDocument();
     expect(document.getElementById('lab')).toBeNull();
   });
 

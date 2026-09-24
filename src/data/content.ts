@@ -30,7 +30,15 @@ function localizeExperience(e: Experience): Experience {
 function localizeProject(p: Project): Project {
   const o = fr.projects[p.id];
   if (!o) return p;
-  return { ...p, ...o, build: p.build.map((step, i) => ({ ...step, ...o.build[i] })), confidential: o.confidential ?? p.confidential };
+  return {
+    ...p,
+    ...o,
+    build: p.build.map((step, i) => ({ ...step, ...o.build[i] })),
+    confidential: o.confidential ?? p.confidential,
+    // Formulas are shared; only titles and explanations are translated.
+    maths: p.maths?.map((note, i) => ({ ...note, ...o.maths?.[i] })),
+    course: p.course && { ...p.course, ...o.course },
+  };
 }
 
 function localizeEducation(ed: Education): Education {
