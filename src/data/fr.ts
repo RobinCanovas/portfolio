@@ -26,6 +26,9 @@ export interface FrOverlay {
       highlights: string[];
       build: { title: string; detail: string }[];
       confidential?: string;
+      /** Same order as the English maths notes; formulas are shared. */
+      maths?: { title: string; text: string }[];
+      course?: { steps: string[] };
     }
   >;
   education: Record<string, { school?: string; degree: string; details: string[] }>;
@@ -282,6 +285,64 @@ export const fr: FrOverlay = {
         { title: 'Gradient', detail: 'Dérivées partielles de l’erreur par rapport à w et b.' },
         { title: 'Mise à jour', detail: 'θ ← θ − η·∇E, répété jusqu’à ce que l’erreur ne baisse plus.' },
       ],
+    },
+    'neural-network': {
+      title: 'Un réseau de neurones codé à la main en Python',
+      context: 'Personnel · Deep learning, formation Machine Learnia',
+      description:
+        'Un neurone artificiel, puis un réseau à 2 couches et un réseau profond, écrits avec NumPy seulement : chaque dérivée calculée à la main, en suivant la formation Deep Learning de la chaîne Machine Learnia.',
+      problem:
+        'Comprendre ce qui se passe vraiment dans un réseau de neurones, sans bibliothèque qui le fait à ma place : comment un neurone décide, comment il apprend de ses erreurs, et pourquoi plusieurs couches résolvent ce qu’un neurone seul ne peut pas.',
+      outcome: [
+        'Un neurone artificiel (sigmoïde et log loss) entraîné par descente de gradient, avec sa frontière de décision.',
+        'Appliqué à de vraies images : chats contre chiens, 64×64 pixels aplatis en 4 096 entrées, normalisés, avec courbes d’entraînement et de test.',
+        'Un réseau à 2 couches avec propagation avant et rétropropagation, qui sépare des cercles concentriques là où un neurone seul échoue.',
+        'Généralisé à un réseau profond avec autant de couches que voulu, entièrement vectorisé avec NumPy.',
+      ],
+      highlights: ['Sigmoïde et log loss', 'Gradients dérivés à la main', 'Propagation avant et rétropropagation', 'Vectorisation NumPy'],
+      build: [
+        { title: 'Neurone', detail: 'z = w·x + b, puis a = σ(z) : une probabilité entre 0 et 1.' },
+        { title: 'Log loss', detail: 'Mesure à quel point les prédictions se trompent, et punit fort les erreurs sûres d’elles.' },
+        { title: 'Gradients', detail: 'Dérivation en chaîne : chaque dérivée se simplifie en (a − y).' },
+        { title: 'Descente de gradient', detail: 'W ← W − α·∂L/∂W, sur des centaines d’itérations.' },
+        { title: 'Couches', detail: 'Propagation avant couche par couche, puis l’erreur remonte le réseau.' },
+        { title: 'Évaluation', detail: 'Courbes d’apprentissage, taux de réussite, jeux d’entraînement et de test contre le surapprentissage.' },
+      ],
+      maths: [
+        {
+          title: 'Le neurone artificiel',
+          text: 'Une somme pondérée des entrées, écrasée par la sigmoïde en probabilité. La frontière a = 0,5 est la droite w·x + b = 0 : un neurone seul ne sait tracer qu’une droite.',
+        },
+        {
+          title: 'Le coût : la log loss',
+          text: 'Elle découle de la vraisemblance d’une loi de Bernoulli. Elle punit très fort une mauvaise réponse donnée avec assurance, et sa dérivée reste remarquablement simple.',
+        },
+        {
+          title: 'Les gradients',
+          text: 'Dérivation en chaîne ∂L/∂a · ∂a/∂z · ∂z/∂w, avec σ′(z) = σ(z)(1 − σ(z)) : les termes se simplifient et il ne reste que l’erreur (a − y).',
+        },
+        {
+          title: 'La descente de gradient',
+          text: 'α est le taux d’apprentissage. Trop petit, l’apprentissage se traîne ; trop grand, la log loss diverge : la démo permet d’essayer les deux.',
+        },
+        {
+          title: 'La vectorisation',
+          text: 'Les m exemples d’un coup avec des produits matriciels au lieu d’une boucle Python : bien plus rapide, et le même code pour 2 entrées ou 4 096 pixels.',
+        },
+        {
+          title: 'La rétropropagation (2 couches)',
+          text: 'L’erreur de sortie remonte le réseau couche par couche. Chaque couche reçoit ses propres gradients, puis tous les poids sont mis à jour ensemble.',
+        },
+      ],
+      course: {
+        steps: [
+          'Le perceptron et le neurone artificiel.',
+          'Les gradients d’un neurone : log loss et descente de gradient.',
+          'Un premier neurone en Python, puis chats contre chiens sur de vraies images.',
+          'Le réseau à 2 couches : propagation avant et rétropropagation.',
+          'Les réseaux profonds, avec autant de couches que voulu.',
+        ],
+      },
     },
     'subnet-calculator': {
       title: 'Calculateur de sous-réseau IPv4',
