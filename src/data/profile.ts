@@ -15,7 +15,7 @@ export const profile = {
   pitch:
     'I turn business requirements into secure, reliable software, and I’m building a generalist profile for banking and consulting. After a mission on a BNP Paribas group subsidiary’s platform, my next steps are university, then an ambitious master’s-level degree.',
   ambition: 'Long-term goal: banking & IT consulting, where rigour, security and business understanding matter as much as code.',
-  avatar: './avatar.jpg',
+  avatar: './robin-canovas.jpg',
 };
 
 /**

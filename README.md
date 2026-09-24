@@ -29,7 +29,7 @@ npm run preview    # sert dist/ en local
 | --- | --- |
 | Textes, expériences, projets, compétences, liens | `src/data/profile.ts` |
 | Logos d'entreprise (fichiers locaux) | `public/logos/` (via `npm run logos`, ou déposer les vôtres) |
-| CV / photo | `public/Robin-Canovas-CV.pdf`, `public/avatar.jpg` |
+| CV / photo | `public/Robin-Canovas-CV.pdf`, `public/robin-canovas.jpg` |
 | Démos de projets statiques | `public/projects/` |
 | Menus déroulants | `src/components/Navbar.tsx` |
 | Palette de commandes (Ctrl K) | `src/components/CommandPalette.tsx` |
