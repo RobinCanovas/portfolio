@@ -107,11 +107,15 @@ const LINES = 25;
 const SAMPLES = 48;
 const HEIGHT = 0.55;
 const DIST = 9;
+const FIREFLIES = 220;
+const TRAIL = 6;
 
 /**
- * Wireframe loss landscape seen from above at an angle, slowly turning. The ball follows the gradient
- * descent, leaving a trail and showing −∇f while it rests. On exit the landscape flattens and the camera
- * rises to a top-down view: the surface becomes a plain grid, like the page background.
+ * Night scene: a wireframe loss landscape under a starry sky, seen by a slow cinematic camera.
+ * Hundreds of fireflies each run their own gradient descent and stream down into the valley like
+ * luminous water; the main ball follows the step-by-step descent, leaving a trail and showing −∇f
+ * while it rests. At convergence a flash and a ripple cross the surface, then the landscape flattens
+ * and the camera rises to a top-down view: the surface becomes a plain grid, like the page background.
  */
 function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -133,58 +137,105 @@ function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
     };
     resize();
 
+    // Deterministic randomness, so the scene is the same on every visit.
+    let seed = 7;
+    const rand = () => {
+      seed = (seed * 16807) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
+    const stars = Array.from({ length: 140 }, () => ({ x: rand(), y: rand() * 0.55, r: 0.4 + rand() * 1.1, phase: rand() * 6.28 }));
+    // Fireflies start on the slopes, far from the minimum, each with its own learning rate.
+    type Fly = { x: number; y: number; eta: number; bornAt: number; arrivedAt: number | null; trail: [number, number][] };
+    const place = (fly: Fly, bornAt: number) => {
+      const a = rand() * Math.PI * 2;
+      const r = 1.6 + rand() * 1.5;
+      fly.x = Math.cos(a) * r;
+      fly.y = Math.sin(a) * r;
+      fly.eta = 0.012 + rand() * 0.016;
+      fly.bornAt = bornAt;
+      fly.arrivedAt = null;
+      fly.trail = [[fly.x, fly.y]];
+      return fly;
+    };
+    const flies = Array.from({ length: FIREFLIES }, () => place({} as Fly, 200 + rand() * 900));
+
     // Ball position when the exit started (the dive to the minimum starts from there).
     let exitFrom: [number, number] | null = null;
     let raf = 0;
+    let last = performance.now();
 
     const frame = (now: number) => {
+      const dt = Math.min(3, (now - last) / 16.7);
+      last = now;
       const { start, exitStart } = clock.current;
       const elapsed = now - start;
+      const play = clamp01(elapsed / TOTAL);
       const exitT = exitStart === null ? 0 : clamp01((now - exitStart) / EXIT_MS);
       const tl = timeline(Math.min(elapsed, TOTAL));
 
-      const flatten = easeInOut(clamp01(exitT / 0.75));
+      const flatten = easeInOut(clamp01((exitT - 0.15) / 0.65));
       const H = HEIGHT * (1 - flatten);
-      // The valley runs away from the camera: the ball starts far back and zig-zags toward the viewer.
-      const yaw = 2.2 + 0.28 * clamp01(elapsed / TOTAL) + 0.2 * flatten;
-      const elev = (0.62 + 0.08 * clamp01(elapsed / TOTAL)) * (1 - flatten) + (Math.PI / 2) * flatten;
+      // Cinematic camera: a slow orbit and dolly in, then it rises to a top-down view on exit.
+      const yaw = 2.2 + 0.32 * easeInOut(play) + 0.2 * flatten;
+      const elev = (0.52 + 0.18 * easeInOut(play)) * (1 - flatten) + (Math.PI / 2) * flatten;
       const cosY = Math.cos(yaw);
       const sinY = Math.sin(yaw);
       const cosE = Math.cos(elev);
       const sinE = Math.sin(elev);
-      const S = 0.12 * Math.min(w, h * 1.6) * (1 + 0.25 * flatten);
+      const S = 0.12 * Math.min(w, h * 1.6) * (0.94 + 0.1 * easeInOut(play) + 0.22 * flatten);
       const cx = w / 2;
       const cy = h * 0.6;
 
-      const project = (x: number, y: number, z: number): [number, number] => {
+      // Convergence ripple: a wave running across the surface, fading fast.
+      const rt = exitStart === null ? -1 : (now - exitStart) / 1000;
+      const ripple = (r: number) => (rt < 0 ? 0 : 0.32 * Math.sin(6 * r - 13 * rt) * Math.exp(-0.5 * r) * Math.exp(-2.6 * rt) * (r < rt * 2.2 ? 1 : 0));
+      const surface = (x: number, y: number) => loss(x, y) * H + ripple(Math.hypot(x, y));
+
+      const project = (x: number, y: number, z: number): [number, number, number] => {
         const xr = x * cosY - y * sinY;
         const yr = x * sinY + y * cosY;
         const c = -yr * cosE + z * sinE;
         const p = S * (DIST / (DIST - c));
-        return [cx + xr * p, cy - (yr * sinE + z * cosE) * p];
+        return [cx + xr * p, cy - (yr * sinE + z * cosE) * p, c];
       };
+      const fog = (c: number) => clamp01(0.3 + (0.7 * (c + 2.6)) / 5.2);
 
-      ctx.fillStyle = '#0a0a10';
+      // Night sky.
+      ctx.fillStyle = '#07070d';
       ctx.fillRect(0, 0, w, h);
-
-      // Soft glow under the valley floor.
+      for (const s of stars) {
+        const tw = 0.45 + 0.55 * Math.sin(now / 600 + s.phase);
+        ctx.fillStyle = `rgba(226,232,255,${0.55 * tw * (1 - flatten)})`;
+        ctx.beginPath();
+        ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // Glow of the horizon behind the landscape, and of the valley floor.
+      const hx = cx;
+      const hy = cy - S * 2.3;
+      const horizon = ctx.createRadialGradient(hx, hy, 0, hx, hy, Math.max(w, h) * 0.55);
+      horizon.addColorStop(0, `rgba(192,38,211,${0.28 * (1 - flatten)})`);
+      horizon.addColorStop(0.4, `rgba(124,58,237,${0.12 * (1 - flatten)})`);
+      horizon.addColorStop(1, 'rgba(7,7,13,0)');
+      ctx.fillStyle = horizon;
+      ctx.fillRect(0, 0, w, h);
       const [mx, my] = project(0, 0, 0);
-      const glow = ctx.createRadialGradient(mx, my, 0, mx, my, S * 2.6);
-      glow.addColorStop(0, 'rgba(168,85,247,0.22)');
-      glow.addColorStop(0.5, 'rgba(34,211,238,0.06)');
-      glow.addColorStop(1, 'rgba(10,10,16,0)');
-      ctx.fillStyle = glow;
+      const valley = ctx.createRadialGradient(mx, my, 0, mx, my, S * 2.6);
+      valley.addColorStop(0, 'rgba(34,211,238,0.2)');
+      valley.addColorStop(0.5, 'rgba(168,85,247,0.07)');
+      valley.addColorStop(1, 'rgba(7,7,13,0)');
+      ctx.fillStyle = valley;
       ctx.fillRect(0, 0, w, h);
 
-      // Wireframe: lines along x and along y, coloured by height (cyan valley, violet ridges),
-      // fading out toward a circular edge.
+      // Wireframe: coloured by height (cyan valley, violet ridges), fading into the fog far away
+      // and toward a circular edge.
       ctx.lineWidth = 1;
       const step = (2 * EXTENT) / (LINES - 1);
       const sub = (2 * EXTENT) / SAMPLES;
       for (let dir = 0; dir < 2; dir++) {
         for (let l = 0; l < LINES; l++) {
           const fixed = -EXTENT + l * step;
-          let prev: [number, number] | null = null;
+          let prev: [number, number, number] | null = null;
           for (let k = 0; k <= SAMPLES; k++) {
             const t = -EXTENT + k * sub;
             const x = dir === 0 ? t : fixed;
@@ -196,13 +247,13 @@ function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
               continue;
             }
             const f = loss(x, y);
-            const pt = project(x, y, f * H);
+            const pt = project(x, y, f * H + ripple(r));
             if (prev) {
               const hn = clamp01(f / 2.2);
               const red = Math.round(34 + (168 - 34) * hn);
               const green = Math.round(211 + (85 - 211) * hn);
               const blue = Math.round(238 + (247 - 238) * hn);
-              ctx.strokeStyle = `rgba(${red},${green},${blue},${(0.28 + 0.5 * (1 - hn)) * fade * (1 - 0.6 * flatten)})`;
+              ctx.strokeStyle = `rgba(${red},${green},${blue},${(0.3 + 0.5 * (1 - hn)) * fade * fog(pt[2]) * (1 - 0.6 * flatten)})`;
               ctx.beginPath();
               ctx.moveTo(prev[0], prev[1]);
               ctx.lineTo(pt[0], pt[1]);
@@ -213,41 +264,77 @@ function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
         }
       }
 
+      // Fireflies: stochastic gradient descent, streaming down into the valley.
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.lineCap = 'round';
+      for (const fly of flies) {
+        if (elapsed < fly.bornAt) continue;
+        const [gx, gy] = grad(fly.x, fly.y);
+        // Gradient step plus a little noise: a stochastic descent, like SGD.
+        fly.x -= fly.eta * gx * dt * 2 + (rand() - 0.5) * 0.012 * dt;
+        fly.y -= fly.eta * gy * dt * 2 + (rand() - 0.5) * 0.012 * dt;
+        fly.trail.push([fly.x, fly.y]);
+        if (fly.trail.length > TRAIL) fly.trail.shift();
+        const f = loss(fly.x, fly.y);
+        // Arrived in the valley: fade out, then start again high on the slopes (until the landing).
+        if (f < 0.05 && fly.arrivedAt === null) fly.arrivedAt = elapsed;
+        const gone = fly.arrivedAt === null ? 0 : clamp01((elapsed - fly.arrivedAt) / 600);
+        if (gone >= 1 && exitStart === null) {
+          place(fly, elapsed + rand() * 300);
+          continue;
+        }
+        const low = clamp01(1 - f / 1.2);
+        const born = clamp01((elapsed - fly.bornAt) / 400);
+        const a = born * (1 - gone * 0.8) * (1 - flatten) * (0.35 + 0.55 * low);
+        const col = low > 0.85 ? '220,250,255' : low > 0.5 ? '103,232,249' : '232,121,249';
+        ctx.strokeStyle = `rgba(${col},${a})`;
+        ctx.lineWidth = 1.4 + low;
+        ctx.beginPath();
+        fly.trail.forEach(([tx, ty], i) => {
+          const [px, py] = project(tx, ty, surface(tx, ty) + 0.03);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        });
+        ctx.stroke();
+      }
+      ctx.restore();
+
       // Ball: on the timeline while playing, then a quick slide into the minimum during the exit.
       let bx = tl.x;
       let by = tl.y;
       let lift = tl.lift;
       if (exitStart !== null) {
         exitFrom ??= [bx, by];
-        const m = easeOut(clamp01(exitT / 0.45));
+        const m = easeOut(clamp01(exitT / 0.3));
         bx = exitFrom[0] * (1 - m);
         by = exitFrom[1] * (1 - m);
         lift *= 1 - m;
       }
-      const surface = (x: number, y: number) => loss(x, y) * H + 0.04;
+      const ballSurface = (x: number, y: number) => surface(x, y) + 0.04;
       const alpha = clamp01(elapsed / 250);
 
       // Trail through the landed steps.
       ctx.save();
       ctx.shadowColor = 'rgba(232,121,249,0.9)';
       ctx.shadowBlur = 10;
-      ctx.strokeStyle = `rgba(240,171,252,${0.85 * alpha * (1 - flatten)})`;
-      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = `rgba(240,171,252,${0.9 * alpha * (1 - flatten)})`;
+      ctx.lineWidth = 1.8;
       ctx.beginPath();
       for (let i = 0; i <= Math.max(0, tl.landed); i++) {
-        const [px, py] = project(PATH[i][0], PATH[i][1], surface(PATH[i][0], PATH[i][1]));
+        const [px, py] = project(PATH[i][0], PATH[i][1], ballSurface(PATH[i][0], PATH[i][1]));
         if (i === 0) ctx.moveTo(px, py);
         else ctx.lineTo(px, py);
       }
-      const [ballX, ballY] = project(bx, by, surface(bx, by) + lift);
+      const [ballX, ballY] = project(bx, by, ballSurface(bx, by) + lift);
       ctx.lineTo(ballX, ballY);
       ctx.stroke();
       ctx.restore();
       for (let i = 0; i <= Math.max(0, tl.landed); i++) {
-        const [px, py] = project(PATH[i][0], PATH[i][1], surface(PATH[i][0], PATH[i][1]));
+        const [px, py] = project(PATH[i][0], PATH[i][1], ballSurface(PATH[i][0], PATH[i][1]));
         ctx.fillStyle = `rgba(240,171,252,${0.9 * alpha * (1 - flatten)})`;
         ctx.beginPath();
-        ctx.arc(px, py, 2.4, 0, Math.PI * 2);
+        ctx.arc(px, py, 2.6, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -257,10 +344,10 @@ function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
         const n = Math.hypot(gx, gy) || 1;
         const tx = bx - (gx / n) * 0.7;
         const ty = by - (gy / n) * 0.7;
-        const [ax, ay] = project(tx, ty, surface(tx, ty));
+        const [ax, ay] = project(tx, ty, ballSurface(tx, ty));
         const ang = Math.atan2(ay - ballY, ax - ballX);
-        ctx.strokeStyle = 'rgba(103,232,249,0.9)';
-        ctx.lineWidth = 1.6;
+        ctx.strokeStyle = 'rgba(103,232,249,0.95)';
+        ctx.lineWidth = 1.8;
         ctx.beginPath();
         ctx.moveTo(ballX, ballY);
         ctx.lineTo(ax, ay);
@@ -272,23 +359,33 @@ function Landscape({ clock }: { clock: MutableRefObject<Clock> }) {
       }
 
       // The ball itself.
-      const halo = ctx.createRadialGradient(ballX, ballY, 0, ballX, ballY, 22);
+      const halo = ctx.createRadialGradient(ballX, ballY, 0, ballX, ballY, 26);
       halo.addColorStop(0, `rgba(255,255,255,${alpha})`);
-      halo.addColorStop(0.25, `rgba(240,171,252,${0.8 * alpha})`);
+      halo.addColorStop(0.22, `rgba(240,171,252,${0.85 * alpha})`);
       halo.addColorStop(1, 'rgba(232,121,249,0)');
       ctx.fillStyle = halo;
       ctx.beginPath();
-      ctx.arc(ballX, ballY, 22, 0, Math.PI * 2);
+      ctx.arc(ballX, ballY, 26, 0, Math.PI * 2);
       ctx.fill();
 
-      // Convergence: a ring of light spreading from the minimum.
+      // Convergence: a flash of light, then rings spreading from the minimum.
       if (exitStart !== null) {
-        const ring = easeOut(exitT);
-        ctx.strokeStyle = `rgba(103,232,249,${0.8 * (1 - ring)})`;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(mx, my, 10 + ring * Math.max(w, h) * 0.5, 0, Math.PI * 2);
-        ctx.stroke();
+        const flash = Math.exp(-5 * exitT) * (1 - flatten * 0.5);
+        const burst = ctx.createRadialGradient(mx, my, 0, mx, my, S * 3.2);
+        burst.addColorStop(0, `rgba(255,255,255,${0.75 * flash})`);
+        burst.addColorStop(0.2, `rgba(103,232,249,${0.35 * flash})`);
+        burst.addColorStop(1, 'rgba(7,7,13,0)');
+        ctx.fillStyle = burst;
+        ctx.fillRect(0, 0, w, h);
+        for (let k = 0; k < 3; k++) {
+          const ring = easeOut(clamp01(exitT * 1.3 - k * 0.12));
+          if (ring <= 0) continue;
+          ctx.strokeStyle = `rgba(${k === 1 ? '232,121,249' : '103,232,249'},${0.7 * (1 - ring)})`;
+          ctx.lineWidth = 2 - k * 0.4;
+          ctx.beginPath();
+          ctx.arc(mx, my, 10 + ring * Math.max(w, h) * (0.5 + k * 0.08), 0, Math.PI * 2);
+          ctx.stroke();
+        }
       }
 
       raf = requestAnimationFrame(frame);
