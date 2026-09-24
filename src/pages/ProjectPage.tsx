@@ -8,6 +8,7 @@ import { DevicePreview } from '../components/demos/DevicePreview';
 import { DeployPipeline } from '../components/lab/DeployPipeline';
 import { GradientDescent } from '../components/lab/GradientDescent';
 import { SubnetCalculator } from '../components/lab/SubnetCalculator';
+import { ProjectArt } from '../components/ProjectArt';
 import { ShareButton } from '../components/ShareButton';
 import { TechIcon } from '../components/TechIcon';
 import { CompanyLogo, LogoTile } from '../components/ui';
@@ -57,25 +58,36 @@ export function ProjectPage({ id }: { id: string }) {
             </a>
             <ShareButton title={`${project.title} · Robin Canovas`} />
           </div>
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} className="mt-8">
-            <div className="flex flex-wrap items-center gap-3">
-              {exp && <CompanyLogo company={exp.company} size={44} />}
-              {exp?.client && <LogoTile sources={exp.client.logos} name={exp.client.name} size={44} fallback={null} />}
-              {exp?.client?.parent && <LogoTile sources={exp.client.parent.logos} name={exp.client.parent.name} size={44} fallback={null} />}
-              <p className="font-mono text-xs tracking-[0.2em] text-cyan-300 uppercase">
-                {project.context} · {project.year}
-              </p>
-            </div>
-            <h1 className="mt-4 max-w-4xl text-4xl font-extrabold tracking-tight text-white sm:text-6xl">{project.title}</h1>
-            <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-300">{project.description}</p>
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {project.stack.map((tech) => (
-                <li key={tech} className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-xs text-zinc-300">
-                  <TechIcon tech={tech} className="size-3.5" /> {c.tech(tech)}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+          <div className="mt-8 grid items-center gap-10 lg:grid-cols-[1.35fr_1fr]">
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
+              <div className="flex flex-wrap items-center gap-3">
+                {exp && <CompanyLogo company={exp.company} size={44} />}
+                {exp?.client && <LogoTile sources={exp.client.logos} name={exp.client.name} size={44} fallback={null} />}
+                {exp?.client?.parent && <LogoTile sources={exp.client.parent.logos} name={exp.client.parent.name} size={44} fallback={null} />}
+                <p className="font-mono text-xs tracking-[0.2em] text-cyan-300 uppercase">
+                  {project.context} · {project.year}
+                </p>
+              </div>
+              <h1 className="mt-4 max-w-4xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl">{project.title}</h1>
+              <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-300">{project.description}</p>
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {project.stack.map((tech) => (
+                  <li key={tech} className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-xs text-zinc-300">
+                    <TechIcon tech={tech} className="size-3.5" /> {c.tech(tech)}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, rotateY: -14 }}
+              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+              transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              style={{ transformPerspective: 1200 }}
+              className="glow-border relative mx-auto w-full max-w-xl rounded-3xl lg:max-w-none"
+            >
+              <ProjectArt id={project.id} className="aspect-[2/1] overflow-hidden rounded-3xl" />
+            </motion.div>
+          </div>
         </div>
       </header>
 
