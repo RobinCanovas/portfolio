@@ -73,6 +73,9 @@ describe('<App />', () => {
     goTo('#/education/iut');
     expect(await screen.findByRole('heading', { level: 1, name: 'IUT d’Orsay' })).toBeInTheDocument();
     expect(screen.getByText(/13th in the 2026 Shanghai ranking/)).toBeInTheDocument();
+    // Campus photos credit their authors and licences.
+    expect(screen.getByRole('link', { name: /Christophe Peus \/ Université Paris-Saclay, CC BY 4\.0/ })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'UPIUT, CC BY-SA 4.0' })).toBeInTheDocument();
     goTo('#/education/eedf');
     expect(await screen.findByRole('heading', { level: 1, name: 'Éclaireuses Éclaireurs de France' })).toBeInTheDocument();
     goTo('#/education/bac');

@@ -15,7 +15,7 @@ import { Navbar } from './components/Navbar';
 import { Projects } from './components/Projects';
 import { Skills } from './components/Skills';
 import { CursorFx } from './components/fx/CursorFx';
-import { HYPER_EVENT, triggerHyperMode, useKonami } from './components/fx/effects';
+import { HYPER_EVENT, triggerHyperMode, useKonami, usePauseOffscreen } from './components/fx/effects';
 import { Intro, IntroContext, shouldPlayIntro } from './components/fx/Intro';
 import { BackToTop, LocalTime } from './components/fx/Extras';
 import { TechMarquee } from './components/fx/TechMarquee';
@@ -29,7 +29,8 @@ function Backdrop() {
       <div className="absolute top-1/3 -right-60 h-[32rem] w-[32rem] rounded-full bg-cyan-500/[0.16] blur-[140px]" />
       <div className="absolute bottom-0 -left-60 h-[32rem] w-[32rem] rounded-full bg-fuchsia-600/[0.16] blur-[140px]" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.035)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" />
-      <div className="grain absolute inset-0 opacity-[0.035] mix-blend-overlay" />
+      {/* Plain opacity rather than a blend mode: a blended full-screen layer is recomposited on every scroll frame. */}
+      <div className="grain absolute inset-0 opacity-[0.025]" />
     </div>
   );
 }
@@ -78,6 +79,7 @@ export default function App() {
 function Portfolio() {
   const { t } = useLang();
   useKonami(triggerHyperMode);
+  usePauseOffscreen();
   const route = useRoute();
   const [filter, setFilter] = useState<Tech | 'All'>('All');
   const [contactOpen, setContactOpen] = useState(false);
