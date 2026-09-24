@@ -95,6 +95,21 @@ export interface BuildStep {
   icon: 'user' | 'shield' | 'server' | 'database' | 'code' | 'check' | 'layout' | 'cpu' | 'mail' | 'search' | 'file' | 'globe' | 'git' | 'key' | 'rocket';
 }
 
+/** A formula and what it means, for the "maths" section of a project page. */
+export interface MathNote {
+  title: string;
+  formula: string;
+  text: string;
+}
+
+/** A course the project follows (videos, channel). */
+export interface CourseSource {
+  name: string;
+  author: string;
+  url: string;
+  steps: string[];
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -112,9 +127,11 @@ export interface Project {
   confidential?: string;
   demoUrl?: string;
   /** Interactive demo rendered inside the project page */
-  demo?: 'cwad' | 'sql' | 'deploy' | 'gradient' | 'subnet';
+  demo?: 'cwad' | 'sql' | 'deploy' | 'gradient' | 'subnet' | 'neural';
   repoUrl?: string;
   snippet?: CodeSnippet;
+  maths?: MathNote[];
+  course?: CourseSource;
 }
 
 export interface Education {
