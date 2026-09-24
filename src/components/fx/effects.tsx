@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { animate, motion, useInView, useMotionValue, useSpring } from 'framer-motion';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { animate, motion, useInView, useMotionValue, useSpring, useTransform, type MotionValue } from 'framer-motion';
 
 const GLYPHS = '!<>-_\\/[]{}—=+*^?#01ABCDEFXYZ';
 const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -71,6 +71,53 @@ export function Magnetic({ children, strength = 0.35, className = '' }: { childr
         y.set(0);
       }}
     >
+      {children}
+    </motion.div>
+  );
+}
+
+const TiltContext = createContext<{ rx: MotionValue<number>; ry: MotionValue<number> } | null>(null);
+
+/**
+ * Tilts its content in 3D toward the mouse (mouse only, never with reduced motion).
+ * Children can add depth with <TiltLayer>, which drifts a little further than the card.
+ */
+export function Tilt({ children, className = '', max = 6 }: { children: ReactNode; className?: string; max?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const rx = useSpring(0, { stiffness: 220, damping: 22 });
+  const ry = useSpring(0, { stiffness: 220, damping: 22 });
+
+  return (
+    <TiltContext.Provider value={{ rx, ry }}>
+      <motion.div
+        ref={ref}
+        className={className}
+        style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }}
+        onPointerMove={(e) => {
+          if (e.pointerType !== 'mouse' || reducedMotion() || !ref.current) return;
+          const r = ref.current.getBoundingClientRect();
+          ry.set(((e.clientX - r.left) / r.width - 0.5) * 2 * max);
+          rx.set(-((e.clientY - r.top) / r.height - 0.5) * 2 * max);
+        }}
+        onPointerLeave={() => {
+          rx.set(0);
+          ry.set(0);
+        }}
+      >
+        {children}
+      </motion.div>
+    </TiltContext.Provider>
+  );
+}
+
+/** Layer inside a <Tilt> that moves with the tilt, `depth` pixels per degree, for a parallax effect. */
+export function TiltLayer({ children, depth = 1.5, className = '' }: { children: ReactNode; depth?: number; className?: string }) {
+  const ctx = useContext(TiltContext);
+  const zero = useMotionValue(0);
+  const x = useTransform(ctx?.ry ?? zero, (v) => v * depth);
+  const y = useTransform(ctx?.rx ?? zero, (v) => -v * depth);
+  return (
+    <motion.div className={className} style={{ x, y }}>
       {children}
     </motion.div>
   );
