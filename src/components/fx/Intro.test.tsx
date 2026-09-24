@@ -3,7 +3,16 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { projects } from '../../data/profile';
 import { hasProjectArt, ProjectArt } from '../ProjectArt';
-import { Intro, shouldPlayIntro } from './Intro';
+import { Intro, loss, PATH, shouldPlayIntro } from './Intro';
+
+describe('intro gradient descent', () => {
+  it('really descends: the loss goes down at every step, toward the minimum at the origin', () => {
+    expect(PATH).toHaveLength(7);
+    for (let i = 1; i < PATH.length; i++) expect(loss(...PATH[i]), `step ${i}`).toBeLessThan(loss(...PATH[i - 1]));
+    expect(loss(0, 0)).toBe(0);
+    expect(loss(...PATH[6])).toBeLessThan(0.1);
+  });
+});
 
 describe('<Intro />', () => {
   beforeEach(() => {

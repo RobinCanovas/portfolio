@@ -414,7 +414,10 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
     >
       <nav aria-label="Main" className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <a href="#home" aria-label={t('nav.home')} className="group flex items-center gap-2.5 text-white">
-          <Logo className="size-9 drop-shadow-[0_0_12px_rgb(168_85_247/0.55)] transition duration-500 group-hover:rotate-[20deg] group-hover:drop-shadow-[0_0_18px_rgb(34_211_238/0.7)]" />
+          {/* data-brand-logo: where the opening intro lands the mark. */}
+          <span data-brand-logo className="inline-flex">
+            <Logo className="size-9 drop-shadow-[0_0_12px_rgb(168_85_247/0.55)] transition duration-500 group-hover:rotate-[20deg] group-hover:drop-shadow-[0_0_18px_rgb(34_211_238/0.7)]" />
+          </span>
           <span className="hidden text-[15px] font-semibold tracking-wide sm:inline">{t('brand')}</span>
         </a>
 

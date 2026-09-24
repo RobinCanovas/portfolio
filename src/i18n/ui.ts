@@ -1,6 +1,10 @@
 /** Interface strings. `{name}` placeholders are filled by `t(key, { name })`. */
 export const ui = {
   en: {
+    'intro.method': 'Gradient descent',
+    'intro.step': 'Step',
+    'intro.loss': 'Loss',
+    'intro.converged': 'Converged',
     'intro.skip': 'Skip',
     'top': 'Back to top',
     'footer.time': 'Local time in Paris',
@@ -253,6 +257,10 @@ export const ui = {
     'modal.close': 'Close dialog',
   },
   fr: {
+    'intro.method': 'Descente de gradient',
+    'intro.step': 'Itération',
+    'intro.loss': 'Erreur',
+    'intro.converged': 'Convergé',
     'intro.skip': 'Passer',
     'top': 'Retour en haut',
     'footer.time': 'Heure locale à Paris',
