@@ -4,6 +4,7 @@ import { ArrowUpRight, Lock, PlayCircle } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { href } from '../router';
 import type { Tech } from '../types';
+import { Tilt, TiltLayer } from './fx/effects';
 import { ProjectArt } from './ProjectArt';
 import { TechIcon } from './TechIcon';
 import { Badge, CompanyLogo, Section } from './ui';
@@ -57,60 +58,65 @@ export function Projects({ filter, onFilter }: Props) {
                 transition={{ duration: 0.25 }}
                 className="flex min-w-0"
               >
-                <a
-                  href={href.project(p.id)}
-                  className="glass spotlight group relative flex w-full flex-col overflow-hidden rounded-2xl p-5 transition duration-500 hover:-translate-y-1 hover:border-violet-400/40 hover:shadow-2xl hover:shadow-violet-900/30"
-                >
-                  <div aria-hidden="true" className="pointer-events-none absolute -top-24 -right-24 size-48 rounded-full bg-violet-500/25 opacity-0 blur-3xl transition group-hover:opacity-100" />
-                  <div className="-mx-5 -mt-5 mb-4 aspect-[2.3/1] overflow-hidden border-b border-white/10">
-                    <ProjectArt id={p.id} className="size-full transition duration-700 ease-out group-hover:scale-[1.07]" />
-                  </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="flex min-w-0 items-center gap-2">
-                      {exp && <CompanyLogo company={exp.company} size={26} />}
-                      <span className="truncate font-mono text-[11px] text-cyan-300">{p.context}</span>
-                    </span>
-                    {p.confidential ? (
-                      <Lock className="size-4 shrink-0 text-amber-300" aria-label={t('exp.confidential')} />
-                    ) : (
-                      p.featured && <Badge active>{t('proj.featured')}</Badge>
-                    )}
-                  </div>
-                  <h3 className="mt-3 text-lg font-semibold text-white">{p.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-300">{p.description}</p>
-
-                  <ul className="mt-4 space-y-1 text-xs text-zinc-300">
-                    {p.highlights.slice(0, 3).map((h) => (
-                      <li key={h} className="flex gap-2">
-                        <span className="text-violet-400" aria-hidden="true">
-                          ▹
-                        </span>
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {p.stack.map((tech) => (
-                      <Badge key={tech} active={tech === filter}>
-                        {c.tech(tech)}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  <div className="mt-auto flex items-center justify-between pt-5 text-xs">
-                    {p.demo ? (
-                      <span className="inline-flex items-center gap-1.5 text-emerald-300">
-                        <PlayCircle className="size-4" aria-hidden="true" /> {t('proj.demo')}
+                <Tilt className="flex w-full">
+                  <a
+                    href={href.project(p.id)}
+                    className="glass spotlight group relative flex w-full flex-col overflow-hidden rounded-2xl p-5 transition duration-500 hover:-translate-y-1 hover:border-violet-400/40 hover:shadow-2xl hover:shadow-violet-900/30"
+                  >
+                    <div aria-hidden="true" className="pointer-events-none absolute -top-24 -right-24 size-48 rounded-full bg-violet-500/25 opacity-0 blur-3xl transition group-hover:opacity-100" />
+                    <div className="-mx-5 -mt-5 mb-4 aspect-[2.3/1] overflow-hidden border-b border-white/10">
+                      {/* The illustration drifts further than the card when it tilts: a bit of depth. */}
+                      <TiltLayer depth={1.6} className="size-full">
+                        <ProjectArt id={p.id} className="size-full transition duration-700 ease-out group-hover:scale-[1.08]" />
+                      </TiltLayer>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="flex min-w-0 items-center gap-2">
+                        {exp && <CompanyLogo company={exp.company} size={26} />}
+                        <span className="truncate font-mono text-[11px] text-cyan-300">{p.context}</span>
                       </span>
-                    ) : (
-                      <span className="text-zinc-400">{p.year}</span>
-                    )}
-                    <span className="inline-flex items-center gap-1 text-zinc-300 transition group-hover:text-white">
-                      {t('proj.case')} <ArrowUpRight className="size-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
-                    </span>
-                  </div>
-                </a>
+                      {p.confidential ? (
+                        <Lock className="size-4 shrink-0 text-amber-300" aria-label={t('exp.confidential')} />
+                      ) : (
+                        p.featured && <Badge active>{t('proj.featured')}</Badge>
+                      )}
+                    </div>
+                    <h3 className="mt-3 text-lg font-semibold text-white">{p.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-zinc-300">{p.description}</p>
+
+                    <ul className="mt-4 space-y-1 text-xs text-zinc-300">
+                      {p.highlights.slice(0, 3).map((h) => (
+                        <li key={h} className="flex gap-2">
+                          <span className="text-violet-400" aria-hidden="true">
+                            ▹
+                          </span>
+                          {h}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {p.stack.map((tech) => (
+                        <Badge key={tech} active={tech === filter}>
+                          {c.tech(tech)}
+                        </Badge>
+                      ))}
+                    </div>
+
+                    <div className="mt-auto flex items-center justify-between pt-5 text-xs">
+                      {p.demo ? (
+                        <span className="inline-flex items-center gap-1.5 text-emerald-300">
+                          <PlayCircle className="size-4" aria-hidden="true" /> {t('proj.demo')}
+                        </span>
+                      ) : (
+                        <span className="text-zinc-400">{p.year}</span>
+                      )}
+                      <span className="inline-flex items-center gap-1 text-zinc-300 transition group-hover:text-white">
+                        {t('proj.case')} <ArrowUpRight className="size-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+                      </span>
+                    </div>
+                  </a>
+                </Tilt>
               </motion.li>
             );
           })}

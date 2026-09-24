@@ -28,7 +28,8 @@ describe('<Intro />', () => {
     expect(document.documentElement.style.overflow).toBe('hidden');
     await userEvent.click(screen.getByRole('button', { name: 'Skip' }));
     expect(onReveal).toHaveBeenCalledTimes(1);
-    await waitFor(() => expect(screen.queryByTestId('intro')).toBeNull());
+    // The dive through the portal lasts about a second before the intro unmounts.
+    await waitFor(() => expect(screen.queryByTestId('intro')).toBeNull(), { timeout: 3000 });
     expect(document.documentElement.style.overflow).toBe('');
   });
 

@@ -1,4 +1,5 @@
-import { motion, type Variants } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform, type Variants } from 'framer-motion';
 import { FileText, Mail, MapPin } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { LinkedinIcon } from './BrandIcons';
@@ -16,6 +17,16 @@ export function Hero({ onContact }: { onContact: () => void }) {
   // Entrance animations wait until the opening curtain lifts.
   const revealed = useRevealed();
 
+  // Depth on scroll: background, text and portrait move at different speeds as the hero leaves.
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
+  const still = typeof window !== 'undefined' && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : 180]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : -70]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.85], [1, still ? 1 : 0.1]);
+  const portraitY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : 110]);
+  const portraitScale = useTransform(scrollYProgress, [0, 1], [1, still ? 1 : 0.92]);
+
   const stats = [
     { value: experiences.filter((e) => !e.minor).length, label: t('hero.stat.experiences') },
     { value: 12, suffix: '+', label: t('hero.stat.months') },
@@ -24,15 +35,15 @@ export function Hero({ onContact }: { onContact: () => void }) {
   ];
 
   return (
-    <section id="home" className="relative isolate overflow-hidden">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+    <section ref={sectionRef} id="home" className="relative isolate overflow-hidden">
+      <motion.div aria-hidden="true" style={{ y: bgY }} className="pointer-events-none absolute inset-0 -z-10">
         <div className="animate-aurora absolute top-[-20%] left-[10%] size-[55vmax] rounded-full bg-[conic-gradient(from_90deg,#7c3aed88,#06b6d466,#db277755,#7c3aed88)] opacity-80 blur-[110px]" />
         <ParticleField className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
-      </div>
+      </motion.div>
 
       <div className="mx-auto grid min-h-dvh max-w-6xl items-center gap-12 px-4 pt-28 pb-20 sm:px-6 lg:grid-cols-[1.15fr_1fr]">
-        <motion.div variants={container} initial="hidden" animate={revealed ? 'show' : 'hidden'}>
+        <motion.div variants={container} initial="hidden" animate={revealed ? 'show' : 'hidden'} style={{ y: textY, opacity: textOpacity }}>
           <motion.div variants={item} className="inline-flex flex-wrap items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.08] px-3 py-1.5 text-xs shadow-[0_0_24px_rgb(52_211_153/0.2)]">
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -97,16 +108,19 @@ export function Hero({ onContact }: { onContact: () => void }) {
           </motion.div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 40, rotateX: 18, rotateY: -12 }}
-          animate={revealed ? { opacity: 1, y: 0, rotateX: 0, rotateY: 0 } : undefined}
-          transition={{ duration: 1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          style={{ transformPerspective: 1200 }}
-        >
-          {/* Float lives on a plain div: a CSS animation would override Framer's inline transform. */}
-          <div className="animate-float">
-            <Portrait />
-          </div>
+        {/* Scroll parallax on its own layer, so it never fights the entrance animation below. */}
+        <motion.div style={{ y: portraitY, scale: portraitScale }}>
+          <motion.div
+            initial={{ opacity: 0, y: 40, rotateX: 18, rotateY: -12 }}
+            animate={revealed ? { opacity: 1, y: 0, rotateX: 0, rotateY: 0 } : undefined}
+            transition={{ duration: 1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            style={{ transformPerspective: 1200 }}
+          >
+            {/* Float lives on a plain div: a CSS animation would override Framer's inline transform. */}
+            <div className="animate-float">
+              <Portrait />
+            </div>
+          </motion.div>
         </motion.div>
       </div>
 
