@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ui } from '../i18n/ui';
 import { getContent } from './content';
@@ -8,6 +9,14 @@ describe('French content', () => {
   it('translates every experience and project', () => {
     for (const e of experiences) expect(fr.experiences[e.id], e.id).toBeDefined();
     for (const p of projects) expect(fr.projects[p.id], p.id).toBeDefined();
+  });
+
+  it('serves the resume in the page language, and both files exist', () => {
+    expect(getContent('fr').links.cv).toBe('./Robin-Canovas-CV.pdf');
+    expect(getContent('en').links.cv).toBe('./Robin-Canovas-CV-EN.pdf');
+    for (const lang of ['fr', 'en'] as const) {
+      expect(existsSync(`public/${getContent(lang).links.cv.slice(2)}`), lang).toBe(true);
+    }
   });
 
   it('keeps build step icons and translates their text', () => {

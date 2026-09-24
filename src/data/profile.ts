@@ -3,7 +3,8 @@ import type { Client, Company, Education, Experience, Project, SkillGroup, Socia
 export const links: SocialLinks = {
   linkedin: 'https://www.linkedin.com/in/robin-canovas',
   email: 'robin.canovas@outlook.com',
-  cv: './Robin-Canovas-CV.pdf',
+  // English resume; the French overlay (fr.ts) points to the French one.
+  cv: './Robin-Canovas-CV-EN.pdf',
 };
 
 export const profile = {

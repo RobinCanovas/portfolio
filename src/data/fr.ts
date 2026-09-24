@@ -32,6 +32,7 @@ export interface FrOverlay {
   vModel: { left: string; right: string }[];
   volunteering: { since: string; points: string[] };
   interests: string[];
+  links: { cv: string };
   skillGroups: Record<string, { title: string; skills?: Record<string, string> }>;
   languages: Record<string, { name: string; level?: string }>;
   contract: Record<ContractType, string>;
@@ -40,6 +41,8 @@ export interface FrOverlay {
 }
 
 export const fr: FrOverlay = {
+  links: { cv: './Robin-Canovas-CV.pdf' },
+
   profile: {
     title: 'Analyste développement & développeur web',
     location: 'Paris, France',
