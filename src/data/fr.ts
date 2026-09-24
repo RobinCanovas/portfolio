@@ -47,12 +47,12 @@ export const fr: FrOverlay = {
   links: { cv: './Robin-Canovas-CV.pdf' },
 
   profile: {
-    title: 'Analyste développement & développeur web',
+    title: 'Étudiant en informatique & analyste développement',
     location: 'Paris, France',
     status: 'Ouvert aux opportunités',
     currentRole: 'Développeur web @ Éditions Ellipses',
     pitch:
-      'Je transforme des besoins métier en logiciels sûrs et fiables, et je construis un profil généraliste pour la banque et le conseil. Après une mission sur la plateforme d’une filiale du groupe BNP Paribas, mes prochaines étapes : la fac, puis un Bac+5 ambitieux.',
+      'Étudiant en BUT Informatique en alternance, je transforme des besoins métier en logiciels sûrs et fiables, et je construis un profil généraliste, avec une base solide en maths, pour la banque et le conseil. Après une mission sur la plateforme d’une filiale du groupe BNP Paribas, mes prochaines étapes : la fac, puis un Bac+5 ambitieux.',
     ambition: 'Objectif à long terme : la banque et le conseil IT, là où la rigueur, la sécurité et la compréhension du métier comptent autant que le code.',
   },
 
