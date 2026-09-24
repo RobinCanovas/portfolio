@@ -1,0 +1,301 @@
+% ---------------------------------------------------------------------------
+%  CV de Robin Canovas, une page A4.
+%  Vérifié avec XeLaTeX (Tectonic). Sur Overleaf : Menu > Compilateur > XeLaTeX.
+%  Deux passes sont nécessaires pour le bandeau et la colonne de droite
+%  (Overleaf, latexmk et Tectonic les font tout seuls).
+%  La photo robin-canovas.jpg doit être dans le même dossier.
+% ---------------------------------------------------------------------------
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[a4paper,left=12mm,right=10mm,top=10mm,bottom=6mm]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\fi
+\usepackage[default,semibold]{sourcesanspro}
+\usepackage[french]{babel}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{babel,calc}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{qrcode}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{
+  pdftitle={CV Robin Canovas},
+  pdfauthor={Robin Canovas},
+  pdfsubject={BUT Informatique en alternance, bases de données, réseaux et DevOps},
+}
+
+% ------------------------------ Identité -----------------------------------
+\newcommand{\cvfirstname}{Robin}
+\newcommand{\cvlastname}{CANOVAS}
+\newcommand{\cvphone}{+33 6 62 24 96 54}
+\newcommand{\cvmail}{robin.canovas@outlook.com}
+\newcommand{\cvcity}{Massy (91)}
+\newcommand{\cvlinkedin}{robin-canovas}
+\newcommand{\cvsite}{robincanovas.github.io/portfolio}
+
+% ------------------------------ Couleurs -----------------------------------
+\definecolor{ink}{HTML}{0B1B34}
+\definecolor{inklight}{HTML}{16305A}
+\definecolor{brandviolet}{HTML}{7C3AED}
+\definecolor{brandcyan}{HTML}{0891B2}
+\definecolor{bodytext}{HTML}{1F2937}
+\definecolor{muted}{HTML}{6B7280}
+\definecolor{side}{HTML}{F3F4F8}
+\definecolor{hair}{HTML}{D6D9E0}
+
+\color{bodytext}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\linespread{1.02}
+\frenchbsetup{StandardLists=true}
+
+% ------------------------------ Mise en page -------------------------------
+% Colonne principale : 12 mm -> 130 mm. Fond gris : 136 mm -> bord. Colonne de droite : 142 -> 200 mm.
+\newlength{\headerheight}\setlength{\headerheight}{44mm}
+\newlength{\sidewidth}\setlength{\sidewidth}{58mm}
+\newlength{\mainwidth}\setlength{\mainwidth}{118mm}
+
+% Titre de section : capitales, filet dégradé violet vers cyan.
+\newcommand{\cvsection}[1]{%
+  \par\vspace{6pt}%
+  \begin{tikzpicture}[baseline=(t.base)]
+    \node[inner sep=0, anchor=base west, font=\bfseries\large, text=ink] (t) {\MakeUppercase{#1}};
+    \shade[left color=brandviolet, right color=brandcyan]
+      ($(t.south west)+(0,-3pt)$) rectangle ($(t.south west)+(\linewidth,-3.9pt)$);
+  \end{tikzpicture}\par\vspace{5pt}}
+
+% Pastille de type de contrat.
+\newcommand{\tagchip}[1]{%
+  \tikz[baseline=(c.base)]\node[fill=brandviolet!10, text=brandviolet, rounded corners=2pt,
+    inner xsep=3pt, inner ysep=1.4pt, font=\scriptsize\bfseries] (c) {#1};}
+
+\newcommand{\dateto}{\,$\rightarrow$\,}
+\newcommand{\pin}{\faIcon{map-marker-alt}}
+
+% Expérience : poste, dates, structure, contrat, lieu, contexte (peut être vide).
+\newcommand{\experience}[6]{%
+  \par\vspace{3.5pt}%
+  {\bfseries\color{ink}#1}\hfill{\small\color{muted}#2}\par\vspace{1pt}
+  {\bfseries\color{brandviolet}#3}\hspace{5pt}\tagchip{#4}\hfill{\small\color{muted}\pin\,#5}\par
+  \if\relax\detokenize{#6}\relax\else{\small\itshape\color{muted}#6}\par\fi
+  \vspace{1pt}}
+
+\setlist[itemize]{leftmargin=9pt, labelsep=4pt, itemsep=0.6pt, topsep=1pt, parsep=0pt,
+  label={\color{brandviolet}\scriptsize\raisebox{0.5pt}{$\blacktriangleright$}}}
+
+% Chiffres clés sous le profil.
+\newcommand{\keyfigure}[2]{%
+  \begin{minipage}[t]{0.23\linewidth}\centering
+    {\fontsize{16}{17}\selectfont\bfseries\color{brandviolet}#1}\par\vspace{1pt}
+    \makebox[\linewidth][c]{\scriptsize\color{muted}#2}
+  \end{minipage}}
+\newcommand{\keyfigures}{%
+  \par\vspace{7pt}\noindent
+  \begin{tikzpicture}
+    \node[fill=brandviolet!6, draw=brandviolet!18, rounded corners=4pt, inner xsep=4pt, inner ysep=4pt,
+      text width=\linewidth-8.8pt] {%
+      \keyfigure{5}{expériences pro}\hfill
+      \keyfigure{12+}{mois en entreprise}\hfill
+      \keyfigure{13}{projets en ligne}\hfill
+      \keyfigure{2027}{diplôme Bac+3}};
+  \end{tikzpicture}\par}
+
+% Colonne de droite : petits titres et blocs.
+\newcommand{\sidesection}[2][8pt]{%
+  \par\vspace{#1}%
+  \begin{tikzpicture}[baseline=(t.base)]
+    \node[inner sep=0, anchor=base west, font=\bfseries, text=ink] (t) {\MakeUppercase{#2}};
+    \shade[left color=brandviolet, right color=brandcyan]
+      ($(t.south west)+(0,-2.5pt)$) rectangle ($(t.south west)+(14mm,-3.6pt)$);
+  \end{tikzpicture}\par\vspace{4.5pt}}
+
+\newcommand{\skillgroup}[2]{%
+  {\small\bfseries\color{inklight}#1}\par\vspace{0.5pt}
+  {\small #2}\par\vspace{5pt}}
+
+\newcommand{\interest}[2]{{\small\makebox[13pt][l]{\color{brandviolet}\faIcon{#1}}%
+  \parbox[t]{\dimexpr\linewidth-13pt\relax}{\raggedright #2}}\par\vspace{2pt}}
+
+% Niveau de langue : 5 points.
+\newcommand{\langlevel}[1]{%
+  \begin{tikzpicture}[baseline=-2.5pt]
+    \foreach \i in {1,...,5} {
+      \ifnum\i>#1 \fill[hair] (\i*7pt,0) circle (2.3pt);
+      \else \fill[brandviolet] (\i*7pt,0) circle (2.3pt); \fi }
+  \end{tikzpicture}}
+\newcommand{\langitem}[3]{{\small\bfseries #1}\hfill{\small\color{muted}#2}\hspace{4pt}\langlevel{#3}\par\vspace{2pt}}
+
+\newcommand{\contacticon}[1]{{\color{brandcyan!60!white}\faIcon{#1}}\,}
+
+\begin{document}
+
+% ============================== Bandeau ====================================
+\begin{tikzpicture}[remember picture, overlay]
+  \coordinate (NW) at (current page.north west);
+  \coordinate (NE) at (current page.north east);
+  % Fond nuit et halos lumineux discrets
+  \begin{scope}
+    \clip (NW) rectangle ($(NE)+(0,-\headerheight)$);
+    \fill[ink] (NW) rectangle ($(NE)+(0,-\headerheight)$);
+    \shade[inner color=brandviolet!55!ink, outer color=ink] ($(NE)+(-58mm,-6mm)$) circle (46mm);
+    \shade[inner color=brandcyan!40!ink, outer color=ink] ($(NE)+(-6mm,-40mm)$) circle (30mm);
+  \end{scope}
+  % Filet dégradé sous le bandeau
+  \shade[left color=brandviolet, right color=brandcyan]
+    ($(NW)+(0,-\headerheight)$) rectangle ($(NE)+(0,-\headerheight-1.2mm)$);
+  % Fond de la colonne de droite
+  \fill[side] ($(NE)+(-\sidewidth-16mm,-\headerheight-1.2mm)$) rectangle (current page.south east);
+
+  % Photo ronde
+  \coordinate (P) at ($(NW)+(28mm,-22mm)$);
+  \begin{scope}
+    \clip (P) circle (15mm);
+    \node[anchor=north west, inner sep=0] at ($(P)+(-16mm,19.3mm)$)
+      {\includegraphics[width=32mm]{robin-canovas.jpg}};
+  \end{scope}
+  \draw[line width=1.6pt, white] (P) circle (15mm);
+  \draw[line width=0.8pt, brandcyan!70] (P) circle (16.4mm);
+
+  % Nom, titre, contact
+  \node[anchor=north west, inner sep=0, text=white, font=\fontsize{27}{29}\selectfont]
+    at ($(NW)+(50mm,-7.5mm)$) {\cvfirstname\ \textbf{\cvlastname}};
+  \node[anchor=north west, inner sep=0, text=brandcyan!45!white, font=\bfseries\normalsize]
+    at ($(NW)+(50mm,-18.5mm)$) {BUT Informatique en alternance \,·\, Développeur web};
+  \node[anchor=north west, inner sep=0, text=white!78!ink, font=\small]
+    at ($(NW)+(50mm,-24mm)$) {Bases de données \,·\, Réseaux \& DevOps \,·\, Mathématiques \,·\, Sécurité};
+  \node[anchor=north west, inner sep=0, text=white, font=\small, align=left]
+    at ($(NW)+(50mm,-31mm)$) {%
+      \contacticon{phone}\href{tel:+33662249654}{\cvphone}\hspace{9pt}
+      \contacticon{envelope}\href{mailto:\cvmail}{\cvmail}\hspace{9pt}
+      \contacticon{map-marker-alt}\cvcity\\[3pt]
+      \contacticon{linkedin}\href{https://www.linkedin.com/in/\cvlinkedin}{linkedin.com/in/\cvlinkedin}\hspace{9pt}
+      \contacticon{globe}\href{https://\cvsite/}{\cvsite}};
+
+  % QR code vers le portfolio
+  \node[anchor=north east, fill=white, rounded corners=2pt, inner sep=2pt] (qr)
+    at ($(NE)+(-10mm,-8mm)$) {\qrcode[height=17mm]{https://robincanovas.github.io/portfolio/}};
+  \node[anchor=north, text=white!75!ink, font=\scriptsize, align=center]
+    at ($(qr.south)+(0,-1.5mm)$) {Portfolio \& démos};
+\end{tikzpicture}
+
+\vspace*{\dimexpr\headerheight-11mm\relax}
+
+% ============================== Corps ======================================
+\begin{minipage}[t]{\mainwidth}
+
+\cvsection{Profil}
+Étudiant en 3\textsuperscript{e} année de BUT Informatique en alternance, j'ai enchaîné
+\textbf{cinq expériences professionnelles en un peu plus d'un an}, dont un stage pour une filiale
+du \textbf{groupe BNP Paribas}. Je construis un profil généraliste et je prépare un \textbf{master ou une grande école}, avec la banque et le conseil en ligne de mire.
+\keyfigures
+
+\cvsection{Expériences professionnelles}
+
+\experience{Développeur web}{Sept. 2026\dateto aujourd'hui}
+  {Éditions Ellipses}{Alternance}{Paris}
+  {1\textsuperscript{er} éditeur universitaire et des classes préparatoires}
+\begin{itemize}
+  \item Évolution et maintenance de la plateforme web (Symfony, PHP, MySQL).
+  \item Revue de code, tests et qualité au sein de l'équipe technique interne.
+\end{itemize}
+
+\experience{Analyste développement}{Avr.\dateto juil. 2026}
+  {Acelys Services Numériques}{Stage · 4 mois}{Montpellier}
+  {ESN · Client : Domofinance, groupe BNP Paribas Personal Finance}
+\begin{itemize}
+  \item Recueil des besoins métier et rédaction des spécifications, en Scrum.
+  \item Mise en place de la \textbf{MFA} et du filtrage des e-mails transactionnels.
+  \item Recette des livrables externes, diagnostic d'anomalies Symfony et React.
+  \item \textbf{Pipelines de déploiement Ansible} lancés depuis Bitbucket (dépendances, migrations, mise en ligne) et accès aux serveurs par \textbf{clés et tunnels SSH}.
+\end{itemize}
+
+\experience{Développeur full-stack}{Janv.\dateto févr. 2026}
+  {Éducation nationale}{Freelance}{Alès, à distance}
+  {Dossiers d'aménagement des élèves, établissements du Gard}
+\begin{itemize}
+  \item \textbf{Conception de la base de données} et d'une application PHP dédiée.
+  \item Workflows automatisés, données centralisées, personnel formé à l'outil.
+\end{itemize}
+
+\experience{Développeur full-stack}{Sept. 2025\dateto janv. 2026}
+  {Solutions Solstice}{Alternance}{Île-de-France}
+  {Éditeur d'un logiciel de surveillance environnementale (DAHS)}
+\begin{itemize}
+  \item Fonctionnalités Java et participation à la \textbf{certification du logiciel}.
+  \item Requêtes SQL automatisées et analyse des diagnostics assistée par l'IA.
+\end{itemize}
+
+\experience{Responsable des systèmes informatiques}{Sept. 2025\dateto janv. 2026}
+  {Aeroboat France}{CDD}{Toulouse, à distance}
+  {Association aéronautique, maquettes d'engins à effet de sol}
+\begin{itemize}
+  \item Conception du site de l'association (WordPress), responsive et SEO.
+\end{itemize}
+
+\experience{Conseiller vente \& services}{Juil.\dateto août 2025}
+  {Boulanger}{Job d'été}{Lattes}{}
+\begin{itemize}
+  \item Accueil client, SAV et présentation de solutions de financement.
+\end{itemize}
+
+\cvsection{Projets choisis}
+\begin{itemize}[itemsep=1pt]
+  \item \textbf{Descente de gradient} {\color{muted}· régression linéaire, dérivées partielles, démo}
+  \item \textbf{Sous-réseaux IPv4} {\color{muted}· masque, broadcast et plage d'hôtes bit à bit}
+  \item \textbf{Base de données AC-Motors} {\color{muted}· MCD, MLD, requêtes métier, SQL en ligne}
+  \item \textbf{Cahier des charges (AMOA)} {\color{muted}· analyse des besoins, UML, spécifications}
+\end{itemize}
+{\small\color{muted}\faIcon{qrcode}\, Démos interactives sur le portfolio.}
+
+\end{minipage}%
+\hfill%
+\begin{minipage}[t]{\sidewidth}
+\raggedright
+
+\sidesection[6pt]{Projet d'études}
+{\small Après le BUT (2027) : l'université, puis un \textbf{master sélectif ou une grande école}. Objectif : un Bac+5 exigeant, vers la banque et le conseil.}
+
+\sidesection{Formation}
+{\small\bfseries\color{ink}BUT Informatique}\hfill{\small\color{muted}2024\dateto 2027}\par
+{\small\color{brandviolet}\bfseries IUT d'Orsay, Université Paris-Saclay}\par
+{\footnotesize\color{muted}13\textsuperscript{e} mondiale au classement de Shanghai 2026}\par\vspace{1pt}
+{\small Bases de données, réseaux, systèmes, génie logiciel, mathématiques.}\par\vspace{5pt}
+
+{\small\bfseries\color{ink}Baccalauréat général}\hfill{\small\color{muted}2024}\par
+{\small\color{brandviolet}\bfseries Lycée Françoise Combes}\par
+{\footnotesize\color{muted}Internat d'Excellence de Montpellier}\par\vspace{1pt}
+{\small Maths et NSI, option maths expertes.}
+
+\sidesection{Compétences}
+\skillgroup{Bases de données}{SQL avancé, MySQL, PL/SQL, SQLite, MCD et MLD, index, Doctrine}
+\skillgroup{Réseaux \& DevOps}{TCP/IP, sous-réseaux, routage, Linux, SSH, Ansible, Bitbucket Pipelines, Git}
+\skillgroup{Mathématiques}{Algèbre linéaire, probabilités, statistiques, graphes, optimisation, analyse numérique}
+\skillgroup{Développement}{PHP, Symfony, API Platform, Java, Python, C et C++, React, TypeScript}
+\skillgroup{Conseil \& méthodes}{Spécifications, recette, sécurité (MFA), Scrum, UML, gestion de projet}
+
+\sidesection{Langues}
+\langitem{Français}{natif}{5}
+\langitem{Anglais}{B2}{4}
+\langitem{Espagnol}{B1}{3}
+
+\sidesection{Engagement}
+{\small\bfseries\color{ink}Scout aux EEDF depuis 2013}\par
+{\footnotesize\color{muted}Éclaireuses Éclaireurs de France, Gard}\par\vspace{1.5pt}
+{\small Accueil et formation de nouveaux membres, événements caritatifs et collectes de fonds.}
+
+\sidesection{Centres d'intérêt}
+\interest{volleyball-ball}{Volley, beach-volley, tennis, lutte}
+\interest{music}{Piano}
+\interest{globe-europe}{Voyages : Roumanie, Angleterre, Espagne}
+\interest{atom}{Vulgarisation scientifique}
+
+\end{minipage}
+
+\end{document}
