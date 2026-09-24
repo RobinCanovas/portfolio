@@ -128,6 +128,52 @@ export function RotatingWords({ words, interval = 2600, className = '' }: { word
   );
 }
 
+/** Elements running infinite CSS animations (see index.css). */
+const LOOPING = '[data-art], .glow-border, .animate-aurora, .animate-marquee, .animate-float, .animate-rail, .animate-rail-y, .text-shine, .animate-ping';
+
+/**
+ * Energy saver: marks looping animations with `data-offscreen` while they are off screen,
+ * and index.css pauses them. One observer for the whole page; new elements (route changes,
+ * filtered cards) are picked up by a MutationObserver.
+ */
+export function usePauseOffscreen() {
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) e.target.toggleAttribute('data-offscreen', !e.isIntersecting);
+      },
+      { rootMargin: '120px' },
+    );
+    const seen = new WeakSet<Element>();
+    const scan = () => {
+      document.querySelectorAll(LOOPING).forEach((el) => {
+        if (seen.has(el)) return;
+        seen.add(el);
+        io.observe(el);
+      });
+    };
+    scan();
+    const mo = new MutationObserver((records) => {
+      // Stop observing removed elements so they can be garbage-collected.
+      for (const r of records) {
+        r.removedNodes.forEach((n) => {
+          if (!(n instanceof Element)) return;
+          for (const el of [n, ...n.querySelectorAll(LOOPING)]) {
+            if (seen.delete(el)) io.unobserve(el);
+          }
+        });
+      }
+      scan();
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
+  }, []);
+}
+
 /** Registers the Konami code (↑↑↓↓←→←→BA) and calls `onUnlock`. */
 export function useKonami(onUnlock: () => void) {
   useEffect(() => {

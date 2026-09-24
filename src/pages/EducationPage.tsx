@@ -15,20 +15,33 @@ const fade = (delay = 0) => ({
   transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as const },
 });
 
-function Img({ src, alt, className }: { src: string[]; alt: string; className: string }) {
+function Img({ src, alt, className, position, lazy = false }: { src: string[]; alt: string; className: string; position?: string; lazy?: boolean }) {
   const [i, setI] = useState(0);
   if (i >= src.length) return null;
-  return <img src={src[i]} alt={alt} onError={() => setI((n) => n + 1)} referrerPolicy="no-referrer" className={className} />;
+  return (
+    <img
+      src={src[i]}
+      alt={alt}
+      onError={() => setI((n) => n + 1)}
+      referrerPolicy="no-referrer"
+      loading={lazy ? 'lazy' : undefined}
+      decoding="async"
+      style={position ? { objectPosition: position } : undefined}
+      className={className}
+    />
+  );
 }
 
-function Photo({ src, alt, credit, source }: { src: string[]; alt: string; credit: string; source?: string }) {
+const creditLink = 'underline decoration-dotted underline-offset-2 hover:text-white';
+
+function Photo({ src, alt, credit, source, position }: { src: string[]; alt: string; credit: string; source?: string; position?: string }) {
   return (
     <figure className="glow-border overflow-hidden rounded-3xl">
-      <Img src={src} alt={alt} className="aspect-[4/3] w-full object-cover" />
+      <Img src={src} alt={alt} position={position} className="aspect-[4/3] w-full object-cover" />
       <figcaption className="bg-black/80 px-4 py-2 text-right text-[11px] text-zinc-400">
         ©{' '}
         {source ? (
-          <a href={source} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted underline-offset-2 hover:text-white">
+          <a href={source} target="_blank" rel="noopener noreferrer" className={creditLink}>
             {credit}
           </a>
         ) : (
@@ -84,12 +97,12 @@ export function EducationPage({ id }: { id: string }) {
             </motion.div>
             {page.photo ? (
               <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.15 }}>
-                <Photo src={page.photo.src} alt={p(page.photo.alt)} credit={page.photo.credit} source={page.photo.source} />
+                <Photo src={page.photo.src} alt={p(page.photo.alt)} credit={page.photo.credit} source={page.photo.source} position={page.photo.position} />
                 {page.gallery && (
                   <div className="mt-3 grid grid-cols-3 gap-3">
                     {page.gallery.map((g, gi) => (
                       <div key={gi} className="overflow-hidden rounded-2xl border border-white/10">
-                        <Img src={g.src} alt={p(g.alt)} className="aspect-[16/10] w-full object-cover transition duration-700 hover:scale-105" />
+                        <Img src={g.src} alt={p(g.alt)} position={g.position} lazy className="aspect-[16/10] w-full object-cover transition duration-700 hover:scale-105" />
                       </div>
                     ))}
                   </div>
@@ -97,9 +110,24 @@ export function EducationPage({ id }: { id: string }) {
                 {page.galleryCredit && (
                   <p className="mt-2 text-right text-[11px] text-zinc-500">
                     ©{' '}
-                    <a href={page.galleryCredit.source} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted underline-offset-2 hover:text-white">
+                    <a href={page.galleryCredit.source} target="_blank" rel="noopener noreferrer" className={creditLink}>
                       {page.galleryCredit.label}
                     </a>
+                  </p>
+                )}
+                {page.gallery?.some((g) => g.credit) && (
+                  <p className="mt-2 text-right text-[11px] leading-relaxed text-zinc-500">
+                    ©{' '}
+                    {page.gallery
+                      .filter((g) => g.credit)
+                      .map((g, gi) => (
+                        <span key={gi}>
+                          {gi > 0 && ' · '}
+                          <a href={g.credit!.source} target="_blank" rel="noopener noreferrer" className={creditLink}>
+                            {g.credit!.label}
+                          </a>
+                        </span>
+                      ))}
                   </p>
                 )}
               </motion.div>

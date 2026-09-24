@@ -31,6 +31,8 @@ export function ParticleField({ className = '' }: { className?: string }) {
     let h = 0;
     let raf = 0;
     let visible = true;
+    let last = 0;
+    let lastMove = 0;
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
@@ -49,12 +51,21 @@ export function ParticleField({ className = '' }: { className?: string }) {
       }));
     };
 
-    const draw = () => {
+    const draw = (now: number) => {
+      // Energy saver: about 30 fps while the pointer is idle, full rate while it moves.
+      const idle = now - lastMove > 1500;
+      if (idle && now - last < 30) {
+        raf = visible && !document.hidden && !reduced ? requestAnimationFrame(draw) : 0;
+        return;
+      }
+      // Movement scales with the elapsed time, so the drift speed is the same at any frame rate.
+      const step = last ? Math.min(3, (now - last) / 16.7) : 1;
+      last = now;
       ctx.clearRect(0, 0, w, h);
       for (const d of dots) {
         if (!reduced) {
-          d.x += d.vx;
-          d.y += d.vy;
+          d.x += d.vx * step;
+          d.y += d.vy * step;
           if (d.x < 0 || d.x > w) d.vx *= -1;
           if (d.y < 0 || d.y > h) d.vy *= -1;
         }
@@ -99,13 +110,17 @@ export function ParticleField({ className = '' }: { className?: string }) {
     };
 
     const start = () => {
-      if (!raf) raf = requestAnimationFrame(draw);
+      if (!raf) {
+        last = 0;
+        raf = requestAnimationFrame(draw);
+      }
     };
 
     const onMove = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
+      lastMove = performance.now();
       if (reduced) start();
     };
     const onLeave = () => {

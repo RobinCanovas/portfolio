@@ -83,8 +83,9 @@
   }
 }
 
+/* A light blur is enough over the dark backdrop, and costs far less than a wide one on dozens of cards while scrolling. */
 @utility glass {
-  @apply border border-white/[0.12] bg-white/[0.055] backdrop-blur-xl;
+  @apply border border-white/[0.12] bg-white/[0.06] backdrop-blur-sm;
 }
 
 @utility text-gradient {
@@ -253,6 +254,16 @@
   0% { transform: rotate(-22deg); }
   55%, 85% { transform: rotate(0deg); }
   100% { transform: rotate(-22deg); }
+}
+
+/* Energy: looping animations pause while their element is off screen (usePauseOffscreen). */
+[data-offscreen],
+[data-offscreen]::before,
+[data-offscreen]::after,
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
 }
 
 /* Easter egg: Konami code / `hyper` terminal command. */

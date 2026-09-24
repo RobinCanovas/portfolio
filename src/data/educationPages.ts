@@ -10,8 +10,9 @@ export interface EducationPage {
   title: L;
   period: L;
   logos: string[];
-  photo?: { src: string[]; alt: L; credit: string; source?: string };
-  gallery?: { src: string[]; alt: L }[];
+  photo?: { src: string[]; alt: L; credit: string; source?: string; position?: string };
+  /** `credit` names the author and licence of each photo; `position` tunes the crop (CSS object-position). */
+  gallery?: { src: string[]; alt: L; credit?: { label: string; source: string }; position?: string }[];
   galleryCredit?: { label: string; source: string };
   about: L;
   facts: LFact[];
@@ -32,6 +33,33 @@ export const educationPages: EducationPage[] = [
     title: { en: 'BUT Computer Science (Bachelor)', fr: 'BUT Informatique (Bachelor)' },
     period: { en: '2024 → 2027 · work-study track', fr: '2024 → 2027 · en alternance' },
     logos: ['./logos/iut-orsay.png', './logos/paris-saclay.png'],
+    // Photos from Wikimedia Commons, with their authors and licences.
+    photo: {
+      src: ['./photos/iut-orsay-entree.jpg'],
+      alt: { en: 'Main entrance of the IUT d’Orsay, Université Paris-Saclay', fr: 'L’entrée principale de l’IUT d’Orsay, université Paris-Saclay' },
+      credit: 'UPIUT, CC BY-SA 4.0',
+      source: 'https://commons.wikimedia.org/wiki/File:Universit%C3%A9_Paris-Saclay_IUT_Orsay_Entr%C3%A9e_Ao%C3%BBt_2022.jpg',
+      // Keep the "IUT d'Orsay" sign on the right in the 4:3 crop.
+      position: 'right center',
+    },
+    gallery: [
+      {
+        src: ['./photos/paris-saclay-chateau-launay.jpg'],
+        alt: { en: 'The Château de Launay on the Orsay campus', fr: 'Le château de Launay, sur le campus d’Orsay' },
+        credit: { label: 'Christophe Peus / Université Paris-Saclay, CC BY 4.0', source: 'https://commons.wikimedia.org/wiki/File:Ch%C3%A2teau_de_Launay,_Universit%C3%A9_Paris-Saclay,_Orsay,_France.jpg' },
+      },
+      {
+        src: ['./photos/paris-saclay-lumen.jpg'],
+        alt: { en: 'Lumen, the university library of Paris-Saclay', fr: 'Lumen, la bibliothèque universitaire de Paris-Saclay' },
+        credit: { label: 'Jmex, CC0', source: 'https://commons.wikimedia.org/wiki/File:Lumen0224.jpg' },
+      },
+      {
+        src: ['./photos/paris-saclay-lumen-nuit.jpg'],
+        alt: { en: 'Lumen lit up at night', fr: 'Lumen illuminée à la tombée de la nuit' },
+        credit: { label: 'Clemcloum8, CC0', source: 'https://commons.wikimedia.org/wiki/File:Lumen_Biblioth%C3%A8que_Universitaire_Paris_Saclay_nuit_2026.jpg' },
+        position: 'center 40%',
+      },
+    ],
     about: {
       en: 'The IUT d’Orsay is the University Institute of Technology of Université Paris-Saclay. I study there for the BUT in Computer Science: a three-year national bachelor’s degree (180 ECTS) that combines theory, team projects and long periods in companies.',
       fr: 'L’IUT d’Orsay est l’institut universitaire de technologie de l’université Paris-Saclay. J’y prépare le BUT Informatique : un diplôme national de niveau licence en trois ans (180 ECTS) qui combine théorie, projets en équipe et longues périodes en entreprise.',
