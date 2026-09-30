@@ -63,9 +63,9 @@ export function Goals({ onContact }: { onContact?: () => void }) {
                     aria-hidden="true"
                     className={`absolute top-4 -left-10 flex size-8 items-center justify-center rounded-full border ${
                       goal
-                        ? 'border-amber-300/70 bg-amber-400/20 text-amber-200 shadow-[0_0_24px_rgb(251_191_36/0.6)]'
+                        ? 'border-amber-300/70 bg-amber-400/20 text-amber-200 shadow-[0_0_24px_rgb(251_191_36/0.3)]'
                         : now
-                          ? 'border-emerald-300/70 bg-emerald-400/20 text-emerald-200 shadow-[0_0_20px_rgb(52_211_153/0.5)]'
+                          ? 'border-emerald-300/70 bg-emerald-400/20 text-emerald-200 shadow-[0_0_20px_rgb(52_211_153/0.25)]'
                           : 'border-violet-300/50 bg-[#0b0b10] text-violet-200'
                     }`}
                   >
@@ -167,7 +167,7 @@ export function Goals({ onContact }: { onContact?: () => void }) {
               <button
                 type="button"
                 onClick={onContact}
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 font-semibold text-zinc-900 shadow-[0_0_40px_rgb(255_255_255/0.3)] transition hover:bg-zinc-200"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 font-semibold text-zinc-900 shadow-[0_0_40px_rgb(255_255_255/0.15)] transition hover:bg-zinc-200"
               >
                 {t('goals.cta.button')} <ArrowRight className="size-4" aria-hidden="true" />
               </button>

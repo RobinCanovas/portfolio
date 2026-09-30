@@ -98,7 +98,7 @@ export function SubnetCalculator() {
                     initial={false}
                     animate={{ scale: 1 }}
                     className={`flex aspect-[3/4] items-center justify-center rounded-md border font-mono text-xs font-semibold transition-colors duration-300 ${
-                      net ? 'border-violet-400/50 bg-violet-500/20 text-violet-100 shadow-[0_0_10px_rgb(168_85_247/0.25)]' : 'border-cyan-400/40 bg-cyan-500/15 text-cyan-100'
+                      net ? 'border-violet-400/50 bg-violet-500/20 text-violet-100 shadow-[0_0_10px_rgb(168_85_247/0.13)]' : 'border-cyan-400/40 bg-cyan-500/15 text-cyan-100'
                     } ${i % 8 === 7 && i !== 31 ? 'sm:mr-1.5' : ''}`}
                   >
                     {b}

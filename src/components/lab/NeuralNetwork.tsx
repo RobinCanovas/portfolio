@@ -225,7 +225,7 @@ export function NeuralNetwork() {
             <button
               type="button"
               onClick={() => (stats.iter >= MAX_ITER ? (reset(data, model), setRunning(true)) : setRunning((r) => !r))}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_24px_rgb(168_85_247/0.4)] transition hover:brightness-110"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_24px_rgb(168_85_247/0.2)] transition hover:brightness-110"
             >
               {running ? <Pause className="size-4" aria-hidden="true" /> : <Play className="size-4" aria-hidden="true" />} {running ? t('gd.pause') : t('gd.train')}
             </button>

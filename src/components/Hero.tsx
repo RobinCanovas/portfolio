@@ -37,14 +37,14 @@ export function Hero({ onContact }: { onContact: () => void }) {
   return (
     <section ref={sectionRef} id="home" className="relative isolate overflow-hidden">
       <motion.div aria-hidden="true" style={{ y: bgY }} className="pointer-events-none absolute inset-0 -z-10">
-        <div className="animate-aurora absolute top-[-20%] left-[10%] size-[55vmax] rounded-full bg-[conic-gradient(from_90deg,#7c3aed88,#06b6d466,#db277755,#7c3aed88)] opacity-80 blur-[110px]" />
+        <div className="animate-aurora absolute top-[-20%] left-[10%] size-[55vmax] rounded-full bg-[conic-gradient(from_90deg,#7c3aed88,#06b6d455,#4f46e555,#7c3aed88)] opacity-50 blur-[110px]" />
         <ParticleField className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
       </motion.div>
 
       <div className="mx-auto grid min-h-dvh max-w-6xl items-center gap-12 px-4 pt-28 pb-20 sm:px-6 lg:grid-cols-[1.15fr_1fr]">
         <motion.div variants={container} initial="hidden" animate={revealed ? 'show' : 'hidden'} style={{ y: textY, opacity: textOpacity }}>
-          <motion.div variants={item} className="inline-flex flex-wrap items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.08] px-3 py-1.5 text-xs shadow-[0_0_24px_rgb(52_211_153/0.2)]">
+          <motion.div variants={item} className="inline-flex flex-wrap items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.08] px-3 py-1.5 text-xs shadow-[0_0_24px_rgb(52_211_153/0.1)]">
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
@@ -56,7 +56,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
 
           <motion.h1 variants={item} className="mt-7 text-5xl leading-[1.02] font-extrabold tracking-tight text-white sm:text-7xl">
             <span className="block text-2xl font-medium text-zinc-300 sm:text-3xl">{t('hero.hi')}</span>
-            <ScrambleText key={String(revealed)} text={profile.name} className="text-shine cursor-default drop-shadow-[0_0_30px_rgb(168_85_247/0.5)]" />
+            <ScrambleText key={String(revealed)} text={profile.name} className="text-shine cursor-default drop-shadow-[0_0_30px_rgb(168_85_247/0.25)]" />
           </motion.h1>
 
           <motion.p variants={item} className="mt-5 text-xl font-medium text-zinc-100 sm:text-2xl">
@@ -77,7 +77,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
               <button
                 type="button"
                 onClick={onContact}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-500 to-cyan-500 bg-[length:200%_auto] px-6 py-3.5 font-semibold text-white shadow-[0_0_30px_rgb(168_85_247/0.5)] transition-[background-position,box-shadow] duration-500 hover:bg-right hover:shadow-[0_0_50px_rgb(34_211_238/0.6)]"
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-600 bg-[length:200%_auto] px-6 py-3.5 font-semibold text-white shadow-[0_0_30px_rgb(168_85_247/0.25)] transition-[background-position,box-shadow] duration-500 hover:bg-right hover:shadow-[0_0_50px_rgb(34_211_238/0.3)]"
               >
                 <span aria-hidden="true" className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <Mail className="size-4" aria-hidden="true" /> {t('hero.contact')}
@@ -89,7 +89,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
               </a>
             </Magnetic>
             <Magnetic strength={0.5}>
-              <a href={links.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="flex rounded-xl border border-white/15 p-3.5 text-zinc-200 transition hover:border-[#0a66c2] hover:text-[#4d9fff] hover:shadow-[0_0_20px_rgb(10_102_194/0.5)]">
+              <a href={links.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="flex rounded-xl border border-white/15 p-3.5 text-zinc-200 transition hover:border-[#0a66c2] hover:text-[#4d9fff] hover:shadow-[0_0_20px_rgb(10_102_194/0.25)]">
                 <LinkedinIcon className="size-5" />
               </a>
             </Magnetic>

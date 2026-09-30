@@ -14,8 +14,8 @@ export const profile = {
   status: 'Open to opportunities',
   currentRole: 'Web Developer @ Éditions Ellipses',
   pitch:
-    'Computer science student in a work-study BUT, I turn business requirements into secure, reliable software, and I’m building a generalist profile, with solid maths, for banking and consulting. After a mission on a BNP Paribas group subsidiary’s platform, my next steps are university, then an ambitious master’s-level degree.',
-  ambition: 'Long-term goal: banking & IT consulting, where rigour, security and business understanding matter as much as code.',
+    'Computer science student in a work-study BUT, I turn business requirements into secure, reliable software, and I’m building a generalist profile, with solid maths, for banking, consulting and, more broadly, roles where tech meets business. After a mission on a BNP Paribas group subsidiary’s platform, my next steps are university, then an ambitious master’s-level degree.',
+  ambition: 'Long term: roles where technology meets business decisions. Banking and consulting come first, but I’m keeping every door open wherever rigour, maths and business understanding matter as much as code.',
   avatar: './robin-canovas.jpg',
 };
 

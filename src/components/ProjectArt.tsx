@@ -6,12 +6,12 @@ import { useId, type CSSProperties, type ReactNode } from 'react';
  * which the reduced-motion rule switches off.
  */
 
-const V = '#a855f7';
-const VL = '#c084fc';
-const C = '#22d3ee';
-const F = '#e879f9';
-const E = '#34d399';
-const A = '#fbbf24';
+const V = '#8e7cc3';
+const VL = '#a597d4';
+const C = '#6ba8b8';
+const F = '#b98cc4';
+const E = '#6fb59a';
+const A = '#d4aa5c';
 const LINE = 'rgb(255 255 255 / 0.22)';
 const PANEL = '#12121b';
 
@@ -28,8 +28,8 @@ function Frame({ hue, children }: { hue: [string, string]; children: (ctx: Ctx) 
     <svg viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice" className="size-full" aria-hidden="true" focusable="false">
       <defs>
         <radialGradient id={`${id}-glow`} cx="50%" cy="55%" r="60%">
-          <stop offset="0" stopColor={hue[0]} stopOpacity="0.32" />
-          <stop offset="0.6" stopColor={hue[1]} stopOpacity="0.08" />
+          <stop offset="0" stopColor={hue[0]} stopOpacity="0.13" />
+          <stop offset="0.6" stopColor={hue[1]} stopOpacity="0.03" />
           <stop offset="1" stopColor={hue[1]} stopOpacity="0" />
         </radialGradient>
         <pattern id={`${id}-dots`} width="16" height="16" patternUnits="userSpaceOnUse">

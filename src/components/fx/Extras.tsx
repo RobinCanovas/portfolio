@@ -23,7 +23,7 @@ export function BackToTop() {
           exit={{ opacity: 0, scale: 0.6, y: 20 }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.92 }}
-          className="group fixed right-5 bottom-5 z-40 flex size-12 items-center justify-center rounded-full bg-black/70 text-zinc-200 shadow-[0_0_30px_-6px_rgb(168_85_247/0.7)] backdrop-blur transition-colors hover:text-white sm:right-8 sm:bottom-8"
+          className="group fixed right-5 bottom-5 z-40 flex size-12 items-center justify-center rounded-full bg-black/70 text-zinc-200 shadow-[0_0_30px_-6px_rgb(168_85_247/0.35)] backdrop-blur transition-colors hover:text-white sm:right-8 sm:bottom-8"
         >
           <svg viewBox="0 0 48 48" className="absolute inset-0 -rotate-90" aria-hidden="true">
             <defs>

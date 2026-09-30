@@ -33,7 +33,7 @@ export function DevicePreview({ src, title, originalSrc }: { src: string; title:
             </button>
           ))}
         </div>
-        <a href={src} target="_blank" rel="noopener" className="ml-auto inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.4)] hover:brightness-110">
+        <a href={src} target="_blank" rel="noopener" className="ml-auto inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.2)] hover:brightness-110">
           <ExternalLink className="size-3.5" aria-hidden="true" /> {t('device.full')}
         </a>
         {originalSrc && (

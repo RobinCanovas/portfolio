@@ -287,7 +287,7 @@ export function SqlPlayground() {
               type="button"
               onClick={() => run(sql)}
               disabled={status !== 'ready'}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-500 px-3.5 py-1.5 text-sm font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.4)] transition hover:brightness-110 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-500 px-3.5 py-1.5 text-sm font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.2)] transition hover:brightness-110 disabled:opacity-50"
             >
               {status === 'loading' ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />} {t('sql.run')}
             </button>

@@ -104,7 +104,7 @@ export function DeployPipeline() {
             type="button"
             onClick={run}
             disabled={status === 'running'}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_24px_rgb(168_85_247/0.45)] transition hover:brightness-110 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_24px_rgb(168_85_247/0.23)] transition hover:brightness-110 disabled:opacity-60"
           >
             {status === 'running' ? <Rocket className="size-4 animate-pulse" /> : <Play className="size-4" />}
             {status === 'running' ? t('dep.running') : t('dep.run')}

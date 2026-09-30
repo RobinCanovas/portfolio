@@ -51,7 +51,7 @@ function LangToggle({ className = '' }: { className?: string }) {
           {lang === l && (
             <motion.span
               layoutId="lang-pill"
-              className="absolute inset-0 -z-10 rounded-md bg-gradient-to-r from-violet-500/80 to-cyan-500/80 shadow-[0_0_14px_rgb(168_85_247/0.5)]"
+              className="absolute inset-0 -z-10 rounded-md bg-gradient-to-r from-violet-500/80 to-cyan-500/80 shadow-[0_0_14px_rgb(168_85_247/0.25)]"
               transition={{ type: 'spring', stiffness: 450, damping: 32 }}
             />
           )}
@@ -217,7 +217,7 @@ const ROADMAP = [
   { n: 1, icon: Briefcase, tone: 'text-emerald-300 border-emerald-400/50 bg-emerald-400/15' },
   { n: 2, icon: Building2, tone: 'text-violet-200 border-violet-400/40 bg-violet-400/10' },
   { n: 3, icon: Landmark, tone: 'text-violet-200 border-violet-400/40 bg-violet-400/10' },
-  { n: 4, icon: Trophy, tone: 'text-amber-200 border-amber-300/60 bg-amber-400/15 shadow-[0_0_16px_rgb(251_191_36/0.5)]' },
+  { n: 4, icon: Trophy, tone: 'text-amber-200 border-amber-300/60 bg-amber-400/15 shadow-[0_0_16px_rgb(251_191_36/0.25)]' },
 ] as const;
 
 function SchoolTile({ sources, name }: { sources: string[]; name: string }) {
@@ -416,7 +416,7 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
         <a href="#home" aria-label={t('nav.home')} className="group flex items-center gap-2.5 text-white">
           {/* data-brand-logo: where the opening intro lands the mark. */}
           <span data-brand-logo className="inline-flex">
-            <Logo className="size-9 drop-shadow-[0_0_12px_rgb(168_85_247/0.55)] transition duration-500 group-hover:rotate-[20deg] group-hover:drop-shadow-[0_0_18px_rgb(34_211_238/0.7)]" />
+            <Logo className="size-9 drop-shadow-[0_0_12px_rgb(168_85_247/0.28)] transition duration-500 group-hover:rotate-[20deg] group-hover:drop-shadow-[0_0_18px_rgb(34_211_238/0.35)]" />
           </span>
           <span className="hidden text-[15px] font-semibold tracking-wide sm:inline">{t('brand')}</span>
         </a>
@@ -537,7 +537,7 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
       </nav>
 
       {/* Scroll progress */}
-      <motion.div aria-hidden="true" style={{ scaleX: progress }} className="absolute inset-x-0 bottom-0 h-[2px] origin-left bg-gradient-to-r from-violet-500 via-fuchsia-400 to-cyan-400" />
+      <motion.div aria-hidden="true" style={{ scaleX: progress }} className="absolute inset-x-0 bottom-0 h-[2px] origin-left bg-gradient-to-r from-violet-500 via-indigo-400 to-sky-400" />
 
       {/* Mobile drawer */}
       <AnimatePresence>

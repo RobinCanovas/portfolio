@@ -9,7 +9,7 @@ function Avatar({ size = 'size-24' }: { size?: string }) {
   const { profile } = useContent();
   const [failed, setFailed] = useState(false);
   return (
-    <div className={`${size} shrink-0 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400 p-[2px] shadow-[0_0_30px_rgb(168_85_247/0.4)]`}>
+    <div className={`${size} shrink-0 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400 p-[2px] shadow-[0_0_30px_rgb(168_85_247/0.2)]`}>
       {failed ? (
         <div className="flex size-full items-center justify-center rounded-full bg-zinc-900 text-zinc-500">
           <UserRound className="size-1/2" aria-hidden="true" />
@@ -60,7 +60,7 @@ function ContactForm() {
         <span className="mb-1 block text-xs text-zinc-300">{t('contact.message')}</span>
         <textarea name="message" required rows={4} className={`${field} resize-y`} placeholder={t('contact.messagePh')} />
       </label>
-      <button type="submit" className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 px-5 py-3 font-semibold text-white shadow-[0_0_24px_rgb(168_85_247/0.4)] transition hover:brightness-110">
+      <button type="submit" className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 px-5 py-3 font-semibold text-white shadow-[0_0_24px_rgb(168_85_247/0.2)] transition hover:brightness-110">
         <Send className="size-4" aria-hidden="true" /> {t('contact.send')}
       </button>
       {sent && (
@@ -78,7 +78,7 @@ function QuickLinks() {
   const [copied, setCopied] = useState(false);
   return (
     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-      <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl bg-[#0a66c2] px-4 py-3 text-sm font-semibold text-white shadow-[0_0_24px_rgb(10_102_194/0.4)] transition hover:brightness-110">
+      <a href={links.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl bg-[#0a66c2] px-4 py-3 text-sm font-semibold text-white shadow-[0_0_24px_rgb(10_102_194/0.2)] transition hover:brightness-110">
         <LinkedinIcon className="size-5" /> {t('contact.linkedin')}
       </a>
       <button
@@ -125,7 +125,7 @@ export function Contact({ open, onOpen, onClose }: { open: boolean; onOpen: () =
           <button
             type="button"
             onClick={onOpen}
-            className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-zinc-900 shadow-[0_0_30px_rgb(255_255_255/0.25)] transition hover:bg-zinc-200"
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-zinc-900 shadow-[0_0_30px_rgb(255_255_255/0.13)] transition hover:bg-zinc-200"
           >
             <Mail className="size-4" aria-hidden="true" /> {t('contact.cta')}
           </button>

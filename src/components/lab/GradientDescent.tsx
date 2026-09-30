@@ -201,7 +201,7 @@ export function GradientDescent() {
             <button
               type="button"
               onClick={() => setRunning((r) => !r)}
-              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-500 px-3 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.4)] hover:brightness-110"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-500 px-3 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.2)] hover:brightness-110"
             >
               {running ? <Pause className="size-4" /> : <Play className="size-4" />} {running ? t('gd.pause') : t('gd.train')}
             </button>
