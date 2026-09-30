@@ -14,8 +14,8 @@ export const profile = {
   status: 'Open to opportunities',
   currentRole: 'Web Developer @ Éditions Ellipses',
   pitch:
-    'Computer science student in a work-study BUT, I turn business requirements into secure, reliable software, and I’m building a generalist profile, with solid maths, for banking, consulting and, more broadly, roles where tech meets business. After a mission on a BNP Paribas group subsidiary’s platform, my next steps are university, then an ambitious master’s-level degree.',
-  ambition: 'Long term: roles where technology meets business decisions. Banking and consulting come first, but I’m keeping every door open wherever rigour, maths and business understanding matter as much as code.',
+    'Work-study computer science student at the IUT d’Orsay (Université Paris-Saclay), I’m building a generalist profile, strong in both maths and computing, with a clear goal: a selective master’s programme or a grande école. Alongside my studies, I already turn business requirements into secure, reliable software, including for a BNP Paribas group subsidiary.',
+  ambition: 'My study project: after the BUT, a selective master’s or a grande école, to go deeper into maths, data and decision-making. In the long run, I want demanding roles where technology informs decisions, without closing any doors.',
   avatar: './robin-canovas.jpg',
 };
 
@@ -811,6 +811,9 @@ export const targetSchools = [
   { id: 'centrale', name: 'CentraleSupélec', logos: ['./logos/centralesupelec.svg', 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Ecole_Centrale_Supelec_logo.svg'] },
   { id: 'centrale-med', name: 'Centrale Méditerranée', logos: ['https://upload.wikimedia.org/wikipedia/commons/6/60/Logo_Centrale_M%C3%A9diterrann%C3%A9e.png'] },
   { id: 'ensta', name: 'ENSTA Paris', logos: ['https://upload.wikimedia.org/wikipedia/commons/4/45/Logo_ENSTA_Paris.jpg'] },
+  { id: 'ensae', name: 'ENSAE Paris', logos: ['https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/LOGO-ENSAE.png/500px-LOGO-ENSAE.png'] },
+  { id: 'essec', name: 'ESSEC Business School', logos: ['https://upload.wikimedia.org/wikipedia/commons/8/8a/Logo_essec2.svg'] },
+  { id: 'escp', name: 'ESCP Business School', logos: ['https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/ESCP_LOGO_CMJN.png/500px-ESCP_LOGO_CMJN.png'] },
   { id: 'telecom-paris', name: 'Télécom Paris', logos: ['./logos/telecom-paris.svg'] },
   { id: 'telecom-sudparis', name: 'Télécom SudParis', logos: ['./logos/telecom-sudparis.svg', 'https://upload.wikimedia.org/wikipedia/fr/1/1d/Logo_T%C3%A9l%C3%A9com_SudParis.svg'] },
 ];

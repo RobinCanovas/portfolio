@@ -107,7 +107,6 @@ export function Hero({ onContact }: { onContact: () => void }) {
                 </div>
               ))}
             </dl>
-            <p className="mt-4 text-sm text-zinc-400">{t('hero.young')}</p>
           </motion.div>
         </motion.div>
 

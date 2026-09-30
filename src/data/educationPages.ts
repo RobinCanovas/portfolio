@@ -155,6 +155,30 @@ export const educationPages: EducationPage[] = [
     title: { en: 'Scout since 2013', fr: 'Scout depuis 2013' },
     period: { en: 'Since 2013 · Gard', fr: 'Depuis 2013 · Gard' },
     logos: ['./logos/eedf.png', 'https://icons.duckduckgo.com/ip3/eedf.fr.ico'],
+    // Photos from Wikimedia Commons, with their authors and licences.
+    photo: {
+      src: ['https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Vue_du_hameau_de_B%C3%A9cours.jpg/1280px-Vue_du_hameau_de_B%C3%A9cours.jpg'],
+      alt: { en: 'The hamlet of Bécours, an EEDF centre in the Aveyron countryside', fr: 'Le hameau de Bécours, centre des EEDF dans la campagne aveyronnaise' },
+      credit: 'Maud Réveillé, CC BY-SA 4.0',
+      source: 'https://commons.wikimedia.org/wiki/File:Vue_du_hameau_de_B%C3%A9cours.jpg',
+    },
+    gallery: [
+      {
+        src: ['https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/La_veill%C3%A9r_au_feu_de_bois.jpg/1280px-La_veill%C3%A9r_au_feu_de_bois.jpg'],
+        alt: { en: 'Scouts gathered around a campfire to sing', fr: 'Éclaireuses et éclaireurs réunis pour chanter autour d’un feu de bois' },
+        credit: { label: 'Arn, CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:La_veill%C3%A9r_au_feu_de_bois.jpg' },
+      },
+      {
+        src: ['https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Des_%C3%A9claireuses_et_un_%C3%A9claireur_en_exploration.jpg/1280px-Des_%C3%A9claireuses_et_un_%C3%A9claireur_en_exploration.jpg'],
+        alt: { en: 'Scouts reading a map during an exploration at camp', fr: 'Des éclaireuses et un éclaireur lisent une carte pendant une exploration' },
+        credit: { label: 'Wikimedia Commons, CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Des_%C3%A9claireuses_et_un_%C3%A9claireur_en_exploration.jpg' },
+      },
+      {
+        src: ['https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Froissartage.jpg/1280px-Froissartage.jpg'],
+        alt: { en: 'Scouts carrying a log to build a camp structure', fr: 'Des éclaireuses apportent un rondin pour construire une installation de camp' },
+        credit: { label: 'Wikimedia Commons, CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Froissartage.jpg' },
+      },
+    ],
     about: {
       en: 'The Éclaireuses Éclaireurs de France are a secular, co-educational scouting movement. Founded in 1911 as the Éclaireurs de France and in their current form since 1964, they are among the oldest scouting associations in France, recognised as being of public utility and members of the world scouting organisations (WOSM and WAGGGS).',
       fr: 'Les Éclaireuses Éclaireurs de France sont un mouvement de scoutisme laïque et coéduqué. Fondés en 1911 sous le nom d’Éclaireurs de France, et sous leur forme actuelle depuis 1964, ils comptent parmi les plus anciennes associations de scoutisme en France, reconnues d’utilité publique et membres des organisations mondiales du scoutisme (OMMS et AMGE).',
