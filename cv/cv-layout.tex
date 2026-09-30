@@ -73,8 +73,9 @@
 % ------------------------------ Couleurs -----------------------------------
 \definecolor{ink}{HTML}{0B1B34}
 \definecolor{inklight}{HTML}{16305A}
-\definecolor{brandviolet}{HTML}{7C3AED}
-\definecolor{brandcyan}{HTML}{0891B2}
+% Sober accents: a muted indigo and a steel blue.
+\definecolor{brandviolet}{HTML}{3F4C8A}
+\definecolor{brandcyan}{HTML}{3E7C99}
 \definecolor{bodytext}{HTML}{1F2937}
 \definecolor{muted}{HTML}{6B7280}
 \definecolor{side}{HTML}{F3F4F8}
@@ -214,8 +215,8 @@
     \begin{scope}
       \clip (NW) rectangle ($(NE)+(0,-\headerheight)$);
       \fill[ink] (NW) rectangle ($(NE)+(0,-\headerheight)$);
-      \shade[inner color=brandviolet!55!ink, outer color=ink] ($(NE)+(-58mm,-6mm)$) circle (46mm);
-      \shade[inner color=brandcyan!40!ink, outer color=ink] ($(NE)+(-6mm,-40mm)$) circle (30mm);
+      \shade[inner color=brandviolet!35!ink, outer color=ink] ($(NE)+(-58mm,-6mm)$) circle (46mm);
+      \shade[inner color=brandcyan!25!ink, outer color=ink] ($(NE)+(-6mm,-40mm)$) circle (30mm);
     \end{scope}
     % Filet dégradé sous le bandeau
     \shade[left color=brandviolet, right color=brandcyan]

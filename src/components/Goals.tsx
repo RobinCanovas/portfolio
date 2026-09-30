@@ -132,7 +132,7 @@ export function Goals({ onContact }: { onContact?: () => void }) {
       <div className="mt-12">
         <h3 className="font-mono text-xs tracking-[0.25em] text-amber-200 uppercase">{t('goals.schools')}</h3>
         <p className="mt-2 text-sm text-zinc-300">{t('goals.schoolsNote')}</p>
-        <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {targetSchools.map((s, i) => (
             <motion.li
               key={s.id}
