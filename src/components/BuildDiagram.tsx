@@ -45,7 +45,7 @@ export function BuildDiagram({ steps }: { steps: BuildStep[] }) {
               transition={{ delay: i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="relative flex gap-4 lg:flex-col lg:items-center lg:text-center"
             >
-              <span className="group relative z-10 flex size-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-[#0b0b10] shadow-[0_0_30px_-6px_rgb(168_85_247/0.6)] transition hover:border-cyan-300/60 hover:shadow-[0_0_36px_-4px_rgb(34_211_238/0.7)]">
+              <span className="group relative z-10 flex size-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-[#0b0b10] shadow-[0_0_30px_-6px_rgb(168_85_247/0.3)] transition hover:border-cyan-300/60 hover:shadow-[0_0_36px_-4px_rgb(34_211_238/0.35)]">
                 <Icon className="size-6 text-violet-200 transition group-hover:scale-110 group-hover:text-cyan-200" aria-hidden="true" />
                 <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 font-mono text-[10px] font-bold text-white">
                   {i + 1}

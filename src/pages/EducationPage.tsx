@@ -83,7 +83,7 @@ export function EducationPage({ id }: { id: string }) {
                   name={page.name}
                   size={72}
                   fallback={
-                    <span className="flex size-[72px] items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-500 text-white shadow-[0_0_30px_rgb(168_85_247/0.5)]">
+                    <span className="flex size-[72px] items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-500 text-white shadow-[0_0_30px_rgb(168_85_247/0.25)]">
                       <Fallback className="size-8" aria-hidden="true" />
                     </span>
                   }
@@ -181,7 +181,7 @@ export function EducationPage({ id }: { id: string }) {
               href={page.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-zinc-900 shadow-[0_0_30px_rgb(255_255_255/0.25)] transition hover:bg-zinc-200"
+              className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-zinc-900 shadow-[0_0_30px_rgb(255_255_255/0.13)] transition hover:bg-zinc-200"
             >
               {p(page.urlLabel)} <ArrowUpRight className="size-4" aria-hidden="true" />
             </a>

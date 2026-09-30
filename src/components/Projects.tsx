@@ -33,7 +33,7 @@ export function Projects({ filter, onFilter }: Props) {
               aria-pressed={on}
               onClick={() => onFilter(tech)}
               className={`group inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-1.5 font-mono text-xs transition ${
-                on ? 'border-violet-400 bg-violet-500/25 text-white shadow-[0_0_16px_rgb(168_85_247/0.4)]' : 'border-white/15 text-zinc-300 hover:border-white/30 hover:text-white'
+                on ? 'border-violet-400 bg-violet-500/25 text-white shadow-[0_0_16px_rgb(168_85_247/0.2)]' : 'border-white/15 text-zinc-300 hover:border-white/30 hover:text-white'
               }`}
             >
               <TechIcon tech={tech} className="size-3.5" />

@@ -246,7 +246,7 @@ export function ExperiencePage({ id }: { id: string }) {
                 href={company.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-zinc-900 shadow-[0_0_40px_rgb(255_255_255/0.25)] transition hover:bg-zinc-200"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-zinc-900 shadow-[0_0_40px_rgb(255_255_255/0.13)] transition hover:bg-zinc-200"
               >
                 {t('page.visit')} <ArrowUpRight className="size-4" aria-hidden="true" />
               </a>

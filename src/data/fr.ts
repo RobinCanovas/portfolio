@@ -52,8 +52,8 @@ export const fr: FrOverlay = {
     status: 'Ouvert aux opportunités',
     currentRole: 'Développeur web @ Éditions Ellipses',
     pitch:
-      'Étudiant en BUT Informatique en alternance, je transforme des besoins métier en logiciels sûrs et fiables, et je construis un profil généraliste, avec une base solide en maths, pour la banque et le conseil. Après une mission sur la plateforme d’une filiale du groupe BNP Paribas, mes prochaines étapes : la fac, puis un Bac+5 ambitieux.',
-    ambition: 'Objectif à long terme : la banque et le conseil IT, là où la rigueur, la sécurité et la compréhension du métier comptent autant que le code.',
+      'Étudiant en BUT Informatique en alternance, je transforme des besoins métier en logiciels sûrs et fiables, et je construis un profil généraliste, avec une base solide en maths, pour la banque, le conseil et plus largement les métiers à la croisée de la tech et du business. Après une mission sur la plateforme d’une filiale du groupe BNP Paribas, mes prochaines étapes : la fac, puis un Bac+5 ambitieux.',
+    ambition: 'À long terme : des métiers où la technologie rencontre les décisions business. La banque et le conseil en priorité, mais je garde toutes les portes ouvertes, partout où la rigueur, les maths et la compréhension du métier comptent autant que le code.',
   },
 
   companies: {

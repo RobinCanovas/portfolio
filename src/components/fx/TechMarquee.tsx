@@ -9,7 +9,7 @@ export function TechMarquee() {
     <ul className="flex shrink-0 items-center gap-12 pr-12" aria-hidden={hidden || undefined}>
       {ITEMS.map((s) => (
         <li key={s.name} className="group flex items-center gap-3 text-sm whitespace-nowrap text-zinc-500 transition-colors hover:text-white">
-          <SimpleIcon slug={s.icon} className="size-6 transition-transform duration-300 group-hover:scale-125 group-hover:drop-shadow-[0_0_10px_rgb(255_255_255/0.5)]" />
+          <SimpleIcon slug={s.icon} className="size-6 transition-transform duration-300 group-hover:scale-125 group-hover:drop-shadow-[0_0_10px_rgb(255_255_255/0.25)]" />
           {s.name}
         </li>
       ))}

@@ -98,7 +98,7 @@ export function ProjectPage({ id }: { id: string }) {
           <motion.aside {...fade()} className="relative overflow-hidden rounded-3xl border border-amber-300/25 bg-amber-400/[0.05] p-6 sm:p-8">
             <div aria-hidden="true" className="absolute -top-16 -right-16 size-56 rounded-full bg-amber-400/15 blur-3xl" />
             <div className="relative flex gap-4">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-amber-400/15 shadow-[0_0_30px_rgb(251_191_36/0.3)]">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-amber-400/15 shadow-[0_0_30px_rgb(251_191_36/0.15)]">
                 <Lock className="size-6 text-amber-300" aria-hidden="true" />
               </span>
               <div>
@@ -248,7 +248,7 @@ export function ProjectPage({ id }: { id: string }) {
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-5 py-3 font-semibold text-white shadow-[0_0_30px_rgb(168_85_247/0.4)] transition hover:brightness-110"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-5 py-3 font-semibold text-white shadow-[0_0_30px_rgb(168_85_247/0.2)] transition hover:brightness-110"
               >
                 {project.demo === 'sql' ? t('page.proposal') : t('page.liveSite')} <ArrowUpRight className="size-4" aria-hidden="true" />
               </a>

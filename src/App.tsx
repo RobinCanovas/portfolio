@@ -59,7 +59,7 @@ function HyperToast() {
           initial={{ opacity: 0, y: 30, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 30, scale: 0.9 }}
-          className="fixed bottom-6 left-1/2 z-[90] -translate-x-1/2 rounded-full border border-fuchsia-400/40 bg-black/80 px-5 py-2.5 font-mono text-sm text-fuchsia-200 shadow-[0_0_40px_rgb(217_70_239/0.5)] backdrop-blur"
+          className="fixed bottom-6 left-1/2 z-[90] -translate-x-1/2 rounded-full border border-fuchsia-400/40 bg-black/80 px-5 py-2.5 font-mono text-sm text-fuchsia-200 shadow-[0_0_40px_rgb(217_70_239/0.25)] backdrop-blur"
         >
           {t('hyper.toast')}
         </motion.div>
