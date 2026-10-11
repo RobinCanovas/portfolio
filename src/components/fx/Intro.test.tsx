@@ -1,26 +1,20 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { projects } from '../../data/profile';
-import { hasProjectArt, ProjectArt } from '../ProjectArt';
-import { ACTIVATIONS, INPUT, Intro, LAYERS, shouldPlayIntro } from './Intro';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { DRIFT_MS, GATHER_MS, Intro, shouldPlayIntro } from './Intro';
 
-describe('intro forward pass', () => {
-  it('runs a real forward pass that lights the output up', () => {
-    expect(ACTIVATIONS.map((layer) => layer.length)).toEqual(LAYERS);
-    expect(ACTIVATIONS[0]).toEqual(INPUT);
-    for (const a of ACTIVATIONS.slice(1).flat()) {
-      expect(a).toBeGreaterThan(0);
-      expect(a).toBeLessThan(1);
-    }
-    // Some neurons stay dark and others shine, so the signal visibly picks its way through.
-    for (const layer of ACTIVATIONS.slice(1, -1)) {
-      expect(Math.min(...layer)).toBeLessThan(0.3);
-      expect(Math.max(...layer)).toBeGreaterThan(0.7);
-    }
-    expect(ACTIVATIONS[LAYERS.length - 1][0]).toBeGreaterThan(0.9);
-  });
-});
+function TitleAndIntro({ onReveal }: { onReveal: () => void }) {
+  return (
+    <>
+      <h1>
+        <span data-hero-name style={{ fontSize: '72px' }}>
+          Robin Canovas
+        </span>
+      </h1>
+      <Intro onReveal={onReveal} />
+    </>
+  );
+}
 
 describe('<Intro />', () => {
   beforeEach(() => {
@@ -38,35 +32,66 @@ describe('<Intro />', () => {
     expect(shouldPlayIntro()).toBe(false);
   });
 
-  it('greets the visitor and can be skipped', async () => {
+  it('opens the page straight away when there is nothing to draw', async () => {
     const onReveal = vi.fn();
     render(<Intro onReveal={onReveal} />);
-    expect(screen.getByTestId('intro')).toHaveTextContent('Bonjour');
+    expect(screen.getByRole('button', { name: 'Skip' })).toBeInTheDocument();
     expect(document.documentElement.style.overflow).toBe('hidden');
-    await userEvent.click(screen.getByRole('button', { name: 'Skip' }));
-    expect(onReveal).toHaveBeenCalledTimes(1);
-    // The dive through the portal lasts about a second before the intro unmounts.
-    await waitFor(() => expect(screen.queryByTestId('intro')).toBeNull(), { timeout: 3000 });
+    await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: 1500 });
+    await waitFor(() => expect(screen.queryByTestId('intro')).toBeNull(), { timeout: 2000 });
     expect(document.documentElement.style.overflow).toBe('');
   });
 
-  it('ends on Escape', async () => {
-    const onReveal = vi.fn();
-    render(<Intro onReveal={onReveal} />);
-    await userEvent.keyboard('{Escape}');
-    expect(onReveal).toHaveBeenCalledTimes(1);
-  });
-});
+  describe('drawing the name', () => {
+    // jsdom has neither a canvas nor a layout: a stub 2D context and glyph boxes stand in for them.
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    beforeEach(() => {
+      const ctx = new Proxy({} as Record<string | symbol, unknown>, {
+        get: (target, key) => {
+          if (key in target) return target[key];
+          if (key === 'measureText') return () => ({ fontBoundingBoxAscent: 58, fontBoundingBoxDescent: 14 });
+          // Sparse ink: a few hundred points are plenty for a test.
+          if (key === 'getImageData') return (_x: number, _y: number, w: number, h: number) => ({ data: Uint8ClampedArray.from({ length: w * h * 4 }, (_, i) => (i % 4 === 3 && i % 92 === 3 ? 255 : 0)) });
+          if (key === 'createLinearGradient') return () => ({ addColorStop: () => undefined });
+          return () => undefined;
+        },
+      });
+      HTMLCanvasElement.prototype.getContext = vi.fn(() => ctx) as unknown as typeof getContext;
+      Range.prototype.getBoundingClientRect = function (this: Range) {
+        const left = 100 + this.startOffset * 30;
+        return { left, right: left + 28, top: 200, bottom: 272, width: 28, height: 72, x: left, y: 200, toJSON: () => ({}) } as DOMRect;
+      };
+    });
+    afterEach(() => {
+      HTMLCanvasElement.prototype.getContext = getContext;
+      delete (Range.prototype as Partial<Range>).getBoundingClientRect;
+    });
 
-describe('<ProjectArt />', () => {
-  it('has a dedicated illustration for every project', () => {
-    for (const p of projects) expect(hasProjectArt(p.id), p.id).toBe(true);
-  });
+    it('hides the real title until the points hand it over, then gets out of the way', async () => {
+      const onReveal = vi.fn();
+      render(<TitleAndIntro onReveal={onReveal} />);
+      const title = document.querySelector<HTMLElement>('[data-hero-name]')!;
+      expect(title.style.opacity).toBe('0');
+      // The points take their time: no handover during the gathering.
+      await new Promise((r) => setTimeout(r, DRIFT_MS + GATHER_MS / 2));
+      expect(onReveal).not.toHaveBeenCalled();
+      await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: 3000 });
+      expect(title.style.opacity).toBe('');
+      await waitFor(() => expect(screen.queryByTestId('intro')).toBeNull(), { timeout: 3000 });
+    });
 
-  it('renders a decorative SVG', () => {
-    const { container } = render(<ProjectArt id="subnet-calculator" />);
-    const svg = container.querySelector('svg');
-    expect(svg).not.toBeNull();
-    expect(svg).toHaveAttribute('aria-hidden', 'true');
+    it('fast-forwards on Escape', async () => {
+      const onReveal = vi.fn();
+      render(<TitleAndIntro onReveal={onReveal} />);
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: DRIFT_MS + GATHER_MS / 2 });
+    });
+
+    it('fast-forwards from the Skip button', async () => {
+      const onReveal = vi.fn();
+      render(<TitleAndIntro onReveal={onReveal} />);
+      await userEvent.click(screen.getByRole('button', { name: 'Skip' }));
+      await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: DRIFT_MS + GATHER_MS / 2 });
+    });
   });
 });
