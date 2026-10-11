@@ -1,11 +1,8 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type MutableRefObject } from 'react';
-import { motion } from 'framer-motion';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLang } from '../../i18n';
-import { createNetwork, forward, seeded } from '../../lib/neural';
+import { seeded } from '../../lib/neural';
 
 const SEEN_KEY = 'portfolio-intro';
-/** Greetings from the places I’ve travelled to (Spain, Romania, England) and a few neighbours. */
-const GREETINGS = ['Hola', 'Bună', 'Ciao', 'Hallo'];
 
 /** True while the home page may play its entrance animations (false while the intro covers it). */
 export const IntroContext = createContext(true);
@@ -24,107 +21,268 @@ export function shouldPlayIntro(): boolean {
 }
 
 /* ------------------------------------------------------------------ */
-/* The maths: a real network and a real forward pass                   */
+/* Timeline                                                            */
 /* ------------------------------------------------------------------ */
 
-/** Five inputs, three hidden layers, one output: the same kind of network as the neural network project. */
-export const LAYERS = [5, 8, 8, 5, 1];
-/** What the network reads. */
-export const INPUT = [0.9, 0.35, 0.8, 0.15, 0.7];
-/** Weights drawn from N(0, 1) with a fixed seed, chosen so the output lights up. */
-const NET = createNetwork(LAYERS, seeded(305));
-/** Forward propagation, aˡ = σ(Wˡ·aˡ⁻¹ + bˡ): the activations of every layer, input first. */
-export const ACTIVATIONS = forward(NET, INPUT);
-const OUTPUT = ACTIVATIONS[LAYERS.length - 1][0];
+/** Scattered points drift on their own for a moment: raw data. */
+export const DRIFT_MS = 300;
+/** They gather into the name while the noise fades out, like a model denoising its output. */
+export const GATHER_MS = 1400;
+/** The points hand over to the real title, and the page appears around it. */
+export const HANDOFF_MS = 640;
+/** Share of the handoff spent uncovering the title itself; the rest of the page follows more calmly. */
+const UNCOVER = 0.2;
+/** A skip fast-forwards whatever is left of the gathering. */
+const SKIP_MS = 300;
+/** Longest wait for the web font, so the points draw the title in the font it will be shown in. */
+const FONT_WAIT_MS = 1200;
 
-/** When each layer fires (ms): the signal reaches the inputs, then crosses one layer per step. */
-const STEP = 620;
-const FIRE = LAYERS.map((_, l) => 900 + l * STEP);
-const TOTAL = FIRE[FIRE.length - 1] + 650;
-/** Duration of the landing: the network gathers into the brand mark, which flies to the navigation bar (ms). */
-const EXIT_MS = 1300;
-/** How many layers have fired: 0 before the signal reaches the inputs, 5 once the output has fired. */
-const stageAt = (elapsed: number) => FIRE.filter((f) => elapsed >= f).length;
-
-const easeOut = (t: number) => 1 - (1 - t) ** 3;
-const easeIn = (t: number) => t * t * t;
-const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
-/** Rounded min and max: they bend over about one unit instead of stopping dead. */
-const smoothMin = (a: number, b: number) => (a + b - Math.hypot(a - b, 0.8)) / 2;
-const smoothMax = (a: number, b: number) => (a + b + Math.hypot(a - b, 0.8)) / 2;
+const easeIn = (t: number) => t * t;
+const easeOut = (t: number) => 1 - (1 - t) ** 3;
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+const smoothstep = (a: number, b: number, t: number) => {
+  const x = clamp01((t - a) / (b - a));
+  return x * x * (3 - 2 * x);
+};
 const mix = (a: number[], b: number[], t: number) => a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(',');
+const gauss = (rand: () => number) => Math.sqrt(-2 * Math.log(rand() || 1e-9)) * Math.cos(2 * Math.PI * rand());
 
-/** Violet at the input, cyan at the output. */
-const VIOLET = [192, 132, 252];
-const CYAN = [34, 211, 238];
-const COLORS = LAYERS.map((_, l) => mix(VIOLET, CYAN, l / (LAYERS.length - 1)));
-/** Connections by weight sign, like the diagram of the live demo. */
-const POSITIVE = '103,232,249';
-const NEGATIVE = '232,121,249';
-
-interface Edge {
-  l: number;
-  k: number;
-  j: number;
-  positive: boolean;
-  /** |w|·a of the source, relative to the strongest connection of the layer: how much signal it carries. */
-  s: number;
-  t0: number;
-  t1: number;
-}
-/** Only the connections that carry enough signal show a pulse. */
-const CARRIES = 0.22;
-
-const EDGES: Edge[] = (() => {
-  const rand = seeded(11);
-  const edges: Edge[] = [];
-  NET.forEach(({ W }, l) => {
-    const a = ACTIVATIONS[l];
-    const max = Math.max(...W.flatMap((row) => row.map((w, k) => Math.abs(w) * a[k])));
-    W.forEach((row, j) =>
-      row.forEach((w, k) => {
-        // Pulses leave one source after the other and all reach the next layer just before it fires.
-        edges.push({ l, k, j, positive: w > 0, s: (Math.abs(w) * a[k]) / max, t0: FIRE[l] + 50 + k * 22, t1: FIRE[l + 1] - 20 - rand() * 60 });
-      }),
-    );
-  });
-  return edges;
-})();
+/** Data points start a neutral grey, and end in the colours of the title (the `text-shine` gradient). */
+const NEUTRAL = [196, 198, 222];
+const TITLE_STOPS: [number, number[]][] = [
+  [0, [221, 214, 254]],
+  [0.5, [196, 181, 253]],
+  [1, [186, 230, 253]],
+];
 
 /* ------------------------------------------------------------------ */
-/* Rendering                                                           */
+/* Where the title is: sampled from the real layout                    */
 /* ------------------------------------------------------------------ */
 
-interface Clock {
-  start: number;
-  exitStart: number | null;
-  /** Screen position of the output neuron, where the brand mark blooms. */
-  out: [number, number];
+interface Title {
+  /** Points on the letters, x and y interleaved, in viewport pixels. */
+  points: Float32Array;
+  /** Box around the letters. */
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  /** Font size and distance between neighbouring points (px). */
+  size: number;
+  step: number;
 }
-
-const STARS = 70;
-const MOTES = 45;
-/** Half the length of the network (world units): one layer every 1.2. */
-const XH = 2.4;
-const layerX = (l: number) => -XH + (l * 2 * XH) / (LAYERS.length - 1);
-/** Points closer to the camera than this fade out, so nothing pops when the camera passes them. */
-const NEAR = 0.45;
 
 /**
- * Night scene: a network floating in the dark, filmed by a camera that travels along with the signal,
- * just behind it. The signal enters the inputs, then crosses the network layer by layer: pulses run
- * along the connections that carry it (cyan for positive weights, pink for negative ones) and each
- * neuron lights up as bright as its activation. Once the output fires the camera pulls back; on exit
- * every neuron flows into the output, where the brand mark takes over.
+ * Draws the home title off screen, one glyph at the exact position the layout gives it (wrapping,
+ * kerning and letter-spacing included), and keeps the points of a jittered grid that fall on ink.
  */
-function Network({ clock }: { clock: MutableRefObject<Clock> }) {
-  const ref = useRef<HTMLCanvasElement>(null);
+export function sampleTitle(el: HTMLElement): Title | null {
+  const style = getComputedStyle(el);
+  const size = parseFloat(style.fontSize);
+  if (!size) return null;
+  const range = document.createRange();
+  if (typeof range.getBoundingClientRect !== 'function') return null;
+  const glyphs: { ch: string; x: number; top: number; h: number; right: number }[] = [];
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const text = node.textContent ?? '';
+    for (let i = 0; i < text.length; i++) {
+      if (!text[i].trim()) continue;
+      range.setStart(node, i);
+      range.setEnd(node, i + 1);
+      const r = range.getBoundingClientRect();
+      if (r.width > 0) glyphs.push({ ch: text[i], x: r.left, top: r.top, h: r.height, right: r.right });
+    }
+  }
+  if (!glyphs.length) return null;
+
+  const pad = Math.ceil(size * 0.25);
+  const left = Math.floor(Math.min(...glyphs.map((g) => g.x))) - pad;
+  const top = Math.floor(Math.min(...glyphs.map((g) => g.top))) - pad;
+  const W = Math.ceil(Math.max(...glyphs.map((g) => g.right))) + pad - left;
+  const H = Math.ceil(Math.max(...glyphs.map((g) => g.top + g.h))) + pad - top;
+  // Twice the resolution, so thin strokes are sampled where they really are.
+  const k = 2;
+  const canvas = document.createElement('canvas');
+  canvas.width = W * k;
+  canvas.height = H * k;
+  const g = canvas.getContext('2d', { willReadFrequently: true });
+  if (!g) return null;
+  g.scale(k, k);
+  g.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+  g.textBaseline = 'alphabetic';
+  g.fillStyle = '#fff';
+  const metrics = g.measureText('Hg');
+  const ascent = metrics.fontBoundingBoxAscent;
+  const descent = metrics.fontBoundingBoxDescent;
+  for (const glyph of glyphs) {
+    // A glyph box is the font's content area: the baseline sits one ascent below its top.
+    const baseline = ascent && descent ? glyph.top + (glyph.h - ascent - descent) / 2 + ascent : glyph.top + glyph.h * 0.8;
+    g.fillText(glyph.ch, glyph.x - left, baseline - top);
+  }
+  const { data } = g.getImageData(0, 0, canvas.width, canvas.height);
+
+  const step = Math.min(3.4, Math.max(2.1, size / 26));
+  const rand = seeded(7);
+  const points: number[] = [];
+  for (let y = step / 2; y < H; y += step) {
+    for (let x = step / 2; x < W; x += step) {
+      // A little jitter, so the stipple never looks like a screen grid.
+      const jx = x + (rand() - 0.5) * step * 0.55;
+      const jy = y + (rand() - 0.5) * step * 0.55;
+      const px = Math.round(jx * k);
+      const py = Math.round(jy * k);
+      if (px < 0 || py < 0 || px >= canvas.width || py >= canvas.height) continue;
+      if (data[(py * canvas.width + px) * 4 + 3] > 140) points.push(left + jx, top + jy);
+    }
+  }
+  if (!points.length) return null;
+  return { points: Float32Array.from(points), x: left + pad, y: top + pad, w: W - 2 * pad, h: H - 2 * pad, size, step };
+}
+
+/* ------------------------------------------------------------------ */
+/* The points                                                          */
+/* ------------------------------------------------------------------ */
+
+const FIELDS = ['sx', 'sy', 'tx', 'ty', 'nx', 'ny', 'delay', 'span', 'phase', 'freq', 'amp', 'shade'] as const;
+type Cloud = Record<(typeof FIELDS)[number], Float32Array> & {
+  total: number;
+  /** The first `letters` points end on a letter; the others are noise that fades away. 0 until aimed. */
+  letters: number;
+  /** Noise level at the start of the gathering (px). */
+  sigma: number;
+};
+
+/**
+ * Raw data: a few clusters of points of different shapes, like a real two-dimensional dataset, plus
+ * scattered outliers. Each point drifts slowly on its own until the cloud is aimed at the title.
+ */
+function makeCloud(total: number, w: number, h: number): Cloud {
+  const rand = seeded(2027);
+  const c = { total, letters: 0, sigma: 0 } as Cloud;
+  for (const f of FIELDS) c[f] = new Float32Array(total);
+  const unit = Math.min(w, h);
+  const clusters = Array.from({ length: 6 }, (_, k) => ({
+    // Spread over the screen: one cluster per cell of a loose 3 × 2 grid.
+    x: w * ((k % 3) / 3 + 0.05 + rand() * 0.23),
+    y: h * (k < 3 ? 0.12 + rand() * 0.3 : 0.55 + rand() * 0.3),
+    rx: unit * (0.05 + rand() * 0.09),
+    ry: unit * (0.035 + rand() * 0.06),
+    angle: rand() * Math.PI,
+  }));
+  for (let i = 0; i < total; i++) {
+    if (rand() < 0.2) {
+      c.sx[i] = rand() * w;
+      c.sy[i] = rand() * h;
+    } else {
+      const k = clusters[Math.floor(rand() * clusters.length)];
+      const a = gauss(rand) * k.rx;
+      const b = gauss(rand) * k.ry;
+      c.sx[i] = k.x + a * Math.cos(k.angle) - b * Math.sin(k.angle);
+      c.sy[i] = k.y + a * Math.sin(k.angle) + b * Math.cos(k.angle);
+    }
+    c.tx[i] = c.sx[i];
+    c.ty[i] = c.sy[i];
+    c.nx[i] = gauss(rand);
+    c.ny[i] = gauss(rand) * 0.8;
+    // Everyone has arrived (blurry) by about 80 % of the gathering; the rest is sharpening.
+    c.delay[i] = rand() * 0.26;
+    c.span[i] = 0.42 + rand() * 0.14;
+    c.phase[i] = rand() * Math.PI * 2;
+    c.freq[i] = 0.5 + rand() * 0.9;
+    c.amp[i] = 4 + rand() * 8;
+    // One of three slightly different shades, for depth.
+    c.shade[i] = i % 3;
+  }
+  return c;
+}
+
+/**
+ * Gives every point its place: most of them a point of the title, paired in left-to-right order (with
+ * some shuffle) so the clusters stream into the letters closest to them instead of crossing the
+ * screen; the rest are noise that settles loosely around the name before vanishing.
+ */
+function aim(c: Cloud, title: Title, w: number) {
+  const rand = seeded(11);
+  const available = title.points.length / 2;
+  const letters = Math.min(available, Math.round(c.total * 0.8));
+  // Which points become letters: a random subset, sorted by where they are (with some shuffle).
+  const ids = Array.from({ length: c.total }, (_, i) => i);
+  for (let i = ids.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+  }
+  const chosen = ids
+    .slice(0, letters)
+    .map((i) => ({ i, key: c.sx[i] + gauss(rand) * w * 0.12 }))
+    .sort((a, b) => a.key - b.key)
+    .map(({ i }) => i);
+  const order = [...chosen, ...ids.slice(letters)];
+  // Title points, left to right (evenly thinned out if there are more of them than letter points).
+  const targets = Array.from({ length: letters }, (_, r) => Math.floor((r * available) / letters)).sort(
+    (a, b) => title.points[2 * a] - title.points[2 * b],
+  );
+
+  // Reorder every field so letters come first.
+  for (const f of FIELDS) c[f] = Float32Array.from(order, (i) => c[f][i]);
+  for (let r = 0; r < c.total; r++) {
+    if (r < letters) {
+      c.tx[r] = title.points[2 * targets[r]];
+      c.ty[r] = title.points[2 * targets[r] + 1];
+    } else {
+      c.tx[r] = title.x + title.w * (rand() * 1.3 - 0.15);
+      c.ty[r] = title.y + title.h * (rand() * 2 - 0.5);
+      c.nx[r] *= 1.8;
+      c.ny[r] *= 1.8;
+    }
+  }
+  c.letters = letters;
+  c.sigma = title.size * 0.55;
+}
+
+/* ------------------------------------------------------------------ */
+/* Component                                                           */
+/* ------------------------------------------------------------------ */
+
+const TITLE_SELECTOR = '[data-hero-name]';
+
+/**
+ * Opening sequence, played once when a visitor lands on the home page: the name, born from data.
+ * Clusters of points scattered over the screen gather into "Robin Canovas" exactly where the home
+ * title sits, blurry at first, then sharper and sharper as the noise fades out. The real title takes
+ * over in place and the page appears around it. Click, scroll, Escape, Enter, Space or Skip fast-forward.
+ */
+export function Intro({ onReveal }: { onReveal: () => void }) {
+  const { t } = useLang();
+  const [open, setOpen] = useState(true);
+  const root = useRef<HTMLDivElement>(null);
+  const veil = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const skipRef = useRef<HTMLButtonElement>(null);
+  const skipRequest = useRef<() => void>(() => undefined);
+  const revealRef = useRef(onReveal);
+  useEffect(() => {
+    revealRef.current = onReveal;
+  }, [onReveal]);
+
+  const skip = useCallback(() => skipRequest.current(), []);
 
   useEffect(() => {
-    const canvas = ref.current;
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) return;
+    try {
+      window.sessionStorage.setItem(SEEN_KEY, '1');
+    } catch {
+      /* private mode: the intro may play again, no harm */
+    }
+    window.scrollTo(0, 0);
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d') ?? null;
+    const titleEl = document.querySelector<HTMLElement>(TITLE_SELECTOR);
+    // The real title waits, invisible, for the points to hand it over.
+    titleEl?.style.setProperty('opacity', '0');
+    const html = document.documentElement;
+    const overflow = html.style.overflow;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w = 0;
@@ -132,446 +290,245 @@ function Network({ clock }: { clock: MutableRefObject<Clock> }) {
     const resize = () => {
       w = window.innerWidth;
       h = window.innerHeight;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (canvas && ctx) {
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
     };
     resize();
 
-    // Deterministic scene: the same stars and depths on every visit.
-    const rand = seeded(3);
-    const stars = Array.from({ length: STARS }, () => ({ x: rand(), y: rand(), r: 0.3 + rand() * 0.9, phase: rand() * 6.28 }));
-    const depth = LAYERS.map((n) => Array.from({ length: n }, () => ({ z: (rand() - 0.5) * 0.6, phase: rand() * 6.28 })));
-    // Dust floating around the network: it drifts past the camera and makes the travel felt.
-    const motes = Array.from({ length: MOTES }, () => ({ x: -XH - 2 + rand() * (2 * XH + 4), y: (rand() - 0.5) * 4.4, z: (rand() - 0.5) * 4, r: 0.5 + rand() }));
-    const last = LAYERS.length - 1;
+    // The cloud appears at once, sized on the title as it is laid out now (maybe in a fallback font);
+    // it is aimed once the web font is there, so the points land on the letters the visitor will see.
+    let title = ctx && titleEl ? sampleTitle(titleEl) : null;
+    const cloud = title ? makeCloud(Math.round((title.points.length / 2) * 1.35), w, h) : null;
 
+    // Virtual clock: it advances with the frames, so a hidden tab or a long frame pauses the intro instead of skipping it.
+    let clock = 0;
+    let last: number | null = null;
+    let ready = false;
+    let gatherAt: number | null = null;
+    let skipAt: number | null = null;
+    let skipFrom = 0;
+    let handoffAt: number | null = null;
     let raf = 0;
+    let doneTimer = 0;
+    let fontWait = 0;
+
+    // Everything the intro holds (frames, timers, listeners, the page scroll), released once.
+    let released = false;
+    const release = () => {
+      if (released) return;
+      released = true;
+      cancelAnimationFrame(raf);
+      window.clearTimeout(fontWait);
+      window.clearTimeout(doneTimer);
+      titleEl?.style.removeProperty('opacity');
+      html.style.overflow = overflow;
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('touchmove', onWheel);
+      window.removeEventListener('resize', onResize);
+    };
+    const finish = () => {
+      release();
+      setOpen(false);
+    };
+    const startHandoff = () => {
+      handoffAt = clock;
+      // Under the veil, exactly beneath its points: it shows through as the veil opens.
+      titleEl?.style.removeProperty('opacity');
+      if (root.current) root.current.style.pointerEvents = 'none';
+      revealRef.current();
+      // Safety net if frames stop (background tab): the page is never left behind the veil.
+      doneTimer = window.setTimeout(finish, HANDOFF_MS + 600);
+    };
+    skipRequest.current = () => {
+      if (handoffAt !== null || skipAt !== null) return;
+      skipAt = clock;
+      skipFrom = gatherAt === null ? 0 : clamp01((clock - gatherAt) / GATHER_MS);
+    };
+
+    const settle = () => {
+      if (ready) return;
+      ready = true;
+      const final = titleEl ? sampleTitle(titleEl) : null;
+      if (final) title = final;
+      if (cloud && title) aim(cloud, title, w);
+      // Nothing to draw (no title on screen, no canvas): open the page straight away.
+      else skipRequest.current();
+    };
+    // Wait for the title's web font, never longer than FONT_WAIT_MS.
+    const fonts = document.fonts;
+    fontWait = window.setTimeout(settle, FONT_WAIT_MS);
+    if (cloud && titleEl && fonts?.load) {
+      const s = getComputedStyle(titleEl);
+      fonts
+        .load(`${s.fontWeight} ${s.fontSize} ${s.fontFamily}`, titleEl.textContent ?? undefined)
+        .then(() => fonts.ready)
+        .catch(() => undefined)
+        .then(settle);
+    } else {
+      settle();
+    }
+
+    /** Progress of the gathering, 0 to 1. */
+    const progress = () => {
+      if (gatherAt === null) return 0;
+      const u = clamp01((clock - gatherAt) / GATHER_MS);
+      if (skipAt === null) return u;
+      return Math.max(u, skipFrom + (1 - skipFrom) * easeOut(clamp01((clock - Math.max(skipAt, gatherAt)) / SKIP_MS)));
+    };
+
     const frame = (now: number) => {
-      const { start, exitStart } = clock.current;
-      const elapsed = now - start;
-      // The camera stops when the landing starts, so the mark blooms where the output is.
-      const ct = exitStart === null ? elapsed : exitStart - start;
-      const exitT = exitStart === null ? 0 : clamp01((now - exitStart) / EXIT_MS);
-      const gather = easeIn(clamp01(exitT / 0.42));
-      const fadeOut = 1 - exitT;
+      clock += last === null ? 0 : Math.min(64, now - last);
+      last = now;
+      if (gatherAt === null && ready && (clock >= DRIFT_MS || skipAt !== null)) gatherAt = clock;
+      const u = progress();
+      if (handoffAt === null && gatherAt !== null && u >= 1) startHandoff();
+      const hand = handoffAt === null ? 0 : clamp01((clock - handoffAt) / HANDOFF_MS);
 
-      // Tracking camera: close behind the signal, looking ahead along the network. It moves in while
-      // the signal reaches the inputs, travels with it, then pulls back once the output has fired.
-      // Where it looks, in layers: just ahead of the signal, easing in before the inputs and out at the output.
-      const follow = smoothMin(smoothMax((ct - FIRE[0]) / STEP + 0.2, -0.6), last);
-      const arrive = easeInOut(clamp01(ct / FIRE[0]));
-      const settle = easeInOut(clamp01((ct - FIRE[last]) / (TOTAL - FIRE[last])));
-      const D = 4.6 - 1.6 * arrive + 1.4 * settle;
-      const yaw = 0.34 + 0.22 * arrive - 0.1 * settle + 0.03 * Math.sin((start + ct) / 1400);
-      const pitch = 0.16 + 0.02 * Math.sin((start + ct) / 1700);
-      const tx = layerX(follow) - 0.9 * settle;
-      const cosY = Math.cos(yaw);
-      const sinY = Math.sin(yaw);
-      const cosP = Math.cos(pitch);
-      const sinP = Math.sin(pitch);
-      const S = Math.min(0.36 * w, 0.3 * h);
-      const GAP = 0.34 * Math.min(1.3, Math.max(1, h / w / 1.2));
-      const size = Math.min(1.3, Math.max(0.75, S / 230));
-      const cx = w / 2;
-      const cy = h * 0.55;
-      /** Screen x, screen y, perspective scale, and visibility (0 when too close to the camera). */
-      const project = (x: number, y: number, z: number): [number, number, number, number] => {
-        const x1 = x - tx;
-        const xr = x1 * cosY - z * sinY;
-        const zr = x1 * sinY + z * cosY;
-        const yr = y * cosP + zr * sinP;
-        const d = D - y * sinP + zr * cosP;
-        const p = D / Math.max(d, 0.05);
-        return [cx + xr * S * p, cy - yr * S * p, Math.min(p, 3.5), clamp01((d - NEAR) / 0.8)];
-      };
-
-      // Where every neuron is on screen this frame (flowing into the output during the landing).
-      const pts = LAYERS.map((n, l) =>
-        depth[l].map(({ z, phase }, i) => project(layerX(l), ((n - 1) / 2 - i) * GAP + 0.035 * Math.sin(now / 1100 + phase), z)),
-      );
-      const [ox, oy] = pts[last][0];
-      if (exitStart === null) clock.current.out = [Math.min(w - 48, Math.max(48, ox)), Math.min(h - 48, Math.max(80, oy))];
-      for (const layer of pts) for (const pt of layer) {
-        pt[0] += (ox - pt[0]) * gather;
-        pt[1] += (oy - pt[1]) * gather;
+      // The page appears from the title outwards, through a soft-edged hole in the veil: it uncovers the
+      // title first, quickly, while its points fade, then widens more calmly to the edges.
+      if (veil.current && handoffAt !== null) {
+        const cx = title ? title.x + title.w / 2 : w / 2;
+        const cy = title ? title.y + title.h / 2 : h / 2;
+        const far = Math.hypot(Math.max(cx, w - cx), Math.max(cy, h - cy));
+        const soft = far * 0.4;
+        const near = title ? Math.hypot(title.w / 2, title.h / 2) + 24 : 0;
+        const r = hand < UNCOVER ? -soft + easeOut(hand / UNCOVER) * (near + soft) : near + easeInOut((hand - UNCOVER) / (1 - UNCOVER)) * (far - near);
+        const mask = `radial-gradient(circle at ${cx}px ${cy}px, transparent ${r}px, #000 ${r + soft}px)`;
+        veil.current.style.setProperty('-webkit-mask-image', mask);
+        veil.current.style.setProperty('mask-image', mask);
       }
+      if (skipRef.current) skipRef.current.style.opacity = String(clamp01((clock - 500) / 400) * (1 - clamp01(hand * 7)));
 
-      const appear = (l: number) => easeOut(clamp01((elapsed - 100 - l * 110) / 550));
-      const fired = (l: number, a: number) => {
-        const lit = a * easeOut(clamp01((elapsed - FIRE[l]) / 260));
-        // Skipped early: the whole network lights up as it gathers.
-        return exitStart === null ? lit : Math.max(lit, a * easeOut(clamp01(exitT / 0.18)));
-      };
-
-      // Night sky.
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = '#07070d';
-      ctx.fillRect(0, 0, w, h);
-      // Far away, the stars barely move with the camera.
-      const drift = follow * 14;
-      for (const s of stars) {
-        ctx.fillStyle = `rgba(226,232,255,${0.4 * (0.5 + 0.5 * Math.sin(now / 900 + s.phase)) * fadeOut})`;
-        ctx.beginPath();
-        ctx.arc((((s.x * w - drift * (0.4 + s.r)) % w) + w) % w, s.y * h, s.r, 0, Math.PI * 2);
-        ctx.fill();
+      if (ctx) {
+        ctx.clearRect(0, 0, w, h);
+        if (cloud && title) draw(ctx, cloud, title, clock, u, hand);
       }
-
-      // A soft light travelling with the signal, violet at the inputs and cyan at the output.
-      const wave = Math.min(last, Math.max(-0.6, (elapsed - FIRE[0]) / STEP));
-      const [nx, ny] = project(layerX(wave), 0, 0);
-      const nebula = ctx.createRadialGradient(nx, ny, 0, nx, ny, Math.max(w, h) * 0.42);
-      const nc = mix(VIOLET, CYAN, clamp01(wave / last));
-      nebula.addColorStop(0, `rgba(${nc},${0.15 * appear(0) * fadeOut})`);
-      nebula.addColorStop(1, `rgba(${nc},0)`);
-      ctx.fillStyle = nebula;
-      ctx.fillRect(0, 0, w, h);
-
-      // Dust, close to the camera: it slides past faster than the network.
-      for (const m of motes) {
-        const [mx, my, mp, near] = project(m.x, m.y, m.z);
-        if (near <= 0) continue;
-        ctx.fillStyle = `rgba(216,200,255,${0.22 * near * appear(0) * fadeOut})`;
-        ctx.beginPath();
-        ctx.arc(mx, my, m.r * mp * 0.8, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Connections: faint at rest, glowing once the signal has gone through them.
-      ctx.lineCap = 'round';
-      for (const e of EDGES) {
-        const [ax, ay, ap, an] = pts[e.l][e.k];
-        const [bx, by, bp, bn] = pts[e.l + 1][e.j];
-        const near = Math.min(an, bn);
-        if (near <= 0) continue;
-        const p = clamp01((elapsed - e.t0) / (e.t1 - e.t0));
-        const lit = e.s > CARRIES ? p : 0;
-        const a = (0.07 * Math.min(appear(e.l), appear(e.l + 1)) + 0.26 * e.s * lit) * (1 - gather) * near;
-        ctx.strokeStyle = lit > 0 ? `rgba(${e.positive ? POSITIVE : NEGATIVE},${a})` : `rgba(167,139,250,${a})`;
-        ctx.lineWidth = (0.7 + 0.8 * e.s * lit) * Math.min(2.5, (ap + bp) / 2);
-        ctx.beginPath();
-        ctx.moveTo(ax, ay);
-        ctx.lineTo(bx, by);
-        ctx.stroke();
-      }
-
-      // Pulses: the signal on its way, a bright head with a fading tail.
-      ctx.globalCompositeOperation = 'lighter';
-      type Pt = [number, number, number, number];
-      const pulse = ([ax, ay, ap, an]: Pt, [bx, by, bp, bn]: Pt, p: number, s: number, col: string) => {
-        const near = Math.min(an, bn);
-        if (near <= 0) return;
-        const hx = ax + (bx - ax) * p;
-        const hy = ay + (by - ay) * p;
-        const tp = Math.max(0, p - 0.25);
-        const tx = ax + (bx - ax) * tp;
-        const ty = ay + (by - ay) * tp;
-        const alpha = (0.4 + 0.6 * s) * (1 - gather) * near;
-        // Closer to the camera, bigger.
-        const k = Math.min(2.5, ap + (bp - ap) * p);
-        const tail = ctx.createLinearGradient(tx, ty, hx, hy);
-        tail.addColorStop(0, `rgba(${col},0)`);
-        tail.addColorStop(1, `rgba(${col},${0.9 * alpha})`);
-        ctx.strokeStyle = tail;
-        ctx.lineWidth = (1 + 1.6 * s) * k;
-        ctx.beginPath();
-        ctx.moveTo(tx, ty);
-        ctx.lineTo(hx, hy);
-        ctx.stroke();
-        ctx.fillStyle = `rgba(${col},${0.18 * alpha})`;
-        ctx.beginPath();
-        ctx.arc(hx, hy, (4 + 3 * s) * k, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = `rgba(255,255,255,${0.95 * alpha})`;
-        ctx.beginPath();
-        ctx.arc(hx, hy, (1.2 + 1.3 * s) * k, 0, Math.PI * 2);
-        ctx.fill();
-      };
-      // The input signal comes in from behind the camera, on the left.
-      depth[0].forEach(({ z }, k) => {
-        const t0 = 150 + k * 80;
-        const p = easeInOut(clamp01((elapsed - t0) / (FIRE[0] - 30 - t0)));
-        if (p <= 0 || p >= 1) return;
-        pulse(project(layerX(0) - 1.6, ((LAYERS[0] - 1) / 2 - k) * GAP * 1.3, z), pts[0][k], p, INPUT[k], '216,180,254');
-      });
-      for (const e of EDGES) {
-        if (e.s <= CARRIES) continue;
-        const p = easeInOut(clamp01((elapsed - e.t0) / (e.t1 - e.t0)));
-        if (p <= 0 || p >= 1) continue;
-        pulse(pts[e.l][e.k], pts[e.l + 1][e.j], p, e.s, e.positive ? POSITIVE : NEGATIVE);
-      }
-
-      // Neurons: dark at rest, lit as bright as their activation when the signal arrives.
-      pts.forEach((layer, l) =>
-        layer.forEach(([x, y, persp, near], i) => {
-          const isOut = l === last;
-          const a = ACTIVATIONS[l][i];
-          const col = isOut ? '165,243,252' : COLORS[l];
-          const R = (isOut ? 7.5 : l === 0 ? 4 : 4.6) * size * persp;
-          const vis = appear(l) * near * (isOut ? 1 - clamp01((exitT - 0.3) / 0.1) : 1 - gather * 0.9);
-          if (vis <= 0) return;
-          const fb = fired(l, a);
-          if (fb > 0.01) {
-            ctx.globalCompositeOperation = 'lighter';
-            const glow = ctx.createRadialGradient(x, y, 0, x, y, R * (isOut ? 4 + 6 * fb : 2.5 + 4 * fb));
-            glow.addColorStop(0, `rgba(${col},${0.55 * fb * vis})`);
-            glow.addColorStop(1, `rgba(${col},0)`);
-            ctx.fillStyle = glow;
-            ctx.beginPath();
-            ctx.arc(x, y, R * (isOut ? 10 : 6.5), 0, Math.PI * 2);
-            ctx.fill();
-            // One ring when the neuron fires.
-            const q = (elapsed - FIRE[l]) / 700;
-            if (q > 0 && q < 1) {
-              ctx.strokeStyle = `rgba(${col},${0.5 * (1 - q) * (0.25 + 0.75 * a) * vis})`;
-              ctx.lineWidth = 1.2;
-              ctx.beginPath();
-              ctx.arc(x, y, R + 22 * size * easeOut(q), 0, Math.PI * 2);
-              ctx.stroke();
-            }
-          }
-          ctx.globalCompositeOperation = 'source-over';
-          ctx.fillStyle = `rgba(12,10,24,${vis})`;
-          ctx.strokeStyle = `rgba(${col},${(0.3 + 0.6 * fb) * vis})`;
-          ctx.lineWidth = 1.2;
-          ctx.beginPath();
-          ctx.arc(x, y, R, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-          if (fb > 0.01) {
-            ctx.fillStyle = isOut ? `rgba(255,255,255,${fb * vis})` : `rgba(${mix(col.split(',').map(Number), [255, 255, 255], 0.5 * fb)},${fb * vis})`;
-            ctx.beginPath();
-            ctx.arc(x, y, R * 0.62, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }),
-      );
-
-      // The value of the output once it has fired.
-      const labels = 1 - clamp01(exitT / 0.2);
-      ctx.textAlign = 'center';
-      const shown = clamp01((elapsed - FIRE[last]) / 400);
-      if (shown > 0) {
-        ctx.font = '600 13px ui-monospace, SFMono-Regular, Menlo, monospace';
-        ctx.fillStyle = `rgba(255,255,255,${shown * labels})`;
-        ctx.fillText(`ŷ = ${OUTPUT.toFixed(3)}`, ox, oy - 26 * size - 8 * shown);
-      }
-
-      // The network has gathered into the output: a burst of light and one ring.
-      if (exitStart !== null) {
-        ctx.globalCompositeOperation = 'lighter';
-        const burst = Math.exp(-(((exitT - 0.42) / 0.1) ** 2));
-        const flash = ctx.createRadialGradient(ox, oy, 0, ox, oy, Math.min(w, h) * 0.35);
-        flash.addColorStop(0, `rgba(165,243,252,${0.45 * burst})`);
-        flash.addColorStop(1, 'rgba(165,243,252,0)');
-        ctx.fillStyle = flash;
-        ctx.fillRect(0, 0, w, h);
-        const q = clamp01((exitT - 0.4) / 0.5);
-        if (q > 0 && q < 1) {
-          ctx.strokeStyle = `rgba(103,232,249,${0.45 * (1 - q) ** 1.5})`;
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.arc(ox, oy, 12 + easeOut(q) * Math.max(w, h) * 0.55, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-        ctx.globalCompositeOperation = 'source-over';
-      }
-
-      raf = requestAnimationFrame(frame);
+      if (hand >= 1) finish();
+      else raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
-    window.addEventListener('resize', resize);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
-    };
-  }, [clock]);
 
-  return <canvas ref={ref} aria-hidden="true" className="absolute inset-0 size-full" />;
-}
-
-const BLOOM_SIZE = 96;
-
-/**
- * The brand mark (itself a tiny network) blooming where the output neuron was, then flying to the
- * logo of the navigation bar and landing exactly on it: the real logo takes over when the intro unmounts.
- */
-function Bloom({ from }: { from: [number, number] }) {
-  const [flight] = useState(() => {
-    const r = document.querySelector('[data-brand-logo]')?.getBoundingClientRect();
-    if (!r || r.width === 0) return null;
-    return { x: r.left + r.width / 2 - from[0], y: r.top + r.height / 2 - from[1], scale: r.width / BLOOM_SIZE };
-  });
-  return (
-    <motion.div
-      aria-hidden="true"
-      style={{ left: from[0], top: from[1] }}
-      className="pointer-events-none fixed -mt-12 -ml-12 size-24"
-      initial={{ scale: 0, opacity: 0, rotate: -30, x: 0, y: 0 }}
-      animate={
-        flight
-          ? { scale: [0, 0, 1.12, 1, 1, flight.scale], opacity: [0, 0, 1, 1, 1, 1], rotate: [-30, -30, 0, 0, 0, 0], x: [0, 0, 0, 0, 0, flight.x], y: [0, 0, 0, 0, 0, flight.y] }
-          : { scale: [0, 0, 1.12, 1, 1.6], opacity: [0, 0, 1, 1, 0], rotate: [-30, -30, 0, 0, 0] }
-      }
-      transition={{ duration: EXIT_MS / 1000, times: flight ? [0, 0.22, 0.36, 0.44, 0.52, 1] : [0, 0.22, 0.36, 0.52, 1], ease: 'easeInOut' }}
-    >
-      <BrandMark />
-    </motion.div>
-  );
-}
-
-function BrandMark() {
-  return (
-    <svg viewBox="0 0 32 32" className="size-full drop-shadow-[0_0_30px_rgb(34_211_238/0.8)]">
-      <defs>
-        <linearGradient id="intro-g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#c084fc" />
-          <stop offset="1" stopColor="#22d3ee" />
-        </linearGradient>
-      </defs>
-      <rect x="1" y="1" width="30" height="30" rx="9" fill="#0a0a12" stroke="url(#intro-g)" strokeWidth="1.5" />
-      <path d="M16 16 L16 8.5 M16 16 L9.5 21.5 M16 16 L22.5 21.5 M9.5 21.5 L22.5 21.5" fill="none" stroke="url(#intro-g)" strokeWidth="1.8" strokeLinecap="round" />
-      <circle cx="16" cy="8.5" r="2.6" fill="#c084fc" />
-      <circle cx="9.5" cy="21.5" r="2.6" fill="#a78bfa" />
-      <circle cx="22.5" cy="21.5" r="2.6" fill="#22d3ee" />
-      <circle cx="16" cy="16" r="3.2" fill="#fff" />
-    </svg>
-  );
-}
-
-/**
- * Opening sequence, played once when a visitor lands on the home page: "Signal".
- * A signal crosses a small neural network, layer by layer, computed by a real forward pass; each
- * layer it reaches brings a greeting from a country I’ve travelled to. The output fires, the network
- * gathers into the brand mark and the mark flies to its place in the navigation bar, opening the site.
- * Click, Escape, Enter or Skip land early.
- */
-export function Intro({ onReveal }: { onReveal: () => void }) {
-  const { t, lang } = useLang();
-  const [open, setOpen] = useState(true);
-  const [landing, setLanding] = useState<[number, number] | null>(null);
-  const [stage, setStage] = useState(0);
-  const done = useRef(false);
-  const bar = useRef<HTMLDivElement>(null);
-  const clock = useRef<Clock>({ start: performance.now(), exitStart: null, out: [window.innerWidth / 2, window.innerHeight / 2] });
-  const words = lang === 'fr' ? ['Hello', ...GREETINGS, 'Bonjour'] : ['Bonjour', ...GREETINGS, 'Hello'];
-  const leaving = landing !== null;
-
-  const finish = useCallback(() => {
-    if (done.current) return;
-    done.current = true;
-    clock.current.exitStart = performance.now();
-    if (bar.current) bar.current.style.transform = 'scaleX(1)';
-    setLanding(clock.current.out);
-    onReveal();
-    window.setTimeout(() => setOpen(false), EXIT_MS);
-  }, [onReveal]);
-
-  // One clock drives the greetings, the readouts and the network.
-  useEffect(() => {
-    try {
-      window.sessionStorage.setItem(SEEN_KEY, '1');
-    } catch {
-      /* private mode: the intro may play again, no harm */
-    }
-    clock.current.start = performance.now();
-    let frame = 0;
-    const tick = (now: number) => {
-      if (done.current) return;
-      const elapsed = now - clock.current.start;
-      setStage(stageAt(elapsed));
-      if (bar.current) bar.current.style.transform = `scaleX(${clamp01(elapsed / TOTAL)})`;
-      if (elapsed >= TOTAL) finish();
-      else frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [finish]);
-
-  // Keyboard skip, and no page scroll behind the intro.
-  useEffect(() => {
-    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') finish();
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        skipRequest.current();
+      }
     };
-    const root = document.documentElement;
-    const previous = root.style.overflow;
-    root.style.overflow = 'hidden';
+    const onWheel = () => skipRequest.current();
+    // Resizing moves the title away from the points: go straight to the page.
+    const onResize = () => {
+      resize();
+      if (handoffAt !== null) return;
+      if (cloud) cloud.total = 0;
+      ready = true;
+      skipRequest.current();
+    };
+    html.style.overflow = 'hidden';
     window.addEventListener('keydown', onKey);
-    return () => {
-      root.style.overflow = previous;
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [open, finish]);
+    window.addEventListener('wheel', onWheel, { passive: true });
+    window.addEventListener('touchmove', onWheel, { passive: true });
+    window.addEventListener('resize', onResize);
+    return release;
+  }, []);
 
   if (!open) return null;
-  const received = stage >= LAYERS.length || leaving;
   return (
-    <div role="presentation" data-testid="intro" onClick={finish} className="fixed inset-0 z-[65] cursor-pointer text-white">
-      <motion.div
-        animate={{ opacity: leaving ? 0 : 1 }}
-        // Fade out over the second half of the landing, once the network has gathered into the mark.
-        transition={{ duration: (EXIT_MS * 0.45) / 1000, delay: leaving ? (EXIT_MS * 0.5) / 1000 : 0, ease: 'easeInOut' }}
-        className="absolute inset-0 bg-ink"
+    <div ref={root} role="presentation" data-testid="intro" onClick={skip} className="fixed inset-0 z-[65] cursor-pointer">
+      <div ref={veil} aria-hidden="true" className="absolute inset-0 bg-ink" />
+      <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0 size-full" />
+      <button
+        ref={skipRef}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          skip();
+        }}
+        style={{ opacity: 0 }}
+        className="absolute top-5 right-5 rounded-full px-4 py-1.5 font-mono text-[11px] tracking-widest text-zinc-400 uppercase transition-colors hover:text-white focus-visible:opacity-100 sm:top-7 sm:right-8"
       >
-        <Network clock={clock} />
-
-        {/* Greeting: one per layer reached by the signal. */}
-        <motion.div
-          animate={{ opacity: leaving ? 0 : 1, y: leaving ? -20 : 0 }}
-          transition={{ duration: 0.35 }}
-          className="pointer-events-none absolute inset-x-0 top-[13%] flex justify-center px-6"
-        >
-          <p className="flex items-center gap-4 text-5xl font-semibold tracking-tight sm:text-7xl" aria-live="off">
-            <span aria-hidden="true" className="size-3 shrink-0 rounded-full bg-cyan-300 shadow-[0_0_18px_4px_rgb(34_211_238/0.7)] sm:size-4" />
-            <motion.span
-              key={stage}
-              initial={{ y: -14, opacity: 0, filter: 'blur(8px)' }}
-              animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-              transition={{ duration: stage === 0 ? 0.6 : 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className={`pb-2 drop-shadow-[0_0_24px_rgb(0_0_0/0.9)] ${stage === words.length - 1 ? 'text-shine' : ''}`}
-            >
-              {words[stage]}
-            </motion.span>
-          </p>
-        </motion.div>
-
-        {/* Readouts */}
-        <motion.div animate={{ opacity: leaving ? 0 : 1 }} transition={{ duration: 0.3 }} className="pointer-events-none">
-          <div className="absolute top-5 left-5 font-mono text-[11px] leading-relaxed text-zinc-400 sm:top-8 sm:left-10">
-            <p className="tracking-[0.25em] text-cyan-300 uppercase">→ {t('intro.method')}</p>
-            <p className="mt-1 text-zinc-200">a[l] = σ(W[l]·a[l−1] + b[l])</p>
-            <p>σ(z) = 1 / (1 + e⁻ᶻ)</p>
-          </div>
-          <div className="absolute bottom-7 left-5 font-mono text-xs text-zinc-400 sm:bottom-10 sm:left-10">
-            <p className={received ? 'text-emerald-300' : ''}>
-              {received ? `✓ ${t('intro.received')}` : `${t('intro.layer')} ${Math.max(0, stage - 1)}/${LAYERS.length - 1}`}
-            </p>
-            <p className="mt-1 tracking-[0.25em] uppercase">Robin Canovas · Portfolio</p>
-          </div>
-          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-white/10">
-            <div
-              ref={bar}
-              className="h-full origin-left bg-gradient-to-r from-violet-400 to-cyan-400 shadow-[0_0_12px_rgb(34_211_238)]"
-              style={{ transform: 'scaleX(0)' }}
-            />
-          </div>
-        </motion.div>
-
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            finish();
-          }}
-          className="absolute top-5 right-5 rounded-full border border-white/15 bg-black/30 px-4 py-1.5 font-mono text-[11px] tracking-widest text-zinc-300 uppercase transition hover:border-white/40 hover:text-white sm:top-8 sm:right-10"
-        >
-          {t('intro.skip')}
-        </button>
-      </motion.div>
-
-      {/* The mark blooms where the output neuron was, then lands on the navigation logo (outside the fading layer). */}
-      {landing && <Bloom from={landing} />}
+        {t('intro.skip')}
+      </button>
     </div>
   );
+}
+
+/* ------------------------------------------------------------------ */
+/* Drawing                                                             */
+/* ------------------------------------------------------------------ */
+
+const TAU = Math.PI * 2;
+
+/**
+ * One frame of the cloud. Point i sits at
+ *   target + (start + drift − target)·f + σ(u)·noise·(1 − f)
+ * where f falls from 1 to 0 as it travels, and σ shrinks to zero: the cloud first folds into a blurry
+ * band shaped like the name, then the letters sharpen.
+ */
+function draw(ctx: CanvasRenderingContext2D, c: Cloud, title: Title, clock: number, u: number, hand: number) {
+  const seconds = clock / 1000;
+  const fadeIn = easeOut(clamp01(clock / 260));
+  const sigma = c.sigma * (1 - u) ** 1.6;
+  const shown = easeOut(u);
+  // The real title shows through the veil right away: the points step aside within a quarter second.
+  const out = 1 - easeIn(clamp01((hand - 0.04) / 0.42));
+  // Points grow from data dots to the size where the letters look solid.
+  const rLetter = 1.1 + (title.step * 0.6 - 1.1) * smoothstep(0.45, 1, u);
+
+  // Position of point i, written to px / py (no allocation: this runs for every point, every frame).
+  let px = 0;
+  let py = 0;
+  const travel = (i: number) => {
+    const v = clamp01((u - c.delay[i]) / c.span[i]);
+    const f = 1 - easeInOutQuad(v);
+    // Each noise offset slowly turns, so the cloud never looks frozen while it sharpens.
+    const turn = c.phase[i] + seconds * (c.freq[i] - 0.95);
+    const cos = Math.cos(turn);
+    const sin = Math.sin(turn);
+    const blur = sigma * (1 - f);
+    const dx = Math.sin(seconds * c.freq[i] * 1.7 + c.phase[i]) * c.amp[i];
+    const dy = Math.cos(seconds * c.freq[i] * 1.3 + c.phase[i] * 1.3) * c.amp[i];
+    px = c.tx[i] + (c.sx[i] + dx - c.tx[i]) * f + (c.nx[i] * cos - c.ny[i] * sin) * blur;
+    py = c.ty[i] + (c.sy[i] + dy - c.ty[i]) * f + (c.nx[i] * sin + c.ny[i] * cos) * blur;
+  };
+
+  // Three slightly different shades for depth, which merge as the name forms.
+  const tint = smoothstep(0.3, 0.95, u);
+  const gradient = ctx.createLinearGradient(title.x, 0, title.x + title.w, 0);
+  for (const [offset, color] of TITLE_STOPS) gradient.addColorStop(offset, `rgb(${mix(NEUTRAL, color, tint)})`);
+  const noiseColor = `rgb(${NEUTRAL.join(',')})`;
+  for (let shade = 0; shade < 3; shade++) {
+    const dim = 1 - shade * 0.15 * (1 - shown);
+    // Noise: it follows the cloud, then fades out as the name sharpens.
+    const noiseAlpha = 0.62 * fadeIn * (1 - u) ** 1.3 * dim;
+    if (noiseAlpha > 0.004) {
+      ctx.globalAlpha = noiseAlpha;
+      ctx.fillStyle = noiseColor;
+      ctx.beginPath();
+      for (let i = c.letters; i < c.total; i++) {
+        if (c.shade[i] !== shade) continue;
+        travel(i);
+        ctx.moveTo(px + 1.1, py);
+        ctx.arc(px, py, 1.1, 0, TAU);
+      }
+      ctx.fill();
+    }
+    // Letters, in one gradient with the colours of the title.
+    if (c.letters) {
+      ctx.globalAlpha = fadeIn * out * (0.62 + 0.38 * shown) * dim;
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      for (let i = 0; i < c.letters; i++) {
+        if (c.shade[i] !== shade) continue;
+        travel(i);
+        ctx.moveTo(px + rLetter, py);
+        ctx.arc(px, py, rLetter, 0, TAU);
+      }
+      ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
 }

@@ -179,81 +179,280 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
 }
 
-/* Project illustrations (ProjectArt): small loops on SVG parts. */
-.art-float {
-  animation: art-float 5s ease-in-out infinite;
+/*
+ * Project stories (ProjectArt). Each illustration tells what its project does in one short sequence,
+ * played when it first scrolls into view and again on hover; at rest it stays still.
+ *
+ * Story parts (.s) have two states: empty, and built once the illustration gets [data-built]. Building
+ * runs CSS transitions timed per part with --a-t (start) and --a-d (duration). Un-building is a quick fade,
+ * after which everything else resets unseen, so a replay never runs backwards.
+ * One-off details (.ev: packets, rings, puffs) are keyframe animations that start and end in their
+ * resting look, so they never jump either.
+ */
+/* Story timings belong to one element each: never inherited, so nested parts can't pick up their parent's. */
+@property --a-t {
+  syntax: '*';
+  inherits: false;
 }
-.art-dash {
-  stroke-dasharray: 5 6;
-  animation: art-dash 1.4s linear infinite;
+@property --a-d {
+  syntax: '*';
+  inherits: false;
 }
-.art-blink {
-  animation: art-blink 1.8s ease-in-out infinite;
+@property --a-do {
+  syntax: '*';
+  inherits: false;
 }
-.art-pulse,
-.art-spin,
-.art-rise,
-.art-fit {
+@property --a-e {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-x {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-y {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-r {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-s {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-o0 {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-o {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-on {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-off {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-peak {
+  syntax: '*';
+  inherits: false;
+}
+@property --a-w {
+  syntax: '*';
+  inherits: false;
+}
+[data-art] {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+[data-art] .s,
+[data-art] .ev {
   transform-box: fill-box;
-  transform-origin: center;
+  transform-origin: var(--a-o, center);
 }
-.art-pulse {
-  animation: art-pulse 2.6s ease-in-out infinite;
+[data-art] .s {
+  transition:
+    opacity 0.18s ease-in,
+    transform 0s 0.18s,
+    stroke-dashoffset 0s 0.18s,
+    fill 0s 0.18s,
+    stroke 0s 0.18s,
+    fill-opacity 0s 0.18s;
 }
-.art-spin {
-  animation: art-spin 16s linear infinite;
+[data-art][data-built] .s {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--a-do, 0.45s) var(--ease) var(--a-t, 0s),
+    transform var(--a-d, 0.6s) var(--a-e, var(--ease)) var(--a-t, 0s),
+    stroke-dashoffset var(--a-d, 0.6s) var(--a-e, var(--ease-io)) var(--a-t, 0s),
+    fill var(--a-d, 0.35s) ease var(--a-t, 0s),
+    stroke var(--a-d, 0.35s) ease var(--a-t, 0s),
+    fill-opacity var(--a-d, 0.25s) ease var(--a-t, 0s);
 }
-/* Clock hands: the pivot is given inline, in canvas coordinates. */
-.art-hand {
-  animation: art-spin 2s linear infinite;
+/* Empty looks. */
+[data-art] .s-fade {
+  opacity: 0;
 }
-.art-rise {
-  animation: art-rise 3.6s ease-out infinite;
+[data-art] .s-rise {
+  opacity: 0;
+  transform: translate(var(--a-x, 0px), var(--a-y, 6px));
 }
-.art-travel {
-  animation: art-travel 2.8s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+[data-art] .s-pop {
+  --a-e: var(--ease-pop);
+  opacity: 0;
+  transform: scale(var(--a-s, 0.4));
 }
-.art-wave {
-  animation: art-wave 6s linear infinite;
+[data-art] .s-turn {
+  opacity: var(--a-o0, 1);
+  transform: rotate(var(--a-r, -30deg)) scale(var(--a-s, 1));
 }
-.art-fit {
-  animation: art-fit 4.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+[data-art] .s-grow {
+  --a-o: left center;
+  opacity: 0;
+  transform: scaleX(0);
 }
-@keyframes art-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+[data-art] .s-dim {
+  opacity: var(--a-o0, 0.25);
 }
-@keyframes art-dash {
-  to { stroke-dashoffset: -22; }
+[data-art] .s-move {
+  transform: translate(var(--a-x, 0px), var(--a-y, 0px));
 }
-@keyframes art-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.25; }
+/* Lines that draw themselves: the element carries pathLength="1". */
+[data-art] .s-draw {
+  --a-do: 0.01s;
+  opacity: 0;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1.001;
 }
-@keyframes art-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.06); opacity: 0.85; }
+[data-art][data-built] .s-draw {
+  stroke-dashoffset: 0;
 }
-@keyframes art-spin {
-  to { transform: rotate(360deg); }
+/* Lights that switch on: from grey to their own colour (--a-on). */
+[data-art] .s-led {
+  fill: var(--a-off, #3f3f46);
 }
-@keyframes art-rise {
-  0% { transform: translateY(0) scale(0.6); opacity: 0; }
-  20% { opacity: 0.9; }
-  100% { transform: translateY(-46px) scale(1.6); opacity: 0; }
+[data-art][data-built] .s-led {
+  fill: var(--a-on);
 }
-@keyframes art-travel {
-  0% { transform: translateX(0); opacity: 0; }
-  12%, 85% { opacity: 1; }
-  100% { transform: translateX(var(--dx, 100px)); opacity: 0; }
+/* Characters that get typed (tspans). */
+[data-art] .s-key {
+  fill-opacity: 0;
 }
-@keyframes art-wave {
-  to { transform: translateX(calc(-1 * var(--w, 60px))); }
+[data-art][data-built] .s-key {
+  fill-opacity: 1;
 }
-@keyframes art-fit {
-  0% { transform: rotate(-22deg); }
-  55%, 85% { transform: rotate(0deg); }
-  100% { transform: rotate(-22deg); }
+
+[data-art] .ev {
+  animation: none;
+}
+[data-art] .ev-travel,
+[data-art] .ev-ring,
+[data-art] .ev-flash,
+[data-art] .ev-puff,
+[data-art] .ev-streak,
+[data-art] .ev-shot {
+  opacity: 0;
+}
+/* A short bright segment running along its path (pathLength="1"). */
+[data-art] .ev-travel {
+  stroke-dasharray: 0.12 2;
+  stroke-dashoffset: 0.12;
+}
+[data-art][data-built] .ev {
+  animation-duration: var(--a-d, 0.8s);
+  animation-delay: var(--a-t, 0s);
+  animation-timing-function: var(--a-e, var(--ease-io));
+  animation-fill-mode: both;
+}
+[data-art][data-built] .ev-travel {
+  animation-name: ev-travel;
+}
+[data-art][data-built] .ev-ring {
+  animation-name: ev-ring;
+  animation-timing-function: var(--ease);
+}
+[data-art][data-built] .ev-flash {
+  animation-name: ev-flash;
+  animation-timing-function: ease-out;
+}
+[data-art][data-built] .ev-puff {
+  animation-name: ev-puff;
+  animation-timing-function: ease-out;
+}
+[data-art][data-built] .ev-streak {
+  animation-name: ev-streak;
+  animation-timing-function: ease-in-out;
+}
+[data-art][data-built] .ev-shot {
+  animation-name: ev-shot;
+}
+[data-art][data-built] .ev-blink {
+  animation-name: ev-blink;
+  animation-timing-function: steps(1, end);
+}
+[data-art][data-built] .ev-flicker {
+  animation-name: ev-flicker;
+  animation-timing-function: steps(1, end);
+}
+[data-art][data-built] .ev-hop {
+  animation-name: ev-hop;
+}
+[data-art][data-built] .ev-rock {
+  animation-name: ev-rock;
+  animation-timing-function: ease-in-out;
+}
+[data-art][data-built] .ev-nudge {
+  animation-name: ev-nudge;
+}
+[data-art][data-built] .ev-wave {
+  animation-name: ev-wave;
+  animation-timing-function: var(--ease);
+}
+@keyframes ev-travel {
+  from { stroke-dashoffset: 0.12; opacity: 1; }
+  to { stroke-dashoffset: -1; opacity: 1; }
+}
+@keyframes ev-ring {
+  from { transform: scale(0.5); opacity: 0; }
+  15% { opacity: var(--a-peak, 0.6); }
+  to { transform: scale(var(--a-s, 2.2)); opacity: 0; }
+}
+@keyframes ev-flash {
+  from { opacity: 0; }
+  25% { opacity: var(--a-peak, 0.8); }
+  to { opacity: 0; }
+}
+@keyframes ev-puff {
+  from { transform: translateY(0) scale(0.5); opacity: 0; }
+  25% { opacity: 0.45; }
+  to { transform: translateY(-40px) scale(1.8); opacity: 0; }
+}
+@keyframes ev-streak {
+  from { transform: translateX(16px); opacity: 0; }
+  35% { opacity: 0.7; }
+  to { transform: translateX(-30px); opacity: 0; }
+}
+@keyframes ev-shot {
+  from { transform: translateX(0); opacity: 0; }
+  10%, 80% { opacity: 1; }
+  to { transform: translateX(var(--a-x, 100px)); opacity: 0; }
+}
+@keyframes ev-blink {
+  0%, 30%, 60% { opacity: 1; }
+  15%, 45% { opacity: 0.15; }
+}
+@keyframes ev-flicker {
+  0%, 12%, 27%, 41%, 58%, 76%, 100% { opacity: 1; }
+  6%, 21%, 34%, 50%, 67%, 86% { opacity: 0.25; }
+}
+/* A jump: up fast, a short hang, then down under gravity. */
+@keyframes ev-hop {
+  0% { transform: translateY(0); animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1); }
+  40% { transform: translateY(var(--a-y, -12px)); animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.4); }
+  80%, 100% { transform: translateY(0); }
+}
+@keyframes ev-rock {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-2.5deg); }
+  60% { transform: rotate(1.6deg); }
+  82% { transform: rotate(-0.6deg); }
+}
+/* A small push and back, like a part settling into place. */
+@keyframes ev-nudge {
+  0%, 100% { transform: translate(0, 0); }
+  35% { transform: translate(var(--a-x, 0px), var(--a-y, 2px)); }
+}
+/* Water moving by exactly one wavelength (--a-w): it ends looking just like it started. */
+@keyframes ev-wave {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-1 * var(--a-w, 60px))); }
 }
 
 /* Energy: looping animations pause while their element is off screen (usePauseOffscreen). */
@@ -284,5 +483,10 @@ html.hyper main {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  /* Project stories: straight to the finished picture. */
+  [data-art] * {
+    animation-delay: 0s !important;
+    transition-delay: 0s !important;
   }
 }
