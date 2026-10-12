@@ -1,18 +1,18 @@
-import { useRef, useState } from 'react';
-import { motion, useScroll, useTransform, type Variants } from 'framer-motion';
-import { FileText, GraduationCap, Mail, MapPin } from 'lucide-react';
+import { useState } from 'react';
+import { motion, type Variants } from 'framer-motion';
+import { ArrowDown, FileText, GraduationCap, Mail, MapPin } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { LinkedinIcon } from './BrandIcons';
-import { CountUp, Magnetic, RotatingWords } from './fx/effects';
+import { CountUp, RotatingWords } from './fx/effects';
 import { useRevealed } from './fx/Intro';
-import { ParticleField } from './fx/ParticleField';
 import { Portrait } from './Portrait';
 
-const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.08 } } };
-const item: Variants = { hidden: { opacity: 0, y: 18, filter: 'blur(6px)' }, show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } } };
+const ease = [0.16, 1, 0.3, 1] as const;
+const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } } };
+const item: Variants = { hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } } };
 /** The greeting sits just above the name: it settles down onto it rather than sliding up through it. */
-const above: Variants = { hidden: { opacity: 0, y: -10, filter: 'blur(6px)' }, show: item.show };
-/** After the intro the name is already in place (its points hand it over): it has no entrance of its own. */
+const above: Variants = { hidden: { opacity: 0, y: -8 }, show: item.show };
+/** After the intro the name is already in place (the intro hands it over): it has no entrance of its own. */
 const inPlace: Variants = { hidden: { opacity: 1 }, show: { opacity: 1 } };
 
 export function Hero({ onContact }: { onContact: () => void }) {
@@ -22,16 +22,6 @@ export function Hero({ onContact }: { onContact: () => void }) {
   const revealed = useRevealed();
   const [afterIntro] = useState(() => !revealed);
 
-  // Depth on scroll: background, text and portrait move at different speeds as the hero leaves.
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
-  const still = typeof window !== 'undefined' && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
-  const bgY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : 180]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : -70]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.85], [1, still ? 1 : 0.1]);
-  const portraitY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : 110]);
-  const portraitScale = useTransform(scrollYProgress, [0, 1], [1, still ? 1 : 0.92]);
-
   const stats = [
     { value: experiences.filter((e) => !e.minor).length, label: t('hero.stat.experiences') },
     { value: 12, suffix: '+', label: t('hero.stat.months') },
@@ -40,108 +30,87 @@ export function Hero({ onContact }: { onContact: () => void }) {
   ];
 
   return (
-    <section ref={sectionRef} id="home" className="relative isolate overflow-hidden">
-      <motion.div aria-hidden="true" style={{ y: bgY }} className="pointer-events-none absolute inset-0 -z-10">
-        <div className="animate-aurora absolute top-[-20%] left-[10%] size-[55vmax] rounded-full bg-[conic-gradient(from_90deg,#7c3aed88,#06b6d455,#4f46e555,#7c3aed88)] opacity-50 blur-[110px]" />
-        <ParticleField className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
-      </motion.div>
-
-      <div className="mx-auto grid min-h-dvh max-w-6xl items-center gap-12 px-4 pt-28 pb-20 sm:px-6 lg:grid-cols-[1.15fr_1fr]">
-        <motion.div variants={container} initial="hidden" animate={revealed ? 'show' : 'hidden'} style={{ y: textY, opacity: textOpacity }}>
-          <motion.div variants={item} className="inline-flex flex-wrap items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.08] px-3 py-1.5 text-xs shadow-[0_0_24px_rgb(52_211_153/0.1)]">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
+    <section id="home" className="relative">
+      <div className="mx-auto grid min-h-dvh max-w-6xl items-center gap-14 px-4 pt-28 pb-24 sm:px-6 lg:grid-cols-[1.25fr_1fr]">
+        <motion.div variants={container} initial="hidden" animate={revealed ? 'show' : 'hidden'}>
+          <motion.p variants={item} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[11px] tracking-[0.12em] text-ink-3 uppercase">
+            <span className="inline-flex items-center gap-2 text-good">
+              <span className="size-1.5 rounded-full bg-good" aria-hidden="true" />
+              {profile.status}
             </span>
-            <span className="font-medium text-emerald-300">{profile.status}</span>
-            <span className="text-zinc-600">·</span>
-            <span className="text-zinc-200">{profile.currentRole}</span>
-          </motion.div>
+            <span className="text-ink-4" aria-hidden="true">
+              /
+            </span>
+            <span>{profile.currentRole}</span>
+          </motion.p>
 
-          <h1 className="mt-7 text-5xl leading-[1.02] font-extrabold tracking-tight text-white sm:text-7xl">
-            <motion.span variants={above} className="block text-2xl font-medium text-zinc-300 sm:text-3xl">
+          <h1 className="mt-8 font-serif text-[clamp(3.6rem,10vw,7.4rem)] leading-[0.92] tracking-[-0.02em] text-ink">
+            <motion.span variants={above} className="mb-2 block font-serif text-2xl tracking-normal text-ink-3 italic sm:text-3xl">
               {t('hero.hi')}
             </motion.span>
             <motion.span variants={afterIntro ? inPlace : item} className="inline-block">
-              {/* data-hero-name: the opening intro draws its points on these exact letters. */}
-              <span data-hero-name className="text-shine drop-shadow-[0_0_30px_rgb(168_85_247/0.25)]">
+              {/* data-hero-name: the opening intro writes the name at these exact coordinates. */}
+              <span data-hero-name className="inline-block">
                 {profile.name}
               </span>
             </motion.span>
           </h1>
 
-          <motion.p variants={item} className="mt-5 text-xl font-medium text-zinc-100 sm:text-2xl">
-            <RotatingWords key={lang} words={t('hero.roles').split('|')} className="text-white" />
+          <motion.p variants={item} className="mt-6 text-xl text-ink sm:text-2xl">
+            <RotatingWords key={lang} words={t('hero.roles').split('|')} className="text-ink" />
           </motion.p>
-          <motion.p variants={item} className="mt-3 flex items-start gap-1.5 text-sm text-zinc-200">
-            <GraduationCap className="mt-px size-4 shrink-0 text-amber-300" aria-hidden="true" /> {t('hero.student')}
-          </motion.p>
-          <motion.p variants={item} className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-zinc-400">
-            <MapPin className="size-4" aria-hidden="true" /> {profile.location}
-          </motion.p>
-          <motion.p variants={item} className="mt-5 max-w-xl text-base leading-relaxed text-zinc-300 sm:text-lg">
+
+          <motion.div variants={item} className="mt-5 space-y-1.5 text-sm text-ink-2">
+            <p className="flex items-start gap-2">
+              <GraduationCap className="mt-px size-4 shrink-0 text-ink-3" strokeWidth={1.75} aria-hidden="true" /> {t('hero.student')}
+            </p>
+            <p className="flex items-center gap-2 text-ink-3">
+              <MapPin className="size-4 shrink-0" strokeWidth={1.75} aria-hidden="true" /> {profile.location}
+            </p>
+          </motion.div>
+
+          <motion.p variants={item} className="mt-6 max-w-xl text-base leading-relaxed text-ink-2 sm:text-[17px]">
             {profile.pitch}
           </motion.p>
 
           <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-3">
-            <Magnetic>
-              <button
-                type="button"
-                onClick={onContact}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-600 bg-[length:200%_auto] px-6 py-3.5 font-semibold text-white shadow-[0_0_30px_rgb(168_85_247/0.25)] transition-[background-position,box-shadow] duration-500 hover:bg-right hover:shadow-[0_0_50px_rgb(34_211_238/0.3)]"
-              >
-                <span aria-hidden="true" className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <Mail className="size-4" aria-hidden="true" /> {t('hero.contact')}
-              </button>
-            </Magnetic>
-            <Magnetic>
-              <a href={links.cv} target="_blank" rel="noopener" className="spotlight inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.05] px-6 py-3.5 font-semibold text-white transition hover:bg-white/[0.09]">
-                <FileText className="size-4" aria-hidden="true" /> {t('hero.resume')}
-              </a>
-            </Magnetic>
-            <Magnetic strength={0.5}>
-              <a href={links.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="flex rounded-xl border border-white/15 p-3.5 text-zinc-200 transition hover:border-[#0a66c2] hover:text-[#4d9fff] hover:shadow-[0_0_20px_rgb(10_102_194/0.25)]">
-                <LinkedinIcon className="size-5" />
-              </a>
-            </Magnetic>
+            <button type="button" onClick={onContact} className="btn-ink inline-flex items-center gap-2 rounded-full px-6 py-3 font-medium">
+              <Mail className="size-4" aria-hidden="true" /> {t('hero.contact')}
+            </button>
+            <a href={links.cv} target="_blank" rel="noopener" className="btn-line inline-flex items-center gap-2 rounded-full px-6 py-3 font-medium">
+              <FileText className="size-4" aria-hidden="true" /> {t('hero.resume')}
+            </a>
+            <a href={links.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="btn-line flex rounded-full p-3 hover:text-[#0a66c2]">
+              <LinkedinIcon className="size-5" />
+            </a>
           </motion.div>
 
-          <motion.div variants={item} className="mt-12 max-w-lg border-t border-white/[0.08] pt-6">
-            <dl key={String(revealed)} className="grid grid-cols-4 gap-4">
-              {stats.map((s) => (
-                <div key={s.label}>
-                  <dt className="sr-only">{s.label}</dt>
-                  <dd className="text-2xl font-bold text-white sm:text-3xl">{s.value === null ? s.text : <CountUp to={s.value} suffix={s.suffix} />}</dd>
-                  <dd className="text-[11px] tracking-wide text-zinc-400 uppercase" aria-hidden="true">
-                    {s.label}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </motion.div>
+          <motion.dl variants={item} key={String(revealed)} className="mt-14 grid max-w-xl grid-cols-2 border-t border-ink/15 sm:grid-cols-4">
+            {stats.map((s, i) => (
+              <div key={s.label} className={`pt-4 pb-1 ${i > 0 ? 'sm:border-l sm:border-ink/10 sm:pl-5' : ''} ${i % 2 === 1 ? 'border-l border-ink/10 pl-5 sm:pl-5' : ''}`}>
+                <dt className="sr-only">{s.label}</dt>
+                <dd className="font-serif text-4xl leading-none text-ink sm:text-[2.6rem]">{s.value === null ? s.text : <CountUp to={s.value} suffix={s.suffix} />}</dd>
+                <dd className="mt-1.5 font-mono text-[10px] tracking-[0.14em] text-ink-3 uppercase" aria-hidden="true">
+                  {s.label}
+                </dd>
+              </div>
+            ))}
+          </motion.dl>
         </motion.div>
 
-        {/* Scroll parallax on its own layer, so it never fights the entrance animation below. */}
-        <motion.div style={{ y: portraitY, scale: portraitScale }}>
-          <motion.div
-            initial={{ opacity: 0, y: 28, scale: 0.97 }}
-            animate={revealed ? { opacity: 1, y: 0, scale: 1 } : undefined}
-            transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {/* Float lives on a plain div: a CSS animation would override Framer's inline transform. */}
-            <div className="animate-float">
-              <Portrait />
-            </div>
-          </motion.div>
+        <motion.div initial={{ opacity: 0, y: 18 }} animate={revealed ? { opacity: 1, y: 0 } : undefined} transition={{ duration: 0.9, delay: 0.25, ease }}>
+          <Portrait />
         </motion.div>
       </div>
 
-      <a href="#experience" aria-label={t('hero.scroll')} className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-zinc-500 transition hover:text-white sm:flex">
-        <span className="font-mono text-[10px] tracking-[0.3em] uppercase">scroll</span>
-        <span className="relative flex h-10 w-6 justify-center rounded-full border border-white/20">
-          <motion.span className="mt-2 size-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_rgb(34_211_238)]" animate={{ y: [0, 14, 0], opacity: [1, 0.2, 1] }} transition={{ duration: 1.8, repeat: Infinity }} />
-        </span>
+      <a
+        href="#experience"
+        aria-label={t('hero.scroll')}
+        data-scroll-cue
+        className="group absolute bottom-7 left-1/2 hidden -translate-x-1/2 items-center gap-2 font-mono text-[10px] tracking-[0.3em] text-ink-3 uppercase transition-colors hover:text-ink sm:flex"
+      >
+        <ArrowDown className="size-3.5 transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true" />
+        {t('hero.readOn')}
       </a>
     </section>
   );
