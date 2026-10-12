@@ -17,9 +17,9 @@ export function ShareButton({ title }: { title: string }) {
           window.setTimeout(() => setCopied(false), 2000);
         }
       }}
-      className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.05] px-3 py-1.5 text-xs text-zinc-200 transition hover:border-white/30 hover:text-white"
+      className="btn-line inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs"
     >
-      {copied ? <Check className="size-3.5 text-emerald-300" aria-hidden="true" /> : <Share2 className="size-3.5" aria-hidden="true" />}
+      {copied ? <Check className="size-3.5 text-good" aria-hidden="true" /> : <Share2 className="size-3.5" aria-hidden="true" />}
       {copied ? t('share.copied') : t('share.button')}
     </button>
   );
