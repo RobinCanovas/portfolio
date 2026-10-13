@@ -21,39 +21,49 @@ const ICONS: Record<BuildStep['icon'], typeof Code2> = {
 };
 
 /**
- * "How it's built" flow: numbered steps linked by a glowing rail with a pulse travelling along it.
+ * "How it's built" flow: numbered steps on a hairline that draws itself from the first step to the last.
  * Horizontal on large screens, vertical on mobile.
  */
 export function BuildDiagram({ steps }: { steps: BuildStep[] }) {
+  const ease = [0.65, 0, 0.35, 1] as const;
+  const draw = { duration: 0.35 + steps.length * 0.18, ease };
   return (
     <div className="relative">
-      <div aria-hidden="true" className="pointer-events-none absolute top-7 right-[10%] left-[10%] hidden h-px overflow-hidden bg-white/10 lg:block">
-        <span className="animate-rail absolute inset-y-0 w-1/4 bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
-      </div>
-      <div aria-hidden="true" className="pointer-events-none absolute top-6 bottom-6 left-7 w-px overflow-hidden bg-white/10 lg:hidden">
-        <span className="animate-rail-y absolute inset-x-0 h-1/4 bg-gradient-to-b from-transparent via-cyan-300 to-transparent" />
-      </div>
-      <ol className="grid gap-6 lg:auto-cols-fr lg:grid-flow-col lg:gap-4">
+      <motion.div
+        aria-hidden="true"
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={draw}
+        className="pointer-events-none absolute top-7 right-[10%] left-[10%] hidden h-px origin-left bg-ink/25 lg:block"
+      />
+      <motion.div
+        aria-hidden="true"
+        initial={{ scaleY: 0 }}
+        whileInView={{ scaleY: 1 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={draw}
+        className="pointer-events-none absolute top-7 bottom-7 left-7 w-px origin-top bg-ink/25 lg:hidden"
+      />
+      <ol className="grid gap-7 lg:auto-cols-fr lg:grid-flow-col lg:gap-5">
         {steps.map((step, i) => {
           const Icon = ICONS[step.icon];
           return (
             <motion.li
               key={step.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ delay: 0.15 + i * 0.18, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="relative flex gap-4 lg:flex-col lg:items-center lg:text-center"
             >
-              <span className="group relative z-10 flex size-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-[#0b0b10] shadow-[0_0_30px_-6px_rgb(168_85_247/0.3)] transition hover:border-cyan-300/60 hover:shadow-[0_0_36px_-4px_rgb(34_211_238/0.35)]">
-                <Icon className="size-6 text-violet-200 transition group-hover:scale-110 group-hover:text-cyan-200" aria-hidden="true" />
-                <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 font-mono text-[10px] font-bold text-white">
-                  {i + 1}
-                </span>
+              <span className="relative z-10 flex size-14 shrink-0 items-center justify-center rounded-full border border-ink/20 bg-card">
+                <Icon className="size-5 text-ink-2" strokeWidth={1.5} aria-hidden="true" />
               </span>
               <div className="pt-1 lg:pt-0">
-                <h4 className="font-semibold text-white">{step.title}</h4>
-                <p className="mt-1 text-sm leading-relaxed text-zinc-400">{step.detail}</p>
+                <p className="font-mono text-[10px] tracking-[0.2em] text-ink-4">{String(i + 1).padStart(2, '0')}</p>
+                <h4 className="mt-0.5 font-serif text-xl leading-tight text-ink">{step.title}</h4>
+                <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{step.detail}</p>
               </div>
             </motion.li>
           );
