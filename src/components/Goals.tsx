@@ -6,17 +6,29 @@ import { targetSchools } from '../data/profile';
 import { useLang } from '../i18n';
 import { Section } from './ui';
 
-/** School logo that falls back through its sources, then to the school name. */
+/**
+ * School logo that falls back through its sources, then to the school name. Logos come in every shape
+ * (wide wordmarks, square crests): each one is sized to the same visual area, so none shouts or hides.
+ */
+const LOGO_AREA = 7600;
 function SchoolLogo({ sources, name }: { sources: string[]; name: string }) {
   const [i, setI] = useState(0);
-  if (i >= sources.length) return <span className="font-serif text-lg text-ink">{name}</span>;
+  const [ratio, setRatio] = useState<number | null>(null);
+  if (i >= sources.length) return <span className="font-serif text-lg text-ink-3 italic">{name}</span>;
+  const height = ratio ? Math.min(72, Math.sqrt(LOGO_AREA / ratio), 190 / ratio) : 56;
   return (
     <img
       src={sources[i]}
       alt={`${name} logo`}
       onError={() => setI((n) => n + 1)}
+      onLoad={(e) => {
+        const { naturalWidth: w, naturalHeight: h } = e.currentTarget;
+        if (w && h) setRatio(w / h);
+      }}
       referrerPolicy="no-referrer"
-      className="max-h-full max-w-full object-contain mix-blend-multiply"
+      loading="lazy"
+      style={{ height }}
+      className="w-auto max-w-full object-contain mix-blend-multiply grayscale-[0.85] contrast-[1.05] opacity-80 transition-[filter,opacity] duration-500 group-hover:opacity-100 group-hover:grayscale-0"
     />
   );
 }
@@ -102,13 +114,20 @@ export function Goals({ onContact }: { onContact?: () => void }) {
       <div className="mt-20">
         <h3 className={label}>{t('goals.schools')}</h3>
         <p className="mt-2 text-sm text-ink-2">{t('goals.schoolsNote')}</p>
-        <ul className="mt-6 grid grid-cols-2 border-t border-l border-ink/10 sm:grid-cols-3 lg:grid-cols-6">
+        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {targetSchools.map((s, i) => (
-            <motion.li key={s.id} {...rise(i * 0.05)} className="flex flex-col items-center gap-3 border-r border-b border-ink/10 bg-card/60 px-4 py-5 text-center">
-              <span className="flex h-16 w-full items-center justify-center">
+            <motion.li
+              key={s.id}
+              {...rise((i % 4) * 0.05)}
+              className="group panel flex flex-col overflow-hidden rounded-xl transition-colors duration-300 hover:border-ink/30"
+            >
+              <span className="flex h-28 items-center justify-center px-7 py-6">
                 <SchoolLogo sources={s.logos} name={s.name} />
               </span>
-              <span className="text-xs text-ink-2">{s.name}</span>
+              <span className="flex items-center justify-between gap-2 border-t border-ink/10 px-4 py-3">
+                <span className="truncate font-serif text-[17px] leading-tight text-ink">{s.name}</span>
+                <span className="font-mono text-[10px] text-ink-4">{String(i + 1).padStart(2, '0')}</span>
+              </span>
             </motion.li>
           ))}
         </ul>
