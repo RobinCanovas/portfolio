@@ -1,21 +1,26 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, type Variants } from 'framer-motion';
 import { FileText, GraduationCap, Mail, MapPin } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { LinkedinIcon } from './BrandIcons';
-import { CountUp, Magnetic, RotatingWords, ScrambleText } from './fx/effects';
+import { CountUp, Magnetic, RotatingWords } from './fx/effects';
 import { useRevealed } from './fx/Intro';
 import { ParticleField } from './fx/ParticleField';
 import { Portrait } from './Portrait';
 
-const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } } };
-const item: Variants = { hidden: { opacity: 0, y: 24, filter: 'blur(8px)' }, show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } } };
+const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.08 } } };
+const item: Variants = { hidden: { opacity: 0, y: 18, filter: 'blur(6px)' }, show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } } };
+/** The greeting sits just above the name: it settles down onto it rather than sliding up through it. */
+const above: Variants = { hidden: { opacity: 0, y: -10, filter: 'blur(6px)' }, show: item.show };
+/** After the intro the name is already in place (its points hand it over): it has no entrance of its own. */
+const inPlace: Variants = { hidden: { opacity: 1 }, show: { opacity: 1 } };
 
 export function Hero({ onContact }: { onContact: () => void }) {
   const { t, lang } = useLang();
   const { profile, links, experiences, projects } = useContent();
-  // Entrance animations wait until the opening curtain lifts.
+  // Entrance animations wait until the opening intro hands over.
   const revealed = useRevealed();
+  const [afterIntro] = useState(() => !revealed);
 
   // Depth on scroll: background, text and portrait move at different speeds as the hero leaves.
   const sectionRef = useRef<HTMLElement>(null);
@@ -54,10 +59,17 @@ export function Hero({ onContact }: { onContact: () => void }) {
             <span className="text-zinc-200">{profile.currentRole}</span>
           </motion.div>
 
-          <motion.h1 variants={item} className="mt-7 text-5xl leading-[1.02] font-extrabold tracking-tight text-white sm:text-7xl">
-            <span className="block text-2xl font-medium text-zinc-300 sm:text-3xl">{t('hero.hi')}</span>
-            <ScrambleText key={String(revealed)} text={profile.name} className="text-shine cursor-default drop-shadow-[0_0_30px_rgb(168_85_247/0.25)]" />
-          </motion.h1>
+          <h1 className="mt-7 text-5xl leading-[1.02] font-extrabold tracking-tight text-white sm:text-7xl">
+            <motion.span variants={above} className="block text-2xl font-medium text-zinc-300 sm:text-3xl">
+              {t('hero.hi')}
+            </motion.span>
+            <motion.span variants={afterIntro ? inPlace : item} className="inline-block">
+              {/* data-hero-name: the opening intro draws its points on these exact letters. */}
+              <span data-hero-name className="text-shine drop-shadow-[0_0_30px_rgb(168_85_247/0.25)]">
+                {profile.name}
+              </span>
+            </motion.span>
+          </h1>
 
           <motion.p variants={item} className="mt-5 text-xl font-medium text-zinc-100 sm:text-2xl">
             <RotatingWords key={lang} words={t('hero.roles').split('|')} className="text-white" />
@@ -113,10 +125,9 @@ export function Hero({ onContact }: { onContact: () => void }) {
         {/* Scroll parallax on its own layer, so it never fights the entrance animation below. */}
         <motion.div style={{ y: portraitY, scale: portraitScale }}>
           <motion.div
-            initial={{ opacity: 0, y: 40, rotateX: 18, rotateY: -12 }}
-            animate={revealed ? { opacity: 1, y: 0, rotateX: 0, rotateY: 0 } : undefined}
-            transition={{ duration: 1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            style={{ transformPerspective: 1200 }}
+            initial={{ opacity: 0, y: 28, scale: 0.97 }}
+            animate={revealed ? { opacity: 1, y: 0, scale: 1 } : undefined}
+            transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
             {/* Float lives on a plain div: a CSS animation would override Framer's inline transform. */}
             <div className="animate-float">
