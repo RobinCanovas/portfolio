@@ -4,7 +4,7 @@ import { ArrowUpRight, Lock, PlayCircle } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { href } from '../router';
 import type { Tech } from '../types';
-import { ProjectArt } from './ProjectArt';
+import { ProjectVisual } from './ProjectVisual';
 import { TechIcon } from './TechIcon';
 import { Badge, CompanyLogo, Section } from './ui';
 
@@ -34,12 +34,12 @@ export function Projects({ filter, onFilter }: Props) {
               type="button"
               aria-pressed={on}
               onClick={() => onFilter(tech)}
-              className={`group inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-1.5 font-mono text-xs transition ${
-                on ? 'border-violet-400 bg-violet-500/25 text-white shadow-[0_0_16px_rgb(168_85_247/0.2)]' : 'border-white/15 text-zinc-300 hover:border-white/30 hover:text-white'
+              className={`group inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 font-mono text-xs transition-colors duration-200 ${
+                on ? 'border-ink bg-ink text-paper' : 'border-ink/15 text-ink-2 hover:border-ink/40 hover:text-ink'
               }`}
             >
-              <TechIcon tech={tech} className="size-3.5" />
-              {tech === 'All' ? allLabel : c.tech(tech)} <span className="text-zinc-500">{count}</span>
+              {tech !== 'All' && <TechIcon tech={tech} className={`size-3.5 ${on ? 'opacity-80 brightness-[3]' : ''}`} />}
+              {tech === 'All' ? allLabel : c.tech(tech)} <span className={on ? 'text-paper/60' : 'text-ink-4'}>{count}</span>
             </button>
           );
         })}
@@ -58,7 +58,7 @@ export function Projects({ filter, onFilter }: Props) {
                 initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0, transition: { duration: 0.7, delay: (i % 3) * 0.07, ease: [0.16, 1, 0.3, 1] } }}
                 viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-                exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.2 } }}
+                exit={{ opacity: 0, transition: { duration: 0.15 } }}
                 transition={{ layout: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } }}
                 className="flex min-w-0"
               >
@@ -66,38 +66,37 @@ export function Projects({ filter, onFilter }: Props) {
                   href={href.project(p.id)}
                   onPointerEnter={() => replay(p.id)}
                   onFocus={() => replay(p.id)}
-                  className="glass spotlight group relative flex w-full flex-col overflow-hidden rounded-2xl p-5 transition duration-500 hover:-translate-y-1 hover:border-violet-400/40 hover:shadow-2xl hover:shadow-violet-900/30"
+                  className="panel group relative flex w-full flex-col overflow-hidden rounded-xl p-5 transition-colors duration-300 hover:border-ink/35"
                 >
-                  <div aria-hidden="true" className="pointer-events-none absolute -top-24 -right-24 size-48 rounded-full bg-violet-500/25 opacity-0 blur-3xl transition duration-700 group-hover:opacity-100" />
-                  <div className="-mx-5 -mt-5 mb-4 aspect-[2.3/1] overflow-hidden border-b border-white/10">
-                    <ProjectArt id={p.id} replay={replays[p.id]} className="size-full" />
+                  <div className="-mx-5 -mt-5 mb-4 aspect-[2.3/1] overflow-hidden border-b border-ink/10">
+                    <ProjectVisual id={p.id} replay={replays[p.id]} className="size-full" />
                   </div>
                   <div className="flex items-center justify-between gap-2">
                     <span className="flex min-w-0 items-center gap-2">
-                      {exp && <CompanyLogo company={exp.company} size={26} />}
-                      <span className="truncate font-mono text-[11px] text-cyan-300">{p.context}</span>
+                      {exp && <CompanyLogo company={exp.company} size={24} />}
+                      <span className="truncate font-mono text-[11px] text-ink-3">{p.context}</span>
                     </span>
                     {p.confidential ? (
-                      <Lock className="size-4 shrink-0 text-amber-300" aria-label={t('exp.confidential')} />
+                      <Lock className="size-4 shrink-0 text-ochre" aria-label={t('exp.confidential')} />
                     ) : (
                       p.featured && <Badge active>{t('proj.featured')}</Badge>
                     )}
                   </div>
-                  <h3 className="mt-3 text-lg font-semibold text-white">{p.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-300">{p.description}</p>
+                  <h3 className="mt-3 font-serif text-2xl leading-[1.15] text-ink transition-colors duration-200 group-hover:text-accent">{p.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-2">{p.description}</p>
 
-                  <ul className="mt-4 space-y-1 text-xs text-zinc-300">
+                  <ul className="mt-4 space-y-1 text-xs text-ink-2">
                     {p.highlights.slice(0, 3).map((h) => (
                       <li key={h} className="flex gap-2">
-                        <span className="text-violet-400" aria-hidden="true">
-                          ▹
+                        <span className="text-ink-4" aria-hidden="true">
+                          –
                         </span>
                         {h}
                       </li>
                     ))}
                   </ul>
 
-                  <div className="mt-4 flex flex-wrap gap-1.5">
+                  <div className="mt-4 mb-5 flex flex-wrap gap-1.5">
                     {p.stack.map((tech) => (
                       <Badge key={tech} active={tech === filter}>
                         {c.tech(tech)}
@@ -105,16 +104,16 @@ export function Projects({ filter, onFilter }: Props) {
                     ))}
                   </div>
 
-                  <div className="mt-auto flex items-center justify-between pt-5 text-xs">
+                  <div className="mt-auto flex items-center justify-between border-t border-ink/10 pt-4 text-xs">
                     {p.demo ? (
-                      <span className="inline-flex items-center gap-1.5 text-emerald-300">
-                        <PlayCircle className="size-4" aria-hidden="true" /> {t('proj.demo')}
+                      <span className="inline-flex items-center gap-1.5 text-good">
+                        <PlayCircle className="size-4" strokeWidth={1.75} aria-hidden="true" /> {t('proj.demo')}
                       </span>
                     ) : (
-                      <span className="text-zinc-400">{p.year}</span>
+                      <span className="font-mono text-ink-3">{p.year}</span>
                     )}
-                    <span className="inline-flex items-center gap-1 text-zinc-300 transition group-hover:text-white">
-                      {t('proj.case')} <ArrowUpRight className="size-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+                    <span className="inline-flex items-center gap-1 text-ink-2 transition-colors group-hover:text-ink">
+                      {t('proj.case')} <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
                     </span>
                   </div>
                 </a>

@@ -1,34 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { animate, motion, useInView, useMotionValue, useSpring } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { animate, motion, useInView } from 'framer-motion';
 
 const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-
-/** Pulls its child toward the pointer while hovered. */
-export function Magnetic({ children, strength = 0.35, className = '' }: { children: ReactNode; strength?: number; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const x = useSpring(useMotionValue(0), { stiffness: 250, damping: 18 });
-  const y = useSpring(useMotionValue(0), { stiffness: 250, damping: 18 });
-
-  return (
-    <motion.div
-      ref={ref}
-      style={{ x, y }}
-      className={`inline-block ${className}`}
-      onPointerMove={(e) => {
-        if (e.pointerType !== 'mouse' || !ref.current) return;
-        const r = ref.current.getBoundingClientRect();
-        x.set((e.clientX - (r.left + r.width / 2)) * strength);
-        y.set((e.clientY - (r.top + r.height / 2)) * strength);
-      }}
-      onPointerLeave={() => {
-        x.set(0);
-        y.set(0);
-      }}
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 /** Animated number that counts up the first time it scrolls into view. */
 export function CountUp({ to, suffix = '' }: { to: number; suffix?: string }) {
@@ -72,7 +45,7 @@ export function RotatingWords({ words, interval = 2600, className = '' }: { word
           className="col-start-1 row-start-1"
           initial={false}
           animate={{ y: idx === i ? '0%' : idx === (i - 1 + words.length) % words.length ? '-110%' : '110%', opacity: idx === i ? 1 : 0 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 24 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           aria-hidden={idx !== i}
         >
           {w}
@@ -83,7 +56,7 @@ export function RotatingWords({ words, interval = 2600, className = '' }: { word
 }
 
 /** Elements running infinite CSS animations (see index.css). */
-const LOOPING = '[data-art], .glow-border, .animate-aurora, .animate-marquee, .animate-float, .animate-rail, .animate-rail-y, .text-shine, .animate-ping';
+const LOOPING = '[data-art]';
 
 /**
  * Energy saver: marks looping animations with `data-offscreen` while they are off screen,

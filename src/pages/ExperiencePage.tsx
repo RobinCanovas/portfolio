@@ -1,31 +1,33 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Briefcase, CalendarDays, CheckCircle2, Clock, Laptop, Lock, MapPin } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Lock } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { href } from '../router';
 import type { Client, KeyFact } from '../types';
-import { Magnetic } from '../components/fx/effects';
 import { ShareButton } from '../components/ShareButton';
 import { Badge, CompanyLogo, LogoTile } from '../components/ui';
 
 const fade = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: '-40px' },
   transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as const },
 });
 
+const label = 'font-mono text-[11px] tracking-[0.25em] uppercase';
+
+/** Key figures in a ruled row, like the data box of a magazine profile. */
 function Facts({ facts }: { facts: KeyFact[] }) {
   if (facts.length === 0) return null;
   return (
-    <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <motion.dl {...fade()} className="grid grid-cols-2 border-y border-ink/10 sm:grid-cols-4">
       {facts.map((f, i) => (
-        <motion.div key={f.label} {...fade(i * 0.06)} className="glass spotlight rounded-2xl p-4">
+        <div key={f.label} className={`px-4 py-5 sm:px-5 ${i % 2 === 1 ? 'border-l border-ink/10' : ''} ${i > 1 ? 'border-t border-ink/10 sm:border-t-0' : ''} ${i > 0 ? 'sm:border-l sm:border-ink/10' : ''}`}>
           <dt className="sr-only">{f.label}</dt>
-          <dd className="text-gradient text-xl font-bold sm:text-2xl">{f.value}</dd>
-          <dd className="mt-1 text-xs text-zinc-400">{f.label}</dd>
-        </motion.div>
+          <dd className="font-serif text-3xl leading-none text-ink sm:text-4xl">{f.value}</dd>
+          <dd className="mt-2 text-xs leading-snug text-ink-3">{f.label}</dd>
+        </div>
       ))}
-    </dl>
+    </motion.dl>
   );
 }
 
@@ -33,33 +35,34 @@ function ClientBlock({ client, notice }: { client: Client; notice?: string }) {
   const { t } = useLang();
   const c = useContent();
   return (
-    <motion.section {...fade()} aria-labelledby="client-title" className="glass spotlight relative overflow-hidden rounded-3xl p-6 sm:p-8">
-      <div aria-hidden="true" className="absolute -top-20 -right-20 size-72 rounded-full bg-emerald-500/15 blur-3xl" />
-      <p className="font-mono text-xs tracking-[0.25em] text-emerald-300 uppercase">{t('page.endClient')}</p>
-      <div className="mt-4 flex flex-wrap items-center gap-4">
-        <LogoTile sources={client.logos} name={client.name} size={72} fallback={<span className="text-2xl font-bold text-white">{client.name}</span>} />
+    <motion.section {...fade()} aria-labelledby="client-title" className="panel rounded-xl p-6 sm:p-9">
+      <p className={`${label} text-good`}>{t('page.endClient')}</p>
+      <div className="mt-5 flex flex-wrap items-center gap-4">
+        <LogoTile sources={client.logos} name={client.name} size={64} fallback={<span className="font-serif text-2xl text-ink">{client.name}</span>} />
         {client.parent && (
           <>
-            <span className="text-zinc-600" aria-hidden="true">
+            <span className="font-serif text-xl text-ink-4" aria-hidden="true">
               ×
             </span>
-            <LogoTile sources={client.parent.logos} name={client.parent.name} size={72} fallback={<span className="font-bold text-white">{client.parent.name}</span>} />
+            <LogoTile sources={client.parent.logos} name={client.parent.name} size={64} fallback={<span className="font-serif text-xl text-ink">{client.parent.name}</span>} />
           </>
         )}
         <div className="min-w-0">
-          <h2 id="client-title" className="text-2xl font-bold text-white">
+          <h2 id="client-title" className="font-serif text-3xl leading-tight text-ink">
             {client.name}
           </h2>
-          {client.parent && <p className="text-sm text-emerald-200/90">{c.group(client.parent.name)}</p>}
+          {client.parent && <p className="text-sm text-good">{c.group(client.parent.name)}</p>}
         </div>
       </div>
-      <p className="mt-5 max-w-3xl leading-relaxed text-zinc-300">{client.about}</p>
-      <div className="mt-6">
-        <Facts facts={client.facts} />
-      </div>
+      <p className="mt-5 max-w-3xl leading-relaxed text-ink-2">{client.about}</p>
+      {client.facts.length > 0 && (
+        <div className="mt-7">
+          <Facts facts={client.facts} />
+        </div>
+      )}
       {notice && (
-        <div className="mt-6 flex gap-3 rounded-2xl border border-amber-300/25 bg-amber-400/[0.06] p-4 text-sm text-amber-100/90">
-          <Lock className="mt-0.5 size-5 shrink-0 text-amber-300" aria-hidden="true" />
+        <div className="mt-7 flex gap-3 rounded-r-lg border-l-2 border-ochre bg-ochre/[0.07] p-4 text-sm leading-relaxed text-ink-2">
+          <Lock className="mt-0.5 size-4 shrink-0 text-ochre" aria-hidden="true" />
           <p>{notice}</p>
         </div>
       )}
@@ -79,88 +82,75 @@ export function ExperiencePage({ id }: { id: string }) {
   const next = experiences[(index + 1) % experiences.length];
   const related = (exp.projectIds ?? []).map(c.findProject).filter((p) => p !== undefined);
 
-  const meta = [
-    { icon: Briefcase, text: c.contract(exp.contract) },
-    { icon: CalendarDays, text: exp.period },
-    { icon: Clock, text: exp.duration },
-    { icon: MapPin, text: exp.location },
-    { icon: Laptop, text: c.mode(exp.mode) },
-  ];
+  const meta = [c.contract(exp.contract), exp.period, exp.duration, exp.location, c.mode(exp.mode)];
 
   return (
-    <article className="relative">
-      {/* Hero */}
-      <header className="relative isolate overflow-hidden pt-28 pb-16">
-        <div aria-hidden="true" className="absolute inset-0 -z-10">
-          <div
-            className="animate-aurora absolute top-[-30%] left-1/2 size-[60vmax] -translate-x-1/2 rounded-full opacity-40 blur-[120px]"
-            style={{ background: `conic-gradient(from 90deg, ${company.gradient[0]}, ${company.gradient[1]}, transparent, ${company.gradient[0]})` }}
-          />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
-        </div>
-
+    <article>
+      <header className="pt-28 pb-14">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex items-center justify-between gap-3">
-            <a href={href.section('experience')} className="inline-flex items-center gap-1.5 text-sm text-zinc-300 transition hover:text-white">
-              <ArrowLeft className="size-4" aria-hidden="true" /> {t('page.allExperience')}
+          <div className="flex items-center justify-between gap-3 border-b border-ink/10 pb-4">
+            <a href={href.section('experience')} className="group inline-flex items-center gap-1.5 text-sm text-ink-2 transition-colors hover:text-ink">
+              <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-0.5" aria-hidden="true" /> {t('page.allExperience')}
             </a>
             <ShareButton title={`${company.name} · Robin Canovas`} />
           </div>
 
-          <div className="mt-8 grid items-center gap-10 lg:grid-cols-[1fr_auto]">
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
-              <p className="font-mono text-xs tracking-[0.25em] text-cyan-300 uppercase">{company.sector}</p>
-              <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">{company.name}</h1>
-              <p className="mt-4 text-xl text-zinc-200 sm:text-2xl">
+          <div className="mt-10 grid items-end gap-10 lg:grid-cols-[1fr_auto]">
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
+              <p className={`${label} text-ink-3`}>{company.sector}</p>
+              <h1 className="mt-3 font-serif text-5xl leading-[1] tracking-[-0.01em] text-ink sm:text-7xl">{company.name}</h1>
+              <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 font-serif text-2xl text-ink-2 italic sm:text-3xl">
                 {exp.role}
                 {exp.current && (
-                  <span className="ml-3 inline-flex translate-y-[-3px] items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 align-middle text-xs text-emerald-300">
-                    <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px] shadow-emerald-400" /> {t('exp.current')}
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.15em] text-good uppercase not-italic">
+                    <span className="size-1.5 rounded-full bg-good" aria-hidden="true" /> {t('exp.current')}
                   </span>
                 )}
               </p>
-              <ul className="mt-6 flex flex-wrap gap-2">
-                {meta.map((m) => (
-                  <li key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-zinc-300">
-                    <m.icon className="size-3.5 text-zinc-500" aria-hidden="true" /> {m.text}
+              <ul className="mt-6 flex flex-wrap gap-x-2 gap-y-1 font-mono text-xs text-ink-3">
+                {meta.map((m, i) => (
+                  <li key={m} className="inline-flex items-center gap-2">
+                    {i > 0 && (
+                      <span className="text-ink-4" aria-hidden="true">
+                        /
+                      </span>
+                    )}
+                    {m}
                   </li>
                 ))}
               </ul>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, rotate: -6 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ type: 'spring', stiffness: 120, damping: 14, delay: 0.15 }}
-              className="relative justify-self-start lg:justify-self-end"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="justify-self-start lg:justify-self-end"
             >
-              <div aria-hidden="true" className="absolute inset-0 scale-150 rounded-full blur-3xl" style={{ background: `radial-gradient(circle, ${company.gradient[0]}55, transparent 70%)` }} />
-              <div className="animate-float relative">
-                <CompanyLogo company={company} size={140} />
-              </div>
+              <CompanyLogo company={company} size={120} />
             </motion.div>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl space-y-10 px-4 pb-24 sm:px-6">
+      <div className="mx-auto max-w-6xl space-y-16 px-4 pb-24 sm:px-6">
         {/* About the company */}
-        <motion.section {...fade()} aria-labelledby="about-title" className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
-          <div className="glass spotlight rounded-3xl p-6 sm:p-8">
-            <p className="font-mono text-xs tracking-[0.25em] text-violet-300 uppercase">{t('page.company')}</p>
-            <h2 id="about-title" className="mt-2 text-2xl font-bold text-white">
+        <motion.section {...fade()} aria-labelledby="about-title" className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-14">
+          <div className="border-t border-ink pt-5">
+            <p className={`${label} text-ink-3`}>{t('page.company')}</p>
+            <h2 id="about-title" className="mt-3 font-serif text-3xl leading-tight text-ink sm:text-4xl">
               {t('page.about', { name: company.name })}
             </h2>
-            <p className="mt-4 leading-relaxed text-zinc-300">{company.about}</p>
+            <p className="mt-4 leading-relaxed text-ink-2">{company.about}</p>
           </div>
           {company.visual ? (
-            <div className="glass spotlight flex items-center justify-center overflow-hidden rounded-3xl p-6">
-              <LogoTile sources={company.visual.src} name={company.visual.alt} size={220} fallback={<CompanyLogo company={company} size={120} />} />
+            <div className="flex items-center justify-center rounded-xl bg-card p-6 ring-1 ring-ink/10">
+              <LogoTile sources={company.visual.src} name={company.visual.alt} size={200} fallback={<CompanyLogo company={company} size={120} />} />
             </div>
           ) : (
-            <div className="glass spotlight flex flex-col justify-center gap-3 rounded-3xl p-6 sm:p-8">
-              <p className="font-mono text-xs tracking-[0.25em] text-violet-300 uppercase">{t('page.inShort')}</p>
-              <p className="text-lg text-white">{exp.summary}</p>
+            <div className="self-start border-l-2 border-accent pl-6">
+              <p className={`${label} text-accent`}>{t('page.inShort')}</p>
+              <p className="mt-3 font-serif text-2xl leading-snug text-ink">{exp.summary}</p>
             </div>
           )}
         </motion.section>
@@ -171,27 +161,20 @@ export function ExperiencePage({ id }: { id: string }) {
 
         {/* Missions */}
         <section aria-labelledby="missions-title">
-          <motion.h2 {...fade()} id="missions-title" className="text-3xl font-bold text-white">
+          <motion.h2 {...fade()} id="missions-title" className="font-serif text-4xl leading-tight text-ink sm:text-[2.6rem]">
             {t('page.myRole')}
           </motion.h2>
-          {company.visual && <p className="mt-3 max-w-3xl text-zinc-400">{exp.summary}</p>}
-          <div className={`mt-6 grid gap-5 ${exp.missions.length > 1 ? 'lg:grid-cols-2' : ''}`}>
+          {company.visual && <p className="mt-3 max-w-3xl text-ink-2">{exp.summary}</p>}
+          <div className={`mt-8 grid gap-10 ${exp.missions.length > 1 ? 'lg:grid-cols-2 lg:gap-14' : ''}`}>
             {exp.missions.map((group, gi) => (
-              <motion.div key={group.title} {...fade(gi * 0.1)} className="glass spotlight rounded-3xl p-6">
-                <h3 className="font-semibold text-white">{group.title}</h3>
-                <ul className="mt-4 space-y-3">
-                  {group.items.map((item, i) => (
-                    <motion.li
-                      key={item}
-                      initial={{ opacity: 0, x: -12 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.1 + i * 0.07 }}
-                      className="flex gap-3 text-sm leading-relaxed text-zinc-300"
-                    >
-                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-400" aria-hidden="true" />
+              <motion.div key={group.title} {...fade(gi * 0.08)} className="border-t border-ink pt-5">
+                <h3 className="font-serif text-2xl text-ink">{group.title}</h3>
+                <ul className="mt-3 divide-y divide-ink/10">
+                  {group.items.map((item) => (
+                    <li key={item} className="flex gap-3 py-3 text-[15px] leading-relaxed text-ink-2">
+                      <Check className="mt-1 size-4 shrink-0 text-good" aria-hidden="true" />
                       {item}
-                    </motion.li>
+                    </li>
                   ))}
                 </ul>
               </motion.div>
@@ -218,59 +201,53 @@ export function ExperiencePage({ id }: { id: string }) {
         {/* Related projects */}
         {related.length > 0 && (
           <section aria-labelledby="related-title">
-            <h2 id="related-title" className="text-2xl font-bold text-white">
+            <h2 id="related-title" className={`${label} text-ink-3`}>
               {t('page.project')}
             </h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <ul className="mt-4 border-b border-ink/10">
               {related.map((p) => (
-                <a key={p.id} href={href.project(p.id)} className="glass spotlight group flex items-center justify-between gap-4 rounded-2xl p-5 transition hover:-translate-y-0.5">
-                  <span>
-                    <span className="block font-mono text-[11px] text-cyan-300/80">{p.context}</span>
-                    <span className="mt-1 block font-semibold text-white">{p.title}</span>
-                    <span className="mt-1 block text-sm text-zinc-400">{p.description}</span>
-                  </span>
-                  <ArrowRight className="size-5 shrink-0 text-zinc-500 transition group-hover:translate-x-1 group-hover:text-white" aria-hidden="true" />
-                </a>
+                <li key={p.id} className="border-t border-ink/10">
+                  <a href={href.project(p.id)} className="group flex items-center justify-between gap-6 py-5">
+                    <span>
+                      <span className="block font-mono text-[11px] text-ink-3">{p.context}</span>
+                      <span className="mt-1 block font-serif text-2xl leading-tight text-ink transition-colors group-hover:text-accent">{p.title}</span>
+                      <span className="mt-1 block max-w-3xl text-sm text-ink-2">{p.description}</span>
+                    </span>
+                    <ArrowRight className="size-5 shrink-0 text-ink-3 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-ink" aria-hidden="true" />
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </section>
         )}
 
-        {/* Website CTA — the company site comes last, after the story */}
+        {/* Website, after the story */}
         {company.url && (
-          <motion.div {...fade()} className="glass spotlight relative overflow-hidden rounded-3xl p-8 text-center">
-            <div aria-hidden="true" className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(circle at 50% 120%, ${company.gradient[0]}, transparent 60%)` }} />
-            <p className="relative text-zinc-200">{t('page.more', { name: company.name })}</p>
-            <Magnetic className="relative mt-4">
-              <a
-                href={company.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-zinc-900 shadow-[0_0_40px_rgb(255_255_255/0.13)] transition hover:bg-zinc-200"
-              >
-                {t('page.visit')} <ArrowUpRight className="size-4" aria-hidden="true" />
-              </a>
-            </Magnetic>
+          <motion.div {...fade()} className="flex flex-col items-start gap-5 border-y border-ink py-8 sm:flex-row sm:items-center sm:justify-between">
+            <p className="font-serif text-2xl text-ink sm:text-3xl">{t('page.more', { name: company.name })}</p>
+            <a href={company.url} target="_blank" rel="noopener noreferrer" className="btn-ink inline-flex shrink-0 items-center gap-2 rounded-full px-6 py-3 font-medium">
+              {t('page.visit')} <ArrowUpRight className="size-4" aria-hidden="true" />
+            </a>
           </motion.div>
         )}
 
         {/* Prev / next */}
-        <nav aria-label={t('page.otherExperiences')} className="grid gap-3 border-t border-white/10 pt-8 sm:grid-cols-2">
-          <a href={href.experience(prev.id)} className="group flex items-center gap-3 rounded-2xl p-3 transition hover:bg-white/[0.04]">
-            <ArrowLeft className="size-4 text-zinc-500 transition group-hover:-translate-x-1 group-hover:text-white" aria-hidden="true" />
+        <nav aria-label={t('page.otherExperiences')} className="grid border-t border-ink sm:grid-cols-2">
+          <a href={href.experience(prev.id)} className="group flex items-center gap-4 py-6 pr-6">
+            <ArrowLeft className="size-4 shrink-0 text-ink-3 transition-transform duration-200 group-hover:-translate-x-1 group-hover:text-ink" aria-hidden="true" />
             <CompanyLogo company={prev.company} size={40} />
             <span>
-              <span className="block text-xs text-zinc-400">{t('page.previous')}</span>
-              <span className="font-medium text-white">{prev.company.name}</span>
+              <span className="block font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">{t('page.previous')}</span>
+              <span className="font-serif text-xl text-ink transition-colors group-hover:text-accent">{prev.company.name}</span>
             </span>
           </a>
-          <a href={href.experience(next.id)} className="group flex items-center justify-end gap-3 rounded-2xl p-3 text-right transition hover:bg-white/[0.04]">
+          <a href={href.experience(next.id)} className="group flex items-center justify-end gap-4 border-t border-ink/10 py-6 text-right sm:border-t-0 sm:border-l sm:pl-6">
             <span>
-              <span className="block text-xs text-zinc-400">{t('page.next')}</span>
-              <span className="font-medium text-white">{next.company.name}</span>
+              <span className="block font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">{t('page.next')}</span>
+              <span className="font-serif text-xl text-ink transition-colors group-hover:text-accent">{next.company.name}</span>
             </span>
             <CompanyLogo company={next.company} size={40} />
-            <ArrowRight className="size-4 text-zinc-500 transition group-hover:translate-x-1 group-hover:text-white" aria-hidden="true" />
+            <ArrowRight className="size-4 shrink-0 text-ink-3 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-ink" aria-hidden="true" />
           </a>
         </nav>
       </div>
