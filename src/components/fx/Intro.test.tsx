@@ -1,13 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DRIFT_MS, GATHER_MS, Intro, shouldPlayIntro } from './Intro';
+import { BUILD_MS, Intro, shouldPlayIntro } from './Intro';
 
 function TitleAndIntro({ onReveal }: { onReveal: () => void }) {
   return (
     <>
       <h1>
-        <span data-hero-name style={{ fontSize: '72px' }}>
+        <span data-hero-name style={{ fontSize: '96px' }}>
           Robin Canovas
         </span>
       </h1>
@@ -37,61 +37,50 @@ describe('<Intro />', () => {
     render(<Intro onReveal={onReveal} />);
     expect(screen.getByRole('button', { name: 'Skip' })).toBeInTheDocument();
     expect(document.documentElement.style.overflow).toBe('hidden');
-    await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: 1500 });
-    await waitFor(() => expect(screen.queryByTestId('intro')).toBeNull(), { timeout: 2000 });
+    await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: 1000 });
+    await waitFor(() => expect(screen.queryByTestId('intro')).toBeNull(), { timeout: 1500 });
     expect(document.documentElement.style.overflow).toBe('');
   });
 
-  describe('drawing the name', () => {
-    // jsdom has neither a canvas nor a layout: a stub 2D context and glyph boxes stand in for them.
-    const getContext = HTMLCanvasElement.prototype.getContext;
+  describe('the figure', () => {
+    // jsdom has no layout: the home title gets a box of its own.
+    const rect = Element.prototype.getBoundingClientRect;
     beforeEach(() => {
-      const ctx = new Proxy({} as Record<string | symbol, unknown>, {
-        get: (target, key) => {
-          if (key in target) return target[key];
-          if (key === 'measureText') return () => ({ fontBoundingBoxAscent: 58, fontBoundingBoxDescent: 14 });
-          // Sparse ink: a few hundred points are plenty for a test.
-          if (key === 'getImageData') return (_x: number, _y: number, w: number, h: number) => ({ data: Uint8ClampedArray.from({ length: w * h * 4 }, (_, i) => (i % 4 === 3 && i % 92 === 3 ? 255 : 0)) });
-          if (key === 'createLinearGradient') return () => ({ addColorStop: () => undefined });
-          return () => undefined;
-        },
-      });
-      HTMLCanvasElement.prototype.getContext = vi.fn(() => ctx) as unknown as typeof getContext;
-      Range.prototype.getBoundingClientRect = function (this: Range) {
-        const left = 100 + this.startOffset * 30;
-        return { left, right: left + 28, top: 200, bottom: 272, width: 28, height: 72, x: left, y: 200, toJSON: () => ({}) } as DOMRect;
+      Element.prototype.getBoundingClientRect = function (this: Element) {
+        const box = this.hasAttribute('data-hero-name') ? { left: 80, top: 260, width: 620, height: 88 } : { left: 600, top: 380, width: 270, height: 38 };
+        return { ...box, right: box.left + box.width, bottom: box.top + box.height, x: box.left, y: box.top, toJSON: () => ({}) } as DOMRect;
       };
     });
     afterEach(() => {
-      HTMLCanvasElement.prototype.getContext = getContext;
-      delete (Range.prototype as Partial<Range>).getBoundingClientRect;
+      Element.prototype.getBoundingClientRect = rect;
     });
 
-    it('hides the real title until the points hand it over, then gets out of the way', async () => {
+    it('draws a network whose inputs are the facets and whose output writes the name', async () => {
       const onReveal = vi.fn();
       render(<TitleAndIntro onReveal={onReveal} />);
       const title = document.querySelector<HTMLElement>('[data-hero-name]')!;
       expect(title.style.opacity).toBe('0');
-      // The points take their time: no handover during the gathering.
-      await new Promise((r) => setTimeout(r, DRIFT_MS + GATHER_MS / 2));
+      for (const facet of ['Mathematics', 'Code', 'Scouting', 'Volleyball', 'Piano']) expect(screen.getByText(facet)).toBeInTheDocument();
+      // The figure takes its time: no handover while it draws.
+      await new Promise((r) => setTimeout(r, BUILD_MS / 2));
       expect(onReveal).not.toHaveBeenCalled();
-      await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: 3000 });
+      await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: BUILD_MS });
+      await waitFor(() => expect(screen.queryByTestId('intro')).toBeNull(), { timeout: 2000 });
       expect(title.style.opacity).toBe('');
-      await waitFor(() => expect(screen.queryByTestId('intro')).toBeNull(), { timeout: 3000 });
     });
 
     it('fast-forwards on Escape', async () => {
       const onReveal = vi.fn();
       render(<TitleAndIntro onReveal={onReveal} />);
       await userEvent.keyboard('{Escape}');
-      await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: DRIFT_MS + GATHER_MS / 2 });
+      await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: 500 });
     });
 
     it('fast-forwards from the Skip button', async () => {
       const onReveal = vi.fn();
       render(<TitleAndIntro onReveal={onReveal} />);
       await userEvent.click(screen.getByRole('button', { name: 'Skip' }));
-      await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: DRIFT_MS + GATHER_MS / 2 });
+      await waitFor(() => expect(onReveal).toHaveBeenCalledTimes(1), { timeout: 500 });
     });
   });
 });
