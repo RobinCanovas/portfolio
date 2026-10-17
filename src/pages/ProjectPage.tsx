@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ArrowUpRight, CheckCircle2, Loader2, Lock, PlayCircle, Sparkles, Target } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
@@ -38,6 +38,7 @@ function SectionTitle({ kicker, title, id }: { kicker: string; title: string; id
 export function ProjectPage({ id }: { id: string }) {
   const { t } = useLang();
   const c = useContent();
+  const [replay, setReplay] = useState(0);
   const project = c.findProject(id);
   if (!project) return null;
   const { projects } = c;
@@ -81,13 +82,14 @@ export function ProjectPage({ id }: { id: string }) {
               </ul>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, scale: 0.94, rotateY: -14 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-              style={{ transformPerspective: 1200 }}
-              className="glow-border relative mx-auto w-full max-w-xl rounded-3xl lg:max-w-none"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              // Its story plays on arrival, and again on hover.
+              onPointerEnter={() => setReplay((n) => n + 1)}
+              className="relative mx-auto w-full max-w-xl overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-black/40 lg:max-w-none"
             >
-              <ProjectArt id={project.id} className="aspect-[2/1] overflow-hidden rounded-3xl" />
+              <ProjectArt id={project.id} autoplay replay={replay} className="aspect-[2/1]" />
             </motion.div>
           </div>
         </div>
