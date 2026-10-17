@@ -1,13 +1,13 @@
 import { ProjectArt } from './ProjectArt';
 
 /**
- * Projects with an interactive demo are shown by a real capture of that demo (public/captures,
- * taken from the demos themselves); the others keep their drawn story.
+ * Every project is told by its animated drawing, except where a capture says more: a finished website
+ * reads well even small, while a demo's controls and numbers don't (those are tried live on the page).
  */
 const capture = (id: string) => ({ src: `./captures/${id}.webp`, width: 1600, height: 744 });
 
 export const CAPTURES: Record<string, { src: string; width: number; height: number }> = Object.fromEntries(
-  ['gradient-descent', 'neural-network', 'subnet-calculator', 'acelys-deploy', 'ac-motors', 'cwad'].map((id) => [id, capture(id)]),
+  ['cwad'].map((id) => [id, capture(id)]),
 );
 
 export const hasCapture = (id: string) => id in CAPTURES;
