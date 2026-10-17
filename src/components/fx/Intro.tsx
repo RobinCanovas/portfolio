@@ -1,19 +1,21 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useLang } from '../../i18n';
 
-const SEEN_KEY = 'portfolio-intro';
-
 /** True while the home page may play its entrance animations (false while the intro covers it). */
 export const IntroContext = createContext(true);
 export const useRevealed = () => useContext(IntroContext);
 
-/** The intro plays once per visit, on the home page only, and never with reduced motion. */
+/**
+ * The intro plays each time the site is opened on the home page (not when navigating inside it, nor
+ * when landing on a detail page). It is only fades and lines drawing themselves, so it also plays with
+ * reduced motion; it can always be skipped.
+ */
 export function shouldPlayIntro(): boolean {
   const hash = window.location.hash;
   if (hash && hash !== '#' && hash !== '#home') return false;
-  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return false;
+  // Opt-out flag, set by the tests and screenshot scripts only.
   try {
-    return !window.sessionStorage.getItem(SEEN_KEY);
+    return !window.sessionStorage.getItem('portfolio-no-intro');
   } catch {
     return true;
   }
@@ -133,11 +135,6 @@ export function Intro({ onReveal }: { onReveal: () => void }) {
   const count = facets.length;
 
   useEffect(() => {
-    try {
-      window.sessionStorage.setItem(SEEN_KEY, '1');
-    } catch {
-      /* private mode: the intro may play again, no harm */
-    }
     window.scrollTo(0, 0);
     const title = document.querySelector<HTMLElement>(TITLE_SELECTOR);
     // The real title waits, invisible, for the written name to land on it.
@@ -184,7 +181,8 @@ export function Intro({ onReveal }: { onReveal: () => void }) {
     skipRequest.current = handoff;
 
     const start = () => {
-      if (stageNow !== 'wait') return;
+      // Released already (React dev mode mounts effects twice): the font promise must not restart it.
+      if (released || stageNow !== 'wait') return;
       const l = measure(title, count);
       // Nothing to draw (no title on screen): open the page straight away.
       if (!l) {

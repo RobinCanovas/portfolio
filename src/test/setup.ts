@@ -9,7 +9,7 @@ MotionGlobalConfig.skipAnimations = true;
 afterEach(() => cleanup());
 
 // The opening intro plays once per visit: tests start as a returning visitor (the intro has its own test).
-beforeEach(() => window.sessionStorage.setItem('portfolio-intro', '1'));
+beforeEach(() => window.sessionStorage.setItem('portfolio-no-intro', '1'));
 
 // jsdom does not implement these browser APIs used by the UI.
 class IntersectionObserverStub {

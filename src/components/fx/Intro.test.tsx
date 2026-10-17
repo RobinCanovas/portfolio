@@ -22,14 +22,12 @@ describe('<Intro />', () => {
     window.location.hash = '';
   });
 
-  it('plays once per visit, and only on the home page', () => {
+  it('plays whenever the site opens on the home page, never on a detail page', () => {
     expect(shouldPlayIntro()).toBe(true);
     window.location.hash = '#/projects/cwad';
     expect(shouldPlayIntro()).toBe(false);
-    window.location.hash = '';
-    render(<Intro onReveal={() => undefined} />);
-    expect(window.sessionStorage.getItem('portfolio-intro')).toBe('1');
-    expect(shouldPlayIntro()).toBe(false);
+    window.location.hash = '#home';
+    expect(shouldPlayIntro()).toBe(true);
   });
 
   it('opens the page straight away when there is nothing to draw', async () => {
