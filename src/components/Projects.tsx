@@ -85,16 +85,12 @@ export function Projects({ filter, onFilter }: Props) {
                   <h3 className="mt-3 font-serif text-2xl leading-[1.15] text-ink transition-colors duration-200 group-hover:text-accent">{p.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-2">{p.description}</p>
 
-                  <ul className="mt-4 space-y-1 text-xs text-ink-2">
-                    {p.highlights.slice(0, 3).map((h) => (
-                      <li key={h} className="flex gap-2">
-                        <span className="text-ink-4" aria-hidden="true">
-                          –
-                        </span>
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
+                  {p.outcome[0] && (
+                    <p className="mt-4 border-l-2 border-accent/70 pl-3 text-[13px] leading-snug text-ink">
+                      <span className="mb-0.5 block font-mono text-[10px] tracking-[0.16em] text-accent uppercase">{t('page.result')}</span>
+                      {p.outcome[0]}
+                    </p>
+                  )}
 
                   <div className="mt-4 mb-5 flex flex-wrap gap-1.5">
                     {p.stack.map((tech) => (

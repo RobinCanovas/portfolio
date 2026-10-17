@@ -35,6 +35,8 @@
   body {
     @apply bg-paper font-sans text-ink antialiased;
     font-feature-settings: 'cv11', 'ss01';
+    /* A touch heavier than Regular: reads better on paper. */
+    font-weight: 450;
   }
   ::selection {
     @apply bg-accent/20 text-ink;
@@ -410,4 +412,20 @@ html.hyper main {
     animation-delay: 0s !important;
     transition-delay: 0s !important;
   }
+}
+
+/* Opening intro: a signal crossing one edge of the network (endpoints set inline). */
+.intro-pulse {
+  opacity: 0;
+  animation: intro-pulse 520ms cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+@keyframes intro-pulse {
+  0% { transform: translate(var(--x0), var(--y0)); opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { transform: translate(var(--x1), var(--y1)); opacity: 0; }
+}
+
+/* Instrument Serif comes in a single, fairly light weight: a hairline stroke gives it a little more body. */
+.font-serif {
+  -webkit-text-stroke: 0.012em currentColor;
 }
