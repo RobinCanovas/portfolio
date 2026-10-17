@@ -153,7 +153,7 @@ export function CommandPalette({ open, onClose, ...actions }: PaletteActions & {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[60] flex items-start justify-center bg-black/60 px-4 pt-[12vh] backdrop-blur-sm"
+          className="fixed inset-0 z-[60] flex items-start justify-center bg-ink/25 px-4 pt-[12vh]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -164,14 +164,14 @@ export function CommandPalette({ open, onClose, ...actions }: PaletteActions & {
             aria-modal="true"
             aria-label={t('palette.label')}
             onKeyDown={onKeyDown}
-            initial={{ opacity: 0, scale: 0.96, y: -10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: -10 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-            className="w-full max-w-xl overflow-hidden rounded-2xl border border-white/15 bg-zinc-950/95 shadow-2xl shadow-violet-900/40 backdrop-blur-2xl"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="panel lift w-full max-w-xl overflow-hidden rounded-xl"
           >
-            <div className="flex items-center gap-3 border-b border-white/10 px-4">
-              <Search className="size-4 text-zinc-400" aria-hidden="true" />
+            <div className="flex items-center gap-3 border-b border-ink/10 px-4">
+              <Search className="size-4 text-ink-3" aria-hidden="true" />
               <input
                 ref={inputRef}
                 value={query}
@@ -181,20 +181,20 @@ export function CommandPalette({ open, onClose, ...actions }: PaletteActions & {
                 aria-controls="palette-list"
                 aria-activedescendant={results[cursor] ? `palette-${results[cursor].id}` : undefined}
                 placeholder={t('palette.placeholder')}
-                className="h-14 flex-1 bg-transparent text-sm text-white placeholder:text-zinc-500 focus:outline-none"
+                className="h-14 flex-1 bg-transparent text-base text-ink placeholder:text-ink-4 focus:outline-none"
               />
-              <kbd className="rounded border border-white/15 px-1.5 py-0.5 font-mono text-[10px] text-zinc-400">ESC</kbd>
+              <kbd className="rounded-full border border-ink/15 px-2 py-0.5 font-mono text-[10px] text-ink-3">ESC</kbd>
             </div>
 
             <ul ref={listRef} id="palette-list" role="listbox" aria-label={t('palette.results')} className="max-h-[50vh] overflow-y-auto p-2">
-              {results.length === 0 && <li className="px-3 py-10 text-center text-sm text-zinc-400">{t('palette.none', { q: query })}</li>}
+              {results.length === 0 && <li className="px-3 py-10 text-center text-sm text-ink-3">{t('palette.none', { q: query })}</li>}
               {results.map((item, i) => {
                 const header = item.group !== lastGroup ? item.group : null;
                 lastGroup = item.group;
                 return (
                   <li key={item.id} role="presentation">
                     {header && (
-                      <p className="flex items-center gap-1.5 px-3 pt-3 pb-1 font-mono text-[10px] tracking-widest text-zinc-400 uppercase">
+                      <p className="flex items-center gap-1.5 px-3 pt-3 pb-1 font-mono text-[10px] tracking-widest text-ink-3 uppercase">
                         {header === 'Experience' && <Briefcase className="size-3" aria-hidden="true" />}
                         {t(`palette.${header}` as const)}
                       </p>
@@ -206,14 +206,12 @@ export function CommandPalette({ open, onClose, ...actions }: PaletteActions & {
                       data-index={i}
                       onMouseMove={() => setCursor(i)}
                       onClick={() => runAt(i)}
-                      className={`flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
-                        i === cursor ? 'bg-gradient-to-r from-violet-500/25 to-cyan-500/10 text-white' : 'text-zinc-200'
-                      }`}
+                      className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-ink transition-colors ${i === cursor ? 'bg-ink/[0.05]' : ''}`}
                     >
-                      <span className="flex size-6 shrink-0 items-center justify-center text-zinc-300">{item.icon}</span>
+                      <span className="flex size-6 shrink-0 items-center justify-center text-ink-2">{item.icon}</span>
                       <span className="flex-1 truncate">{item.label}</span>
-                      {item.hint && <span className="hidden truncate text-xs text-zinc-400 sm:block">{item.hint}</span>}
-                      {i === cursor && <CornerDownLeft className="size-3.5 text-zinc-300" aria-hidden="true" />}
+                      {item.hint && <span className="hidden truncate text-xs text-ink-3 sm:block">{item.hint}</span>}
+                      {i === cursor && <CornerDownLeft className="size-3.5 text-accent" aria-hidden="true" />}
                     </div>
                   </li>
                 );

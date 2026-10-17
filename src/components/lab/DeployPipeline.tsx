@@ -92,19 +92,19 @@ export function DeployPipeline() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h3 className="text-xl font-semibold text-white">{t('dep.title')}</h3>
-          <p className="mt-1 text-sm text-zinc-300">{t('dep.help')}</p>
+          <h3 className="font-serif text-2xl text-ink">{t('dep.title')}</h3>
+          <p className="mt-1 text-sm text-ink-2">{t('dep.help')}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <label className="flex items-center gap-2 text-xs text-zinc-300">
-            <input type="checkbox" checked={fail} onChange={(e) => setFail(e.target.checked)} className="size-4 accent-rose-500" disabled={status === 'running'} />
+          <label className="flex items-center gap-2 text-xs text-ink-2">
+            <input type="checkbox" checked={fail} onChange={(e) => setFail(e.target.checked)} className="size-4 accent-[#b23c1c]" disabled={status === 'running'} />
             {t('dep.fail')}
           </label>
           <button
             type="button"
             onClick={run}
             disabled={status === 'running'}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_24px_rgb(168_85_247/0.23)] transition hover:brightness-110 disabled:opacity-60"
+            className="btn-ink inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium"
           >
             {status === 'running' ? <Rocket className="size-4 animate-pulse" /> : <Play className="size-4" />}
             {status === 'running' ? t('dep.running') : t('dep.run')}
@@ -112,25 +112,11 @@ export function DeployPipeline() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-white/10 bg-black/50 p-2">
+      <div className="overflow-x-auto rounded-lg border border-ink/10 bg-card p-2">
         <svg viewBox="0 0 740 260" className="min-w-[560px]" role="img" aria-label={t('dep.title')}>
-          <defs>
-            <linearGradient id="edge" x1="0" x2="1">
-              <stop offset="0" stopColor="#a855f7" />
-              <stop offset="1" stopColor="#22d3ee" />
-            </linearGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="4" result="b" />
-              <feMerge>
-                <feMergeNode in="b" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
           {/* SSH tunnel zone */}
-          <rect x="420" y="20" width="310" height="225" rx="18" fill="rgb(34 211 238 / 0.04)" stroke="rgb(34 211 238 / 0.25)" strokeDasharray="6 6" />
-          <text x="712" y="40" textAnchor="end" className="fill-cyan-300 font-mono" fontSize="11">
+          <rect x="420" y="20" width="310" height="225" rx="12" fill="rgb(44 79 124 / 0.04)" stroke="rgb(44 79 124 / 0.45)" strokeDasharray="5 5" />
+          <text x="712" y="40" textAnchor="end" fill="#2c4f7c" fontFamily="JetBrains Mono, monospace" fontSize="11">
             production · SSH
           </text>
 
@@ -145,10 +131,10 @@ export function DeployPipeline() {
                 y1={A.y}
                 x2={B.x}
                 y2={B.y}
-                stroke={on ? 'url(#edge)' : 'rgb(255 255 255 / 0.15)'}
-                strokeWidth={on ? 3 : 1.5}
+                stroke={on ? '#1b1915' : 'rgb(27 25 21 / 0.22)'}
+                strokeWidth={on ? 2.2 : 1.3}
                 strokeDasharray={kind === 'ssh' ? '5 5' : undefined}
-                filter={on ? 'url(#glow)' : undefined}
+                style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }}
               />
             );
           })}
@@ -162,15 +148,15 @@ export function DeployPipeline() {
               <g key={id} transform={`translate(${n.x} ${n.y})`}>
                 <circle
                   r="28"
-                  fill="#0b0b10"
-                  stroke={failed ? '#f43f5e' : on ? '#22d3ee' : 'rgb(255 255 255 / 0.25)'}
-                  strokeWidth={on || failed ? 2.5 : 1.5}
-                  filter={on ? 'url(#glow)' : undefined}
+                  fill="#fbfaf6"
+                  stroke={failed ? '#b23c1c' : on ? '#1b1915' : 'rgb(27 25 21 / 0.3)'}
+                  strokeWidth={on || failed ? 2 : 1.3}
+                  style={{ transition: 'stroke 0.3s' }}
                 />
-                <foreignObject x="-12" y="-12" width="24" height="24">
-                  <Icon className={`size-6 ${failed ? 'text-rose-400' : on ? 'text-cyan-200' : 'text-zinc-300'}`} />
+                <foreignObject x="-11" y="-11" width="22" height="22">
+                  <Icon strokeWidth={1.6} className={`size-[22px] ${failed ? 'text-accent' : on ? 'text-ink' : 'text-ink-3'}`} />
                 </foreignObject>
-                <text y="48" textAnchor="middle" fontSize="12" className="fill-zinc-300">
+                <text y="48" textAnchor="middle" fontSize="12" fill="#48443c">
                   {t(n.label)}
                 </text>
               </g>
@@ -179,9 +165,10 @@ export function DeployPipeline() {
 
           {packet && (
             <motion.circle
-              r="7"
-              fill="#f0abfc"
-              filter="url(#glow)"
+              r="6"
+              fill="#b23c1c"
+              stroke="#fbfaf6"
+              strokeWidth="2"
               initial={{ cx: NODES.dev.x, cy: NODES.dev.y }}
               animate={{ cx: packet.x, cy: packet.y }}
               transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1] }}
@@ -190,20 +177,21 @@ export function DeployPipeline() {
         </svg>
       </div>
 
-      <div role="log" aria-live="polite" className="h-40 overflow-y-auto rounded-2xl border border-white/10 bg-black/80 p-4 font-mono text-xs leading-relaxed">
-        {logs.length === 0 && <p className="text-zinc-500">$ _</p>}
+      <div role="log" aria-live="polite" className="h-40 overflow-y-auto rounded-lg border border-ink/10 bg-paper p-4 font-mono text-xs leading-relaxed">
+        {logs.length === 0 && <p className="text-ink-4">$ _</p>}
         {logs.map((l, i) => (
           <motion.p
             key={i}
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            className={l.tone === 'err' ? 'text-rose-300' : l.tone === 'ok' ? 'text-emerald-300' : 'text-cyan-100'}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+            className={l.tone === 'err' ? 'text-accent' : l.tone === 'ok' ? 'text-good' : 'text-ink-2'}
           >
             {l.text}
           </motion.p>
         ))}
       </div>
-      <p className="text-xs text-zinc-400">{t('dep.note')}</p>
+      <p className="text-xs text-ink-3">{t('dep.note')}</p>
     </div>
   );
 }

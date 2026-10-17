@@ -89,7 +89,8 @@ export function GradientDescent() {
     const X = (x: number) => x * W;
     const Y = (y: number) => H - y * H;
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    // Graph paper: faint ink grid, residuals in vermilion, the fitted line and points in ink.
+    ctx.strokeStyle = 'rgba(27,25,21,0.07)';
     ctx.lineWidth = 1;
     for (let i = 1; i < 10; i++) {
       ctx.beginPath();
@@ -101,7 +102,7 @@ export function GradientDescent() {
     }
 
     for (const p of points) {
-      ctx.strokeStyle = 'rgba(244,114,182,0.45)';
+      ctx.strokeStyle = 'rgba(178,60,28,0.55)';
       ctx.setLineDash([3, 3]);
       ctx.beginPath();
       ctx.moveTo(X(p.x), Y(p.y));
@@ -110,28 +111,22 @@ export function GradientDescent() {
       ctx.setLineDash([]);
     }
 
-    const grad = ctx.createLinearGradient(0, 0, W, 0);
-    grad.addColorStop(0, '#a855f7');
-    grad.addColorStop(1, '#22d3ee');
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = 3;
-    ctx.shadowColor = 'rgba(168,85,247,0.8)';
-    ctx.shadowBlur = 14;
+    ctx.strokeStyle = '#1b1915';
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(X(0), Y(model.b));
     ctx.lineTo(X(1), Y(model.w + model.b));
     ctx.stroke();
-    ctx.shadowBlur = 0;
 
     for (const p of points) {
-      ctx.fillStyle = '#e0f2fe';
-      ctx.shadowColor = 'rgba(34,211,238,0.9)';
-      ctx.shadowBlur = 10;
+      ctx.fillStyle = '#1b1915';
+      ctx.strokeStyle = '#fbfaf6';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.arc(X(p.x), Y(p.y), 4.5, 0, Math.PI * 2);
       ctx.fill();
+      ctx.stroke();
     }
-    ctx.shadowBlur = 0;
   }, [points, model]);
 
   const addPoint = (e: PointerEvent<HTMLCanvasElement>) => {
@@ -157,64 +152,64 @@ export function GradientDescent() {
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-xl font-semibold text-white">{t('gd.title')}</h3>
-        <p className="mt-1 text-sm text-zinc-300">{t('gd.help')}</p>
+        <h3 className="font-serif text-2xl text-ink">{t('gd.title')}</h3>
+        <p className="mt-1 text-sm text-ink-2">{t('gd.help')}</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_240px]">
         <canvas
           ref={canvasRef}
           onPointerDown={addPoint}
-          className="aspect-[16/9] w-full cursor-crosshair rounded-2xl border border-white/10 bg-black/60"
+          className="aspect-[16/9] w-full cursor-crosshair rounded-lg border border-ink/10 bg-card"
           role="img"
           aria-label={t('gd.title')}
         />
         <div className="space-y-3">
-          <div className="glass rounded-xl p-4 font-mono text-sm">
-            <p className="text-zinc-400">ŷ = w·x + b</p>
-            <p className="mt-1 text-white">
-              w = <span className="text-violet-300">{nf(model.w)}</span>
+          <div className="rounded-lg border border-ink/10 bg-paper p-4 font-mono text-sm">
+            <p className="text-ink-3">ŷ = w·x + b</p>
+            <p className="mt-1 text-ink">
+              w = <span className="text-accent">{nf(model.w)}</span>
             </p>
-            <p className="text-white">
-              b = <span className="text-cyan-300">{nf(model.b)}</span>
+            <p className="text-ink">
+              b = <span className="text-accent">{nf(model.b)}</span>
             </p>
           </div>
-          <div className="glass rounded-xl p-4">
-            <p className="flex justify-between text-[11px] tracking-wide text-zinc-400 uppercase">
+          <div className="rounded-lg border border-ink/10 bg-paper p-4">
+            <p className="flex justify-between font-mono text-[10px] tracking-wider text-ink-3 uppercase">
               <span>{t('gd.loss')}</span>
               <span>
                 {t('gd.iter')} {iter}
               </span>
             </p>
-            <p className="mt-1 font-mono text-lg text-emerald-300">{nf(loss, 4)}</p>
+            <p className="mt-1 font-mono text-lg text-good">{nf(loss, 4)}</p>
             <svg viewBox="0 0 100 32" className="mt-2 h-10 w-full" preserveAspectRatio="none" aria-hidden="true">
-              <polyline points={spark} fill="none" stroke="#34d399" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+              <polyline points={spark} fill="none" stroke="#2e6b45" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
             </svg>
           </div>
-          <label className="block text-xs text-zinc-300">
+          <label className="block text-xs text-ink-2">
             <span className="flex justify-between">
               {t('gd.lr')} <span className="font-mono">η = {lr.toFixed(2)}</span>
             </span>
-            <input type="range" min={0.05} max={1.2} step={0.05} value={lr} onChange={(e) => setLr(Number(e.target.value))} className="mt-1 w-full accent-violet-500" />
+            <input type="range" min={0.05} max={1.2} step={0.05} value={lr} onChange={(e) => setLr(Number(e.target.value))} className="mt-1 w-full accent-[#b23c1c]" />
           </label>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => setRunning((r) => !r)}
-              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-500 px-3 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.2)] hover:brightness-110"
+              className="btn-ink inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium"
             >
               {running ? <Pause className="size-4" /> : <Play className="size-4" />} {running ? t('gd.pause') : t('gd.train')}
             </button>
-            <button type="button" onClick={() => advance(1)} className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5">
+            <button type="button" onClick={() => advance(1)} className="btn-line inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm">
               <StepForward className="size-4" /> {t('gd.step')}
             </button>
-            <button type="button" onClick={reset} aria-label={t('gd.reset')} className="rounded-lg border border-white/15 px-3 py-2 text-zinc-200 hover:bg-white/5">
+            <button type="button" onClick={reset} aria-label={t('gd.reset')} className="btn-line rounded-full px-3 py-2">
               <RotateCcw className="size-4" />
             </button>
           </div>
         </div>
       </div>
-      <p className="text-xs leading-relaxed text-zinc-400">{t('gd.note')}</p>
+      <p className="text-xs leading-relaxed text-ink-3">{t('gd.note')}</p>
     </div>
   );
 }

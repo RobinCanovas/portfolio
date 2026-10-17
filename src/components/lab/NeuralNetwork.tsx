@@ -15,9 +15,11 @@ const GRID = 64;
 
 const makeData = (kind: DataKind) => (kind === 'circles' ? makeCircles : makeBlobs)(160, seeded(7));
 
-/** Canvas colours: class 0 violet, class 1 cyan. */
-const C0 = [168, 85, 247];
-const C1 = [34, 211, 238];
+/** Printed on paper: class 0 in vermilion, class 1 in blue, the background tinted by the network's confidence. */
+const PAPER = [251, 250, 246];
+const C0 = [178, 60, 28];
+const C1 = [44, 79, 124];
+const TINT = 0.3;
 
 /**
  * A real neural network (sigmoid layers, log loss, back-propagation) training live in the browser:
@@ -89,20 +91,22 @@ export function NeuralNetwork() {
         const y = RANGE - ((j + 0.5) / GRID) * 2 * RANGE;
         const p = predict(net.current, [x, y]);
         const o = (j * GRID + i) * 4;
-        img.data[o] = C0[0] + (C1[0] - C0[0]) * p;
-        img.data[o + 1] = C0[1] + (C1[1] - C0[1]) * p;
-        img.data[o + 2] = C0[2] + (C1[2] - C0[2]) * p;
-        img.data[o + 3] = 40 + 110 * Math.abs(p - 0.5) * 2;
+        const c = p < 0.5 ? C0 : C1;
+        const k = TINT * Math.abs(p - 0.5) * 2;
+        img.data[o] = PAPER[0] * (1 - k) + c[0] * k;
+        img.data[o + 1] = PAPER[1] * (1 - k) + c[1] * k;
+        img.data[o + 2] = PAPER[2] * (1 - k) + c[2] * k;
+        img.data[o + 3] = 255;
       }
     }
     octx.putImageData(img, 0, 0);
     ctx.clearRect(0, 0, SIZE, SIZE);
-    ctx.fillStyle = '#0b0b10';
+    ctx.fillStyle = '#fbfaf6';
     ctx.fillRect(0, 0, SIZE, SIZE);
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(off, 0, 0, SIZE, SIZE);
     // Axes.
-    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.strokeStyle = 'rgba(27,25,21,0.14)';
     ctx.beginPath();
     ctx.moveTo(SIZE / 2, 0);
     ctx.lineTo(SIZE / 2, SIZE);
@@ -116,10 +120,10 @@ export function NeuralNetwork() {
       const sy = ((RANGE - py) / (2 * RANGE)) * SIZE;
       ctx.beginPath();
       ctx.arc(sx, sy, 4.5, 0, Math.PI * 2);
-      ctx.fillStyle = y[k] ? '#67e8f9' : '#e879f9';
+      ctx.fillStyle = y[k] ? '#2c4f7c' : '#b23c1c';
       ctx.fill();
       ctx.lineWidth = 1.5;
-      ctx.strokeStyle = '#0b0b10';
+      ctx.strokeStyle = '#fbfaf6';
       ctx.stroke();
     });
   });
@@ -128,16 +132,16 @@ export function NeuralNetwork() {
   const maxLoss = Math.max(0.8, ...history);
 
   const pill = (on: boolean) =>
-    `rounded-lg border px-3 py-1.5 font-mono text-xs transition ${on ? 'border-violet-400 bg-violet-500/25 text-white' : 'border-white/15 text-zinc-300 hover:border-white/30 hover:text-white'}`;
+    `rounded-full border px-3 py-1.5 font-mono text-xs transition-colors duration-200 ${on ? 'border-ink bg-ink text-paper' : 'border-ink/15 text-ink-2 hover:border-ink/40 hover:text-ink'}`;
 
   return (
     <div>
-      <h3 className="text-xl font-semibold text-white">{t('nn.title')}</h3>
-      <p className="mt-1 text-sm text-zinc-400">{t('nn.help')}</p>
+      <h3 className="font-serif text-2xl text-ink">{t('nn.title')}</h3>
+      <p className="mt-1 text-sm text-ink-2">{t('nn.help')}</p>
 
       <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
         <div role="group" aria-label={t('nn.data')} className="flex items-center gap-2">
-          <span className="font-mono text-[11px] tracking-widest text-zinc-500 uppercase">{t('nn.data')}</span>
+          <span className="font-mono text-[11px] tracking-widest text-ink-3 uppercase">{t('nn.data')}</span>
           {(['circles', 'blobs'] as const).map((d) => (
             <button
               key={d}
@@ -154,7 +158,7 @@ export function NeuralNetwork() {
           ))}
         </div>
         <div role="group" aria-label={t('nn.model')} className="flex flex-wrap items-center gap-2">
-          <span className="font-mono text-[11px] tracking-widest text-zinc-500 uppercase">{t('nn.model')}</span>
+          <span className="font-mono text-[11px] tracking-widest text-ink-3 uppercase">{t('nn.model')}</span>
           {(['neuron', 'twoLayers', 'deep'] as const).map((m) => (
             <button
               key={m}
@@ -179,7 +183,7 @@ export function NeuralNetwork() {
           height={SIZE}
           role="img"
           aria-label={t('nn.canvas')}
-          className="aspect-square w-full rounded-2xl border border-white/10"
+          className="aspect-square w-full rounded-lg border border-ink/10"
         />
 
         <div className="flex flex-col gap-4">
@@ -191,63 +195,57 @@ export function NeuralNetwork() {
               { label: t('nn.loss'), value: stats.iter ? stats.loss.toFixed(3) : '·' },
               { label: t('nn.accuracy'), value: stats.iter ? `${Math.round(stats.accuracy * 100)} %` : '·' },
             ].map((s) => (
-              <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-2.5">
-                <dt className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">{s.label}</dt>
-                <dd className="mt-1 font-mono text-lg font-bold text-white tabular-nums">{s.value}</dd>
+              <div key={s.label} className="rounded-lg border border-ink/10 bg-paper p-2.5">
+                <dt className="font-mono text-[10px] tracking-widest text-ink-3 uppercase">{s.label}</dt>
+                <dd className="mt-1 font-serif text-2xl leading-none text-ink tabular-nums">{s.value}</dd>
               </div>
             ))}
           </dl>
 
-          <svg viewBox="0 0 180 60" className="h-16 w-full rounded-xl border border-white/10 bg-white/[0.02]" aria-hidden="true" preserveAspectRatio="none">
+          <svg viewBox="0 0 180 60" className="h-16 w-full rounded-lg border border-ink/10 bg-paper" aria-hidden="true" preserveAspectRatio="none">
             <polyline
               fill="none"
-              stroke="url(#nn-loss)"
+              stroke="#1b1915"
               strokeWidth="1.5"
               vectorEffect="non-scaling-stroke"
               points={history.map((l, i) => `${(i / 179) * 180},${56 - (l / maxLoss) * 52}`).join(' ')}
             />
-            <defs>
-              <linearGradient id="nn-loss" x1="0" x2="1">
-                <stop offset="0" stopColor="#e879f9" />
-                <stop offset="1" stopColor="#22d3ee" />
-              </linearGradient>
-            </defs>
           </svg>
 
           <label className="block">
-            <span className="flex justify-between font-mono text-xs text-zinc-400">
-              {t('nn.lr')} <span className="text-white">{lr.toFixed(1)}</span>
+            <span className="flex justify-between font-mono text-xs text-ink-3">
+              {t('nn.lr')} <span className="text-ink">{lr.toFixed(1)}</span>
             </span>
-            <input type="range" min={0.1} max={4} step={0.1} value={lr} onChange={(e) => setLr(Number(e.target.value))} className="mt-1 w-full accent-violet-500" />
+            <input type="range" min={0.1} max={4} step={0.1} value={lr} onChange={(e) => setLr(Number(e.target.value))} className="mt-1 w-full accent-[#b23c1c]" />
           </label>
 
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => (stats.iter >= MAX_ITER ? (reset(data, model), setRunning(true)) : setRunning((r) => !r))}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_24px_rgb(168_85_247/0.2)] transition hover:brightness-110"
+              className="btn-ink inline-flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium"
             >
               {running ? <Pause className="size-4" aria-hidden="true" /> : <Play className="size-4" aria-hidden="true" />} {running ? t('gd.pause') : t('gd.train')}
             </button>
-            <button type="button" onClick={() => reset(data, model)} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2.5 text-sm text-zinc-200 transition hover:bg-white/5">
+            <button type="button" onClick={() => reset(data, model)} className="btn-line inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm">
               <RotateCcw className="size-4" aria-hidden="true" /> {t('gd.reset')}
             </button>
           </div>
 
           {stuck && (
-            <p role="status" className="rounded-xl border border-amber-300/30 bg-amber-400/10 p-3 text-sm text-amber-100">
+            <p role="status" className="rounded-r-lg border-l-2 border-ochre bg-ochre/[0.07] p-3 text-sm text-ink-2">
               {t('nn.stuck')}
             </p>
           )}
         </div>
       </div>
 
-      <p className="mt-5 text-sm leading-relaxed text-zinc-400">{t('nn.note')}</p>
+      <p className="mt-5 text-sm leading-relaxed text-ink-3">{t('nn.note')}</p>
     </div>
   );
 }
 
-/** Live architecture: edge colour = weight sign (cyan positive, pink negative), thickness = size. */
+/** Live architecture: edge colour = weight sign (blue positive, vermilion negative), thickness = size. */
 function NetworkDiagram({ net, dims }: { net: Network; dims: number[] }) {
   const W = 300;
   const H = 150;
@@ -255,7 +253,7 @@ function NetworkDiagram({ net, dims }: { net: Network; dims: number[] }) {
   const y = (c: number, j: number) => (dims[c] === 1 ? H / 2 : 14 + (j * (H - 28)) / (dims[c] - 1));
   const labels = ['x₁', 'x₂'];
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full rounded-xl border border-white/10 bg-white/[0.02]" aria-hidden="true">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full rounded-lg border border-ink/10 bg-paper" aria-hidden="true">
       {net.map((layer, c) => {
         const max = Math.max(1e-6, ...layer.W.flat().map(Math.abs));
         return layer.W.map((row, j) =>
@@ -266,7 +264,7 @@ function NetworkDiagram({ net, dims }: { net: Network; dims: number[] }) {
               y1={y(c, k)}
               x2={x(c + 1)}
               y2={y(c + 1, j)}
-              stroke={w >= 0 ? '#22d3ee' : '#e879f9'}
+              stroke={w >= 0 ? '#2c4f7c' : '#b23c1c'}
               strokeOpacity={0.15 + 0.75 * (Math.abs(w) / max)}
               strokeWidth={0.4 + 2 * (Math.abs(w) / max)}
             />
@@ -276,16 +274,16 @@ function NetworkDiagram({ net, dims }: { net: Network; dims: number[] }) {
       {dims.map((n, c) =>
         Array.from({ length: n }, (_, j) => (
           <g key={`n-${c}-${j}`}>
-            <circle cx={x(c)} cy={y(c, j)} r={c === 0 || c === dims.length - 1 ? 7 : 5} fill="#0b0b10" stroke={c === dims.length - 1 ? '#fbbf24' : '#c084fc'} strokeWidth="1.5" />
+            <circle cx={x(c)} cy={y(c, j)} r={c === 0 || c === dims.length - 1 ? 7 : 5} fill="#fbfaf6" stroke={c === dims.length - 1 ? '#b23c1c' : '#1b1915'} strokeWidth="1.3" />
             {c === 0 && (
-              <text x={x(c) - 12} y={y(c, j) + 3} textAnchor="end" fontSize="9" fill="#a1a1aa" fontFamily="JetBrains Mono, monospace">
+              <text x={x(c) - 12} y={y(c, j) + 3} textAnchor="end" fontSize="9" fill="#77705f" fontFamily="JetBrains Mono, monospace">
                 {labels[j]}
               </text>
             )}
           </g>
         )),
       )}
-      <text x={x(dims.length - 1) + 12} y={H / 2 + 3} fontSize="9" fill="#a1a1aa" fontFamily="JetBrains Mono, monospace">
+      <text x={x(dims.length - 1) + 12} y={H / 2 + 3} fontSize="9" fill="#77705f" fontFamily="JetBrains Mono, monospace">
         ŷ
       </text>
     </svg>

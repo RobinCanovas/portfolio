@@ -1,6 +1,6 @@
 import { lazy, Suspense, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, ArrowUpRight, CheckCircle2, Loader2, Lock, PlayCircle, Sparkles, Target } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Loader2, Lock, PlayCircle } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { href } from '../router';
 import { BuildDiagram } from '../components/BuildDiagram';
@@ -10,7 +10,7 @@ import { GradientDescent } from '../components/lab/GradientDescent';
 import { SubnetCalculator } from '../components/lab/SubnetCalculator';
 import { NeuralNetwork } from '../components/lab/NeuralNetwork';
 import { CodeBlock } from '../components/CodeBlock';
-import { ProjectArt } from '../components/ProjectArt';
+import { hasCapture, ProjectVisual } from '../components/ProjectVisual';
 import { ShareButton } from '../components/ShareButton';
 import { TechIcon } from '../components/TechIcon';
 import { CompanyLogo, LogoTile } from '../components/ui';
@@ -18,7 +18,7 @@ import { CompanyLogo, LogoTile } from '../components/ui';
 const SqlPlayground = lazy(() => import('../components/demos/SqlPlayground').then((m) => ({ default: m.SqlPlayground })));
 
 const fade = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: '-40px' },
   transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as const },
@@ -26,9 +26,12 @@ const fade = (delay = 0) => ({
 
 function SectionTitle({ kicker, title, id }: { kicker: string; title: string; id: string }) {
   return (
-    <motion.div {...fade()} className="mb-6">
-      <p className="font-mono text-xs tracking-[0.25em] text-cyan-300 uppercase">{kicker}</p>
-      <h2 id={id} className="mt-2 text-3xl font-bold text-white">
+    <motion.div {...fade()} className="mb-7">
+      <p className="flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase">
+        <span className="h-px w-6 bg-accent" aria-hidden="true" />
+        {kicker}
+      </p>
+      <h2 id={id} className="mt-2 font-serif text-4xl leading-tight text-ink sm:text-[2.6rem]">
         {title}
       </h2>
     </motion.div>
@@ -49,89 +52,81 @@ export function ProjectPage({ id }: { id: string }) {
 
   return (
     <article>
-      <header className="relative isolate overflow-hidden pt-28 pb-14">
-        <div aria-hidden="true" className="absolute inset-0 -z-10">
-          <div className="animate-aurora absolute top-[-30%] left-[20%] size-[55vmax] rounded-full bg-[conic-gradient(from_90deg,#7c3aed66,#06b6d444,#db277733,#7c3aed66)] opacity-50 blur-[120px]" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
-        </div>
+      <header className="pt-28 pb-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex items-center justify-between gap-3">
-            <a href={href.section('projects')} className="inline-flex items-center gap-1.5 text-sm text-zinc-300 transition hover:text-white">
-              <ArrowLeft className="size-4" aria-hidden="true" /> {t('page.allProjects')}
+          <div className="flex items-center justify-between gap-3 border-b border-ink/10 pb-4">
+            <a href={href.section('projects')} className="group inline-flex items-center gap-1.5 text-sm text-ink-2 transition-colors hover:text-ink">
+              <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-0.5" aria-hidden="true" /> {t('page.allProjects')}
             </a>
             <ShareButton title={`${project.title} · Robin Canovas`} />
           </div>
-          <div className="mt-8 grid items-center gap-10 lg:grid-cols-[1.35fr_1fr]">
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
+          <div className="mt-10 grid items-center gap-12 lg:grid-cols-[1.3fr_1fr]">
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
               <div className="flex flex-wrap items-center gap-3">
-                {exp && <CompanyLogo company={exp.company} size={44} />}
-                {exp?.client && <LogoTile sources={exp.client.logos} name={exp.client.name} size={44} fallback={null} />}
-                {exp?.client?.parent && <LogoTile sources={exp.client.parent.logos} name={exp.client.parent.name} size={44} fallback={null} />}
-                <p className="font-mono text-xs tracking-[0.2em] text-cyan-300 uppercase">
+                {exp && <CompanyLogo company={exp.company} size={40} />}
+                {exp?.client && <LogoTile sources={exp.client.logos} name={exp.client.name} size={40} fallback={null} />}
+                {exp?.client?.parent && <LogoTile sources={exp.client.parent.logos} name={exp.client.parent.name} size={40} fallback={null} />}
+                <p className="font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">
                   {project.context} · {project.year}
                 </p>
               </div>
-              <h1 className="mt-4 max-w-4xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl">{project.title}</h1>
-              <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-300">{project.description}</p>
-              <ul className="mt-6 flex flex-wrap gap-2">
+              <h1 className="mt-5 max-w-4xl font-serif text-5xl leading-[1.02] tracking-[-0.01em] text-ink sm:text-6xl">{project.title}</h1>
+              <p className="mt-6 max-w-3xl text-lg leading-relaxed text-ink-2">{project.description}</p>
+              <ul className="mt-7 flex flex-wrap gap-2">
                 {project.stack.map((tech) => (
-                  <li key={tech} className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-xs text-zinc-300">
+                  <li key={tech} className="group inline-flex items-center gap-1.5 rounded-full border border-ink/15 px-3 py-1 font-mono text-xs text-ink-2">
                     <TechIcon tech={tech} className="size-3.5" /> {c.tech(tech)}
                   </li>
                 ))}
               </ul>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
+            <motion.figure
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              // Its story plays on arrival, and again on hover.
-              onPointerEnter={() => setReplay((n) => n + 1)}
-              className="relative mx-auto w-full max-w-xl overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-black/40 lg:max-w-none"
+              className="mx-auto w-full max-w-xl lg:max-w-none"
             >
-              <ProjectArt id={project.id} autoplay replay={replay} className="aspect-[2/1]" />
-            </motion.div>
+              {/* A drawn story plays on arrival, and again on hover. */}
+              <div onPointerEnter={() => setReplay((n) => n + 1)} className="overflow-hidden rounded-xl bg-card ring-1 ring-ink/10">
+                <ProjectVisual id={project.id} autoplay replay={replay} className="aspect-[2/1] w-full" />
+              </div>
+              <figcaption className="mt-2.5 text-sm text-ink-3">
+                <span className="font-mono text-[10px] tracking-[0.18em] text-ink-2 uppercase">{t('page.plate', { n: String(index + 1).padStart(2, '0') })}</span>
+                <span className="font-serif italic"> — {hasCapture(project.id) ? t('page.plateDemo') : t('page.plateStory')}</span>
+              </figcaption>
+            </motion.figure>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl space-y-16 px-4 pb-24 sm:px-6">
+      <div className="mx-auto max-w-6xl space-y-20 px-4 pb-24 sm:px-6">
         {project.confidential && (
-          <motion.aside {...fade()} className="relative overflow-hidden rounded-3xl border border-amber-300/25 bg-amber-400/[0.05] p-6 sm:p-8">
-            <div aria-hidden="true" className="absolute -top-16 -right-16 size-56 rounded-full bg-amber-400/15 blur-3xl" />
-            <div className="relative flex gap-4">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-amber-400/15 shadow-[0_0_30px_rgb(251_191_36/0.15)]">
-                <Lock className="size-6 text-amber-300" aria-hidden="true" />
-              </span>
-              <div>
-                <h2 className="text-lg font-semibold text-amber-100">{t('page.whyHidden')}</h2>
-                <p className="mt-2 leading-relaxed text-amber-100/80">{project.confidential}</p>
-                {exp && (
-                  <a href={href.experience(exp.id)} className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-amber-200 hover:text-white">
-                    {t('page.readMission')} <ArrowRight className="size-4" aria-hidden="true" />
-                  </a>
-                )}
-              </div>
+          <motion.aside {...fade()} className="flex gap-4 rounded-r-lg border-l-2 border-ochre bg-ochre/[0.07] p-6 sm:p-7">
+            <Lock className="mt-1 size-5 shrink-0 text-ochre" aria-hidden="true" />
+            <div>
+              <h2 className="font-serif text-2xl leading-tight text-ink">{t('page.whyHidden')}</h2>
+              <p className="mt-2 max-w-3xl leading-relaxed text-ink-2">{project.confidential}</p>
+              {exp && (
+                <a href={href.experience(exp.id)} className="group mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-ochre transition-colors hover:text-ink">
+                  {t('page.readMission')} <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+                </a>
+              )}
             </div>
           </motion.aside>
         )}
 
         {/* Problem / outcome */}
-        <section className="grid gap-5 lg:grid-cols-2" aria-label={t('page.context')}>
-          <motion.div {...fade()} className="glass spotlight rounded-3xl p-6 sm:p-8">
-            <h2 className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-violet-300 uppercase">
-              <Target className="size-4" aria-hidden="true" /> {t('page.challenge')}
-            </h2>
-            <p className="mt-4 text-lg leading-relaxed text-zinc-200">{project.problem}</p>
+        <section className="grid gap-10 lg:grid-cols-2 lg:gap-14" aria-label={t('page.context')}>
+          <motion.div {...fade()} className="border-t border-ink pt-5">
+            <h2 className="font-mono text-[11px] tracking-[0.25em] text-ink-3 uppercase">{t('page.challenge')}</h2>
+            <p className="mt-4 font-serif text-2xl leading-snug text-ink sm:text-[1.7rem]">{project.problem}</p>
           </motion.div>
-          <motion.div {...fade(0.1)} className="glass spotlight rounded-3xl p-6 sm:p-8">
-            <h2 className="flex items-center gap-2 font-mono text-xs tracking-[0.25em] text-emerald-300 uppercase">
-              <Sparkles className="size-4" aria-hidden="true" /> {t('page.result')}
-            </h2>
-            <ul className="mt-4 space-y-3">
+          <motion.div {...fade(0.1)} className="border-t border-ink pt-5">
+            <h2 className="font-mono text-[11px] tracking-[0.25em] text-ink-3 uppercase">{t('page.result')}</h2>
+            <ul className="mt-4 divide-y divide-ink/10">
               {project.outcome.map((o) => (
-                <li key={o} className="flex gap-3 text-zinc-200">
-                  <CheckCircle2 className="mt-1 size-4 shrink-0 text-emerald-400" aria-hidden="true" />
+                <li key={o} className="flex gap-3 py-2.5 text-ink-2">
+                  <Check className="mt-1 size-4 shrink-0 text-good" aria-hidden="true" />
                   {o}
                 </li>
               ))}
@@ -142,7 +137,7 @@ export function ProjectPage({ id }: { id: string }) {
         {/* How it's built */}
         <section aria-labelledby="build-title">
           <SectionTitle kicker={t('page.underHood')} title={t('page.howBuilt')} id="build-title" />
-          <div className="glass rounded-3xl p-6 sm:p-10">
+          <div className="panel rounded-xl p-6 sm:p-10">
             <BuildDiagram steps={project.build} />
           </div>
         </section>
@@ -153,15 +148,15 @@ export function ProjectPage({ id }: { id: string }) {
             <SectionTitle kicker={t('page.mathsKicker')} title={t('page.maths')} id="maths-title" />
             <ol className="grid gap-4 md:grid-cols-2">
               {project.maths.map((m, i) => (
-                <motion.li key={m.title} {...fade(i * 0.05)} className="glass spotlight rounded-2xl p-5">
-                  <div className="flex items-center gap-3">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 font-mono text-xs font-bold text-white">
+                <motion.li key={m.title} {...fade(i * 0.05)} className="panel rounded-xl p-5 sm:p-6">
+                  <div className="flex items-baseline gap-3">
+                    <span className="font-serif text-2xl leading-none text-ink-4 italic" aria-hidden="true">
                       {i + 1}
                     </span>
-                    <h3 className="font-semibold text-white">{m.title}</h3>
+                    <h3 className="font-serif text-xl text-ink">{m.title}</h3>
                   </div>
-                  <p className="mt-3 overflow-x-auto rounded-xl border border-white/10 bg-black/40 px-4 py-3 font-mono text-[13px] whitespace-pre text-cyan-200">{m.formula}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-zinc-300">{m.text}</p>
+                  <p className="mt-3 overflow-x-auto rounded-lg border border-ink/10 bg-paper px-4 py-3 font-mono text-[13px] whitespace-pre text-ink">{m.formula}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-ink-2">{m.text}</p>
                 </motion.li>
               ))}
             </ol>
@@ -174,7 +169,7 @@ export function ProjectPage({ id }: { id: string }) {
             <SectionTitle kicker={t('page.tryIt')} title={t('page.sql')} id="demo-title" />
             <Suspense
               fallback={
-                <p className="flex items-center gap-2 text-zinc-400">
+                <p className="flex items-center gap-2 text-ink-3">
                   <Loader2 className="size-4 animate-spin" /> {t('page.loading')}
                 </p>
               }
@@ -186,7 +181,7 @@ export function ProjectPage({ id }: { id: string }) {
         {(project.demo === 'deploy' || project.demo === 'gradient' || project.demo === 'subnet' || project.demo === 'neural') && (
           <section aria-labelledby="demo-title">
             <SectionTitle kicker={t('page.tryIt')} title={t('page.liveDemo')} id="demo-title" />
-            <div className="glass spotlight rounded-3xl p-5 sm:p-8">
+            <div className="panel rounded-xl p-5 sm:p-8">
               {project.demo === 'deploy' && <DeployPipeline />}
               {project.demo === 'gradient' && <GradientDescent />}
               {project.demo === 'subnet' && <SubnetCalculator />}
@@ -207,27 +202,20 @@ export function ProjectPage({ id }: { id: string }) {
         {project.course && (
           <section aria-labelledby="course-title">
             <SectionTitle kicker={t('page.courseKicker')} title={t('page.course')} id="course-title" />
-            <motion.div {...fade()} className="glass relative overflow-hidden rounded-3xl p-6 sm:p-8">
-              <div aria-hidden="true" className="absolute -top-20 -right-20 size-60 rounded-full bg-fuchsia-500/15 blur-3xl" />
-              <div className="relative flex flex-wrap items-start justify-between gap-4">
+            <motion.div {...fade()} className="panel rounded-xl p-6 sm:p-8">
+              <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <p className="text-xl font-semibold text-white">{project.course.name}</p>
-                  <p className="mt-1 text-sm text-zinc-400">{project.course.author}</p>
+                  <p className="font-serif text-2xl text-ink">{project.course.name}</p>
+                  <p className="mt-1 text-sm text-ink-3">{project.course.author}</p>
                 </div>
-                <a
-                  href={project.course.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/5 hover:text-white"
-                >
-                  <PlayCircle className="size-4 text-red-400" aria-hidden="true" /> {t('page.courseWatch')} <ArrowUpRight className="size-4" aria-hidden="true" />
+                <a href={project.course.url} target="_blank" rel="noopener noreferrer" className="btn-line inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm">
+                  <PlayCircle className="size-4 text-accent" aria-hidden="true" /> {t('page.courseWatch')} <ArrowUpRight className="size-4" aria-hidden="true" />
                 </a>
               </div>
-              <ol className="relative mt-6 space-y-3 border-l border-violet-400/30 pl-6">
+              <ol className="mt-6 divide-y divide-ink/10 border-t border-ink/10">
                 {project.course.steps.map((s, i) => (
-                  <li key={s} className="relative text-zinc-200">
-                    <span aria-hidden="true" className="absolute top-1.5 -left-[29px] size-2.5 rounded-full bg-violet-400 shadow-[0_0_10px_rgb(168_85_247)]" />
-                    <span className="mr-2 font-mono text-xs text-violet-300">{String(i + 1).padStart(2, '0')}</span>
+                  <li key={s} className="flex gap-4 py-2.5 text-ink-2">
+                    <span className="w-6 shrink-0 font-mono text-xs leading-6 text-ink-4">{String(i + 1).padStart(2, '0')}</span>
                     {s}
                   </li>
                 ))}
@@ -250,31 +238,31 @@ export function ProjectPage({ id }: { id: string }) {
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-500 px-5 py-3 font-semibold text-white shadow-[0_0_30px_rgb(168_85_247/0.2)] transition hover:brightness-110"
+                className="btn-ink inline-flex items-center gap-2 rounded-full px-6 py-3 font-medium"
               >
                 {project.demo === 'sql' ? t('page.proposal') : t('page.liveSite')} <ArrowUpRight className="size-4" aria-hidden="true" />
               </a>
             )}
             {exp && (
-              <a href={href.experience(exp.id)} className="glass inline-flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm text-white transition hover:bg-white/[0.06]">
+              <a href={href.experience(exp.id)} className="btn-line inline-flex items-center gap-3 rounded-full py-2 pr-5 pl-2 text-sm">
                 <CompanyLogo company={exp.company} size={28} /> {t('page.aboutMission', { name: exp.company.name })}
               </a>
             )}
           </motion.div>
         )}
 
-        <nav aria-label={t('page.otherProjects')} className="grid gap-3 border-t border-white/10 pt-8 sm:grid-cols-2">
-          <a href={href.project(prev.id)} className="group rounded-2xl p-3 transition hover:bg-white/[0.04]">
-            <span className="flex items-center gap-1.5 text-xs text-zinc-500">
-              <ArrowLeft className="size-3.5 transition group-hover:-translate-x-1" aria-hidden="true" /> {t('page.previous')}
+        <nav aria-label={t('page.otherProjects')} className="grid border-t border-ink sm:grid-cols-2">
+          <a href={href.project(prev.id)} className="group py-6 pr-6">
+            <span className="flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">
+              <ArrowLeft className="size-3.5 transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true" /> {t('page.previous')}
             </span>
-            <span className="mt-1 block font-medium text-white">{prev.title}</span>
+            <span className="mt-2 block font-serif text-2xl leading-tight text-ink transition-colors group-hover:text-accent">{prev.title}</span>
           </a>
-          <a href={href.project(next.id)} className="group rounded-2xl p-3 text-right transition hover:bg-white/[0.04]">
-            <span className="flex items-center justify-end gap-1.5 text-xs text-zinc-500">
-              {t('page.next')} <ArrowRight className="size-3.5 transition group-hover:translate-x-1" aria-hidden="true" />
+          <a href={href.project(next.id)} className="group border-t border-ink/10 py-6 text-right sm:border-t-0 sm:border-l sm:pl-6">
+            <span className="flex items-center justify-end gap-1.5 font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">
+              {t('page.next')} <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
             </span>
-            <span className="mt-1 block font-medium text-white">{next.title}</span>
+            <span className="mt-2 block font-serif text-2xl leading-tight text-ink transition-colors group-hover:text-accent">{next.title}</span>
           </a>
         </nav>
       </div>

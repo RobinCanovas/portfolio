@@ -167,17 +167,17 @@ function SchemaDiagram() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: i * 0.06 }}
-          className="spotlight overflow-hidden rounded-xl border border-white/10 bg-[#0b0b10]"
+          className="overflow-hidden rounded-lg border border-ink/15 bg-card"
         >
-          <p className="flex items-center gap-1.5 border-b border-white/10 bg-violet-500/10 px-3 py-1.5 font-mono text-xs font-semibold text-violet-200">
+          <p className="flex items-center gap-1.5 border-b border-ink/15 bg-paper-2/70 px-3 py-1.5 font-mono text-xs font-medium text-ink">
             <Table2 className="size-3.5" aria-hidden="true" /> {t.name}
           </p>
-          <ul className="px-3 py-2 font-mono text-[11px] text-zinc-400">
+          <ul className="px-3 py-2 font-mono text-[11px] text-ink-3">
             {t.cols.map(([c, kind]) => (
               <li key={c} className="flex items-center gap-1.5">
-                {kind === 'pk' && <KeyRound className="size-3 text-amber-300" aria-label="primary key" />}
-                {kind === 'fk' && <Link2 className="size-3 text-cyan-300" aria-label="foreign key" />}
-                <span className={kind ? 'text-zinc-200' : ''}>{c}</span>
+                {kind === 'pk' && <KeyRound className="size-3 text-ochre" aria-label="primary key" />}
+                {kind === 'fk' && <Link2 className="size-3 text-blue" aria-label="foreign key" />}
+                <span className={kind ? 'text-ink' : ''}>{c}</span>
               </li>
             ))}
           </ul>
@@ -249,11 +249,11 @@ export function SqlPlayground() {
     <div className="space-y-5">
       <SchemaDiagram />
 
-      <div className="glow-border rounded-2xl">
-        <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-black/85">
-          <div className="flex flex-wrap items-center gap-2 border-b border-white/10 px-3 py-2.5">
-            <Database className="size-4 text-cyan-300" aria-hidden="true" />
-            <span className="mr-2 font-mono text-xs text-zinc-400">ac_motors.db</span>
+      <div>
+        <div className="overflow-hidden rounded-lg border border-ink/15 bg-card">
+          <div className="flex flex-wrap items-center gap-2 border-b border-ink/10 px-3 py-2.5">
+            <Database className="size-4 text-ink-3" aria-hidden="true" />
+            <span className="mr-2 font-mono text-xs text-ink-3">ac_motors.db</span>
             {PRESETS.map((p) => (
               <button
                 key={p.label}
@@ -262,7 +262,7 @@ export function SqlPlayground() {
                   setSql(p.sql);
                   run(p.sql);
                 }}
-                className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-zinc-300 transition hover:border-violet-400/60 hover:text-white"
+                className="rounded-full border border-ink/15 px-2.5 py-1 text-[11px] text-ink-2 transition-colors hover:border-ink/45 hover:text-ink"
               >
                 {p.label}
               </button>
@@ -279,15 +279,15 @@ export function SqlPlayground() {
             onKeyDown={onKey}
             spellCheck={false}
             rows={8}
-            className="block w-full resize-y bg-transparent p-4 font-mono text-[13px] leading-relaxed text-cyan-100 caret-cyan-300 outline-none"
+            className="block w-full resize-y bg-transparent p-4 font-mono text-[13px] leading-relaxed text-ink caret-accent outline-none"
           />
 
-          <div className="flex flex-wrap items-center gap-2 border-t border-white/10 px-3 py-2.5">
+          <div className="flex flex-wrap items-center gap-2 border-t border-ink/10 px-3 py-2.5">
             <button
               type="button"
               onClick={() => run(sql)}
               disabled={status !== 'ready'}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-cyan-500 px-3.5 py-1.5 text-sm font-semibold text-white shadow-[0_0_20px_rgb(168_85_247/0.2)] transition hover:brightness-110 disabled:opacity-50"
+              className="btn-ink inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium"
             >
               {status === 'loading' ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />} {t('sql.run')}
             </button>
@@ -295,11 +295,11 @@ export function SqlPlayground() {
               type="button"
               onClick={() => reset().then(() => setMessage(t('sql.resetDone')))}
               disabled={status !== 'ready'}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-zinc-300 transition hover:bg-white/5 disabled:opacity-50"
+              className="btn-line inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm disabled:opacity-50"
             >
               <RotateCcw className="size-4" /> {t('sql.reset')}
             </button>
-            <span className="ml-auto font-mono text-[11px] text-zinc-500">
+            <span className="ml-auto font-mono text-[11px] text-ink-3">
               {status === 'loading' ? t('sql.loading') : t('sql.hint')}
               {elapsed !== null && status === 'ready' ? ` · ${elapsed.toFixed(1)} ms` : ''}
             </span>
@@ -308,17 +308,17 @@ export function SqlPlayground() {
       </div>
 
       <div role="status" aria-live="polite">
-        {error && <p className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 font-mono text-xs text-rose-200">✗ {error}</p>}
-        {message && <p className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 font-mono text-xs text-emerald-200">✓ {message}</p>}
+        {error && <p className="rounded-r-lg border-l-2 border-accent bg-accent/[0.06] px-4 py-3 font-mono text-xs text-accent-2">✗ {error}</p>}
+        {message && <p className="rounded-r-lg border-l-2 border-good bg-good/[0.06] px-4 py-3 font-mono text-xs text-good">✓ {message}</p>}
       </div>
 
       {results.map((r, i) => (
-        <div key={i} className="overflow-x-auto rounded-2xl border border-white/10 bg-[#0b0b10]">
+        <div key={i} className="overflow-x-auto rounded-lg border border-ink/10 bg-card">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03]">
+              <tr className="border-b border-ink/20">
                 {r.columns.map((c) => (
-                  <th key={c} scope="col" className="px-4 py-2.5 font-mono text-[11px] font-semibold tracking-wide text-violet-200 uppercase">
+                  <th key={c} scope="col" className="px-4 py-2.5 font-mono text-[11px] font-medium tracking-wide text-ink-3 uppercase">
                     {c}
                   </th>
                 ))}
@@ -326,10 +326,10 @@ export function SqlPlayground() {
             </thead>
             <tbody>
               {r.values.map((row, ri) => (
-                <motion.tr key={ri} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: ri * 0.03 }} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.03]">
+                <motion.tr key={ri} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: ri * 0.025, duration: 0.25 }} className="border-b border-ink/[0.06] last:border-0 hover:bg-ink/[0.02]">
                   {row.map((cell, ci) => (
-                    <td key={ci} className={`px-4 py-2 ${typeof cell === 'number' ? 'text-right font-mono text-cyan-100 tabular-nums' : 'text-zinc-300'}`}>
-                      {cell === null ? <span className="text-zinc-600">NULL</span> : typeof cell === 'number' ? cell.toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US') : cell}
+                    <td key={ci} className={`px-4 py-2 ${typeof cell === 'number' ? 'text-right font-mono text-ink tabular-nums' : 'text-ink-2'}`}>
+                      {cell === null ? <span className="text-ink-4">NULL</span> : typeof cell === 'number' ? cell.toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US') : cell}
                     </td>
                   ))}
                 </motion.tr>
@@ -339,7 +339,7 @@ export function SqlPlayground() {
         </div>
       ))}
 
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-ink-3">
         {t('sql.note')}
       </p>
     </div>

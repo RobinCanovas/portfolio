@@ -150,6 +150,8 @@ export const ui = {
     'hero.stat.projects': 'projects',
     'hero.stat.graduation': 'graduating',
     'hero.scroll': 'Scroll to experience',
+    'hero.readOn': 'Read on',
+    'stack.label': 'Everyday stack',
     'portrait.alt': 'Portrait of {name}',
     'portrait.client': 'Internship 2026 · Acelys',
 
@@ -241,6 +243,9 @@ export const ui = {
     'page.aboutMission': 'About the mission at {name}',
     'page.otherProjects': 'Other projects',
     'page.context': 'Context and results',
+    'page.plate': 'Plate {n}',
+    'page.plateStory': 'the project in one picture. Hover it to play it again.',
+    'page.plateDemo': 'captured from the interactive demo further down this page.',
 
     'device.size': 'Preview size',
     'device.desktop': 'Desktop',
@@ -423,6 +428,8 @@ export const ui = {
     'hero.stat.projects': 'projets',
     'hero.stat.graduation': 'diplômé en',
     'hero.scroll': 'Défiler vers les expériences',
+    'hero.readOn': 'Lire la suite',
+    'stack.label': 'Au quotidien',
     'portrait.alt': 'Portrait de {name}',
     'portrait.client': 'Stage 2026 · Acelys',
 
@@ -514,6 +521,9 @@ export const ui = {
     'page.aboutMission': 'La mission chez {name}',
     'page.otherProjects': 'Autres projets',
     'page.context': 'Contexte et résultats',
+    'page.plate': 'Planche {n}',
+    'page.plateStory': 'le projet en une image. Survolez-la pour la rejouer.',
+    'page.plateDemo': 'capture de la démo interactive, plus bas sur cette page.',
 
     'device.size': 'Taille de l’aperçu',
     'device.desktop': 'Ordinateur',

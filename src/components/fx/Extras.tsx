@@ -1,9 +1,9 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
 import { useLang } from '../../i18n';
 
-/** Floating "back to top" button whose ring fills as the page is read. */
+/** Small "back to top" button; its hairline ring fills in as the page is read. */
 export function BackToTop() {
   const { t } = useLang();
   const { scrollY, scrollYProgress } = useScroll();
@@ -18,24 +18,17 @@ export function BackToTop() {
           aria-label={t('top')}
           title={t('top')}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          initial={{ opacity: 0, scale: 0.6, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.6, y: 20 }}
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.92 }}
-          className="group fixed right-5 bottom-5 z-40 flex size-12 items-center justify-center rounded-full bg-black/70 text-zinc-200 shadow-[0_0_30px_-6px_rgb(168_85_247/0.35)] backdrop-blur transition-colors hover:text-white sm:right-8 sm:bottom-8"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 12 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          className="group fixed right-5 bottom-5 z-40 flex size-11 items-center justify-center rounded-full bg-card text-ink-2 transition-colors hover:text-ink sm:right-8 sm:bottom-8"
         >
           <svg viewBox="0 0 48 48" className="absolute inset-0 -rotate-90" aria-hidden="true">
-            <defs>
-              <linearGradient id="top-ring" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor="#a855f7" />
-                <stop offset="1" stopColor="#22d3ee" />
-              </linearGradient>
-            </defs>
-            <circle cx="24" cy="24" r="22" fill="none" stroke="rgb(255 255 255 / 0.1)" strokeWidth="2" />
-            <motion.circle cx="24" cy="24" r="22" fill="none" stroke="url(#top-ring)" strokeWidth="2" strokeLinecap="round" style={{ pathLength: scrollYProgress }} />
+            <circle cx="24" cy="24" r="23" fill="none" stroke="var(--color-rule)" strokeWidth="1.5" />
+            <motion.circle cx="24" cy="24" r="23" fill="none" stroke="var(--color-ink)" strokeWidth="1.5" style={{ pathLength: scrollYProgress }} />
           </svg>
-          <ArrowUp className="relative size-5 transition group-hover:-translate-y-0.5" aria-hidden="true" />
+          <ArrowUp className="relative size-4 transition-transform duration-200 group-hover:-translate-y-0.5" aria-hidden="true" />
         </motion.button>
       )}
     </AnimatePresence>
@@ -54,41 +47,28 @@ export function LocalTime() {
   }, []);
   return (
     <span className="inline-flex items-center gap-2" title={t('footer.time')}>
-      <span className="relative flex size-1.5" aria-hidden="true">
-        <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
-      </span>
+      <span className="size-1.5 rounded-full bg-good" aria-hidden="true" />
       <span className="sr-only">{t('footer.time')}:</span>
-      Paris · <time className="text-zinc-300 tabular-nums">{time}</time>
+      Paris · <time className="text-ink-2 tabular-nums">{time}</time>
     </span>
   );
 }
 
-function RevealWord({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
-  const opacity = useTransform(progress, range, [0.15, 1]);
-  const blur = useTransform(progress, range, ['blur(3px)', 'blur(0px)']);
-  return <motion.span style={{ opacity, filter: blur }}>{children}</motion.span>;
-}
-
-/** Paragraph whose words light up one after another as it scrolls through the viewport. */
-export function ScrollRevealText({ text, className = '' }: { text: string; className?: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.9', 'end 0.6'] });
-  const still = typeof window !== 'undefined' && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
-  const words = text.split(' ');
-
-  if (still) return <p className={className}>{text}</p>;
+/** A sentence set apart like a pull quote in a printed article. */
+export function PullQuote({ text, className = '' }: { text: string; className?: string }) {
   return (
-    <p ref={ref} className={className}>
-      {words.map((word, i) => (
-        <Fragment key={i}>
-          <RevealWord progress={scrollYProgress} range={[i / words.length, (i + 1) / words.length]}>
-            {word}
-          </RevealWord>
-          {i < words.length - 1 && ' '}
-        </Fragment>
-      ))}
-    </p>
+    <motion.p
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className={`relative pl-8 sm:pl-10 ${className}`}
+    >
+      <span aria-hidden="true" className="absolute top-0 left-0 font-serif text-[1.6em] leading-none text-accent">
+        “
+      </span>
+      {text}
+    </motion.p>
   );
 }
 
@@ -96,7 +76,7 @@ export function ScrollRevealText({ text, className = '' }: { text: string; class
 export function greetDevelopers() {
   console.log(
     '%c Robin Canovas %c Hi, fellow developer! Try Ctrl K, or the Konami code (↑ ↑ ↓ ↓ ← → ← → B A).',
-    'background:linear-gradient(90deg,#a855f7,#22d3ee);color:#fff;font-weight:700;padding:4px 8px;border-radius:6px',
-    'color:#a1a1aa;padding-left:6px',
+    'background:#1b1915;color:#f4f1ea;font-weight:600;padding:4px 8px;border-radius:4px',
+    'color:#77705f;padding-left:6px',
   );
 }

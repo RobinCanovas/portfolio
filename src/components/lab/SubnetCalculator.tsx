@@ -51,41 +51,41 @@ export function SubnetCalculator() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xl font-semibold text-white">{t('net.title')}</h3>
-        <p className="mt-1 text-sm text-zinc-300">{t('net.help')}</p>
+        <h3 className="font-serif text-2xl text-ink">{t('net.title')}</h3>
+        <p className="mt-1 text-sm text-ink-2">{t('net.help')}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
         <label className="block">
-          <span className="mb-1 block text-xs text-zinc-300">{t('net.address')}</span>
+          <span className="mb-1.5 block font-mono text-[11px] tracking-wider text-ink-3 uppercase">{t('net.address')}</span>
           <input
             value={value}
             onChange={(e) => setValue(e.target.value)}
             spellCheck={false}
-            className={`w-full rounded-xl border bg-black/60 px-4 py-3 font-mono text-lg text-cyan-100 outline-none focus:ring-2 focus:ring-cyan-400/30 ${info ? 'border-white/15' : 'border-rose-400/60'}`}
+            className={`w-full rounded-lg border bg-card px-4 py-3 font-mono text-lg text-ink outline-none transition-colors focus:border-ink/60 ${info ? 'border-ink/15' : 'border-accent'}`}
           />
         </label>
         <label className="block sm:w-64">
-          <span className="mb-1 flex justify-between text-xs text-zinc-300">
+          <span className="mb-1.5 flex justify-between font-mono text-[11px] text-ink-3">
             <span>/{info?.prefix ?? '?'}</span>
             <span>/8 → /30</span>
           </span>
-          <input type="range" min={8} max={30} value={info?.prefix ?? 24} onChange={(e) => setPrefix(Number(e.target.value))} className="w-full accent-violet-500" aria-label="Prefix" />
+          <input type="range" min={8} max={30} value={info?.prefix ?? 24} onChange={(e) => setPrefix(Number(e.target.value))} className="w-full accent-[#b23c1c]" aria-label="Prefix" />
         </label>
       </div>
 
       {!info ? (
-        <p className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{t('net.invalid')}</p>
+        <p className="rounded-r-lg border-l-2 border-accent bg-accent/[0.06] px-4 py-3 text-sm text-ink-2">{t('net.invalid')}</p>
       ) : (
         <>
           <div>
-            <p className="mb-2 flex flex-wrap items-center gap-3 font-mono text-[11px] text-zinc-400">
+            <p className="mb-2 flex flex-wrap items-center gap-3 font-mono text-[11px] text-ink-3">
               {t('net.bits')}
-              <span className="inline-flex items-center gap-1">
-                <span className="size-2 rounded-sm bg-violet-400" /> {info.prefix} {t('net.netbits')}
+              <span className="inline-flex items-center gap-1.5">
+                <span className="size-2.5 rounded-sm bg-ink" /> {info.prefix} {t('net.netbits')}
               </span>
-              <span className="inline-flex items-center gap-1">
-                <span className="size-2 rounded-sm bg-cyan-400" /> {32 - info.prefix} {t('net.hostbits')}
+              <span className="inline-flex items-center gap-1.5">
+                <span className="size-2.5 rounded-sm border border-ink/30 bg-card" /> {32 - info.prefix} {t('net.hostbits')}
               </span>
             </p>
             <div className="grid grid-cols-[repeat(16,minmax(0,1fr))] gap-1 sm:grid-cols-[repeat(32,minmax(0,1fr))]">
@@ -97,8 +97,8 @@ export function SubnetCalculator() {
                     layout
                     initial={false}
                     animate={{ scale: 1 }}
-                    className={`flex aspect-[3/4] items-center justify-center rounded-md border font-mono text-xs font-semibold transition-colors duration-300 ${
-                      net ? 'border-violet-400/50 bg-violet-500/20 text-violet-100 shadow-[0_0_10px_rgb(168_85_247/0.13)]' : 'border-cyan-400/40 bg-cyan-500/15 text-cyan-100'
+                    className={`flex aspect-[3/4] items-center justify-center rounded-[3px] border font-mono text-xs transition-colors duration-300 ${
+                      net ? 'border-ink bg-ink text-paper' : 'border-ink/20 bg-card text-ink-2'
                     } ${i % 8 === 7 && i !== 31 ? 'sm:mr-1.5' : ''}`}
                   >
                     {b}
@@ -117,9 +117,9 @@ export function SubnetCalculator() {
               [t('net.hosts'), nf.format(info.hosts)],
               ['', info.isPrivate ? t('net.private') : t('net.public')],
             ].map(([label, val], i) => (
-              <div key={i} className="glass rounded-xl px-4 py-3">
-                {label && <dt className="text-[11px] tracking-wide text-zinc-400 uppercase">{label}</dt>}
-                <dd className={`font-mono text-sm ${label ? 'mt-0.5 text-white' : 'text-emerald-300'}`}>{val}</dd>
+              <div key={i} className="rounded-lg border border-ink/10 bg-paper px-4 py-3">
+                {label && <dt className="font-mono text-[10px] tracking-wider text-ink-3 uppercase">{label}</dt>}
+                <dd className={`font-mono text-sm ${label ? 'mt-0.5 text-ink' : 'text-good'}`}>{val}</dd>
               </div>
             ))}
           </dl>
