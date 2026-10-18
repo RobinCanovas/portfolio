@@ -23,12 +23,12 @@ export function Portrait() {
             </div>
           ) : (
             <img
-              src={profile.avatar}
+              src={profile.portrait}
               alt={t('portrait.alt', { name: profile.name })}
               onError={() => setFailed(true)}
-              width={1000}
-              height={1340}
-              className="aspect-[4/5] w-full scale-[1.12] object-cover object-[50%_18%] saturate-[0.92]"
+              width={1200}
+              height={1500}
+              className="aspect-[4/5] w-full object-cover saturate-[0.95]"
               fetchPriority="high"
             />
           )}
