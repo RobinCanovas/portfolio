@@ -16,7 +16,10 @@ export const profile = {
   pitch:
     'Work-study computer science student at the IUT d’Orsay (Université Paris-Saclay), I’m building a generalist profile, strong in both maths and computing, with a clear goal: a selective master’s programme or a grande école. Alongside my studies, I already turn business requirements into secure, reliable software, including for a BNP Paribas group subsidiary.',
   ambition: 'My study project: after the BUT, a selective master’s or a grande école, to go deeper into maths, data and decision-making. In the long run, I want demanding roles where technology informs decisions, without closing any doors.',
-  avatar: './robin-canovas.jpg',
+  /** Head-and-shoulders portrait, 4:5, framed on the face. */
+  portrait: './robin-canovas.jpg',
+  /** Tight square crop for small round avatars. */
+  avatar: './robin-canovas-avatar.jpg',
 };
 
 /**

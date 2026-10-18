@@ -15,7 +15,7 @@ function Avatar({ size = 'size-24' }: { size?: string }) {
           <UserRound className="size-1/2" aria-hidden="true" />
         </div>
       ) : (
-        <img src={profile.avatar} alt={profile.name} onError={() => setFailed(true)} className="size-full rounded-full object-cover object-top" loading="lazy" />
+        <img src={profile.avatar} alt={profile.name} onError={() => setFailed(true)} className="size-full rounded-full object-cover" loading="lazy" />
       )}
     </div>
   );
