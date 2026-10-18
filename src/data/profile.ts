@@ -130,9 +130,12 @@ export const companyList: Company[] = Object.values(companies);
 const domofinance: Client = {
   name: 'Domofinance',
   logos: ['./logos/domofinance.png', 'https://www.domofinance.com/build/website/domofinance-trans.f48e1653.png'],
-  parent: { name: 'BNP Paribas Personal Finance & EDF', logos: ['https://cdn-group.bnpparibas.com/build/images/logo-bnp.svg'] },
+  parents: [
+    { name: 'BNP Paribas Personal Finance', logos: ['https://cdn-group.bnpparibas.com/build/images/logo-bnp.svg'] },
+    { name: 'EDF', logos: ['./logos/edf.svg', 'https://www.companieslogo.com/img/orig/EDF.PA_BIG-428e00f5.svg?t=1720244491', 'https://www.companieslogo.com/img/orig/EDF.PA_BIG-9c97fdce.png?t=1720244491'] },
+  ],
   about:
-    'Financial institution set up in 2003 by EDF and BNP Paribas Personal Finance, dedicated to financing energy renovation and home improvement: loans for private households, offered through a network of partner tradespeople (insulation, heat pumps, solar panels…).',
+    'Financial institution set up in 2003 by EDF and BNP Paribas Personal Finance, dedicated to financing energy renovation and home improvement: loans for private households, offered through a network of partner tradespeople (insulation, heat pumps, solar panels…). EDF brings its energy expertise and its network of partner tradespeople; BNP Paribas Personal Finance, its expertise in consumer lending.',
   facts: [
     { value: '2003', label: 'since' },
     { value: '450,000', label: 'renovation projects financed' },
@@ -274,7 +277,7 @@ export const experiences: Experience[] = [
     duration: '5 months',
     location: 'Toulouse, Occitanie',
     mode: 'Remote',
-    summary: 'In charge of the association’s IT and of the design and development of its website.',
+    summary: 'In charge of the association’s IT: designed and built its website, and structured its whole visibility.',
     missions: [
       {
         title: 'Website',
@@ -285,6 +288,10 @@ export const experiences: Experience[] = [
           'Ensured cross-platform compatibility (desktop, tablet, mobile).',
           'Applied performance and search-engine-optimisation (SEO) best practices.',
         ],
+      },
+      {
+        title: 'Visibility',
+        items: ['Structured the association’s whole visibility, from its website outwards.'],
       },
     ],
     stack: ['WordPress', 'HTML/CSS', 'SEO'],

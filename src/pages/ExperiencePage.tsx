@@ -39,19 +39,19 @@ function ClientBlock({ client, notice }: { client: Client; notice?: string }) {
       <p className={`${label} text-good`}>{t('page.endClient')}</p>
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <LogoTile sources={client.logos} name={client.name} size={64} fallback={<span className="font-serif text-2xl text-ink">{client.name}</span>} />
-        {client.parent && (
-          <>
+        {client.parents?.map((p) => (
+          <span key={p.name} className="contents">
             <span className="font-serif text-xl text-ink-4" aria-hidden="true">
               ×
             </span>
-            <LogoTile sources={client.parent.logos} name={client.parent.name} size={64} fallback={<span className="font-serif text-xl text-ink">{client.parent.name}</span>} />
-          </>
-        )}
+            <LogoTile sources={p.logos} name={p.name} size={64} fallback={<span className="font-serif text-xl text-ink">{p.name}</span>} />
+          </span>
+        ))}
         <div className="min-w-0">
           <h2 id="client-title" className="font-serif text-3xl leading-tight text-ink">
             {client.name}
           </h2>
-          {client.parent && <p className="text-sm text-good">{c.group(client.parent.name)}</p>}
+          {client.parents && <p className="text-sm text-good">{c.group(client.parents.map((p) => p.name))}</p>}
         </div>
       </div>
       <p className="mt-5 max-w-3xl leading-relaxed text-ink-2">{client.about}</p>

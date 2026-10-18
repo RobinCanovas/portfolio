@@ -49,7 +49,8 @@ export interface Company {
 export interface Client {
   name: string;
   logos: string[];
-  parent?: { name: string; logos: string[] };
+  /** Owning companies, main one first (e.g. a joint subsidiary of a bank and an energy group). */
+  parents?: { name: string; logos: string[] }[];
   about: string;
   facts: KeyFact[];
   url?: string;

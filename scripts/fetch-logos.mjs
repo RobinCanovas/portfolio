@@ -17,6 +17,7 @@ const LOGOS = {
   'aeroboat.png': 'https://aeroboat-france.com/wp-content/uploads/2025/09/logoabf-without-bg-1.png',
   'eedf.png': 'https://icons.duckduckgo.com/ip3/eedf.fr.ico',
   'domofinance.png': 'https://www.domofinance.com/build/website/domofinance-trans.f48e1653.png',
+  'edf.svg': 'https://www.companieslogo.com/img/orig/EDF.PA_BIG-428e00f5.svg?t=1720244491',
   'boulanger.svg': 'https://cdn.simpleicons.org/boulanger',
 };
 

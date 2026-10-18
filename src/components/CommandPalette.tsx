@@ -55,7 +55,7 @@ export function buildItems(
       label: e.company.name,
       hint: e.role,
       icon: <CompanyLogo company={e.company} size={22} />,
-      keywords: `${e.role} ${e.stack.join(' ')} ${e.contract} ${e.client?.name ?? ''} ${e.client?.parent?.name ?? ''}`,
+      keywords: `${e.role} ${e.stack.join(' ')} ${e.contract} ${e.client?.name ?? ''} ${e.client?.parents?.map((p) => p.name).join(' ') ?? ''}`,
       run: () => onOpenExperience(e.id),
     })),
     ...c.projects.map((p) => ({

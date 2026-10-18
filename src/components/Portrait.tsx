@@ -10,7 +10,8 @@ import { LogoTile } from './ui';
 export function Portrait() {
   const { t } = useLang();
   const { profile, experiences, lang } = useContent();
-  const bankClient = experiences.find((e) => e.client?.parent)?.client;
+  const bankClient = experiences.find((e) => e.client?.parents?.length)?.client;
+  const bank = bankClient?.parents?.[0];
   const [failed, setFailed] = useState(false);
 
   return (
@@ -34,9 +35,9 @@ export function Portrait() {
           )}
         </div>
 
-        {bankClient?.parent && (
+        {bank && (
           <div className="panel lift absolute top-8 -left-5 flex items-center gap-2.5 rounded-lg p-2 pr-3.5 sm:-left-12">
-            <LogoTile sources={bankClient.parent.logos} name={bankClient.parent.name} size={34} fallback={<ShieldCheck className="size-6 text-good" />} />
+            <LogoTile sources={bank.logos} name={bank.name} size={34} fallback={<ShieldCheck className="size-6 text-good" />} />
             <span className="text-left leading-tight">
               <span className="block font-mono text-[10px] tracking-wider text-good uppercase">{t('portrait.client')}</span>
               <span className="block text-xs font-semibold text-ink">{t('portrait.clientLine')}</span>

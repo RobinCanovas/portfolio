@@ -27,7 +27,7 @@ describe('profile data', () => {
   it('shows the Domofinance mission as a confidential BNP Paribas group client, without AI', () => {
     const acelys = findExperience('acelys')!;
     expect(acelys.client?.name).toBe('Domofinance');
-    expect(acelys.client?.parent?.name).toMatch(/BNP Paribas/);
+    expect(acelys.client?.parents?.map((p) => p.name)).toEqual(['BNP Paribas Personal Finance', 'EDF']);
     expect(acelys.confidential).toBeTruthy();
     const project = findProject('domofinance-mfa')!;
     expect(project.confidential).toBeTruthy();
