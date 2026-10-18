@@ -107,12 +107,12 @@
 
 % Titre de section : capitales, filet dégradé violet vers cyan.
 \newcommand{\cvsection}[1]{%
-  \par\vspace{6pt}%
+  \par\vspace{4.5pt}%
   \begin{tikzpicture}[baseline=(t.base)]
     \node[inner sep=0, anchor=base west, font=\bfseries\large, text=ink] (t) {\MakeUppercase{#1}};
     \shade[left color=brandviolet, right color=brandcyan]
       ($(t.south west)+(0,-3pt)$) rectangle ($(t.south west)+(\linewidth,-3.9pt)$);
-  \end{tikzpicture}\par\vspace{5pt}}
+  \end{tikzpicture}\par\vspace{3.5pt}}
 
 % Pastille de type de contrat.
 \newcommand{\tagchip}[1]{%
@@ -149,13 +149,13 @@
 
 % Expérience : poste, dates, structure, contrat, lieu, contexte (peut être vide).
 \newcommand{\experience}[6]{%
-  \par\vspace{1.5pt}%
+  \par\vspace{0.5pt}%
   {\bfseries\color{ink}#1}\hfill{\small\color{muted}#2}\par\vspace{1pt}
   {\bfseries\color{brandviolet}#3}\hspace{5pt}\tagchip{#4}\hfill{\small\color{muted}\pin\,#5}\par
   \if\relax\detokenize{#6}\relax\else{\small\itshape\color{muted}#6}\par\fi
   \vspace{1pt}}
 
-\setlist[itemize]{leftmargin=9pt, labelsep=4pt, itemsep=0.6pt, topsep=1pt, parsep=0pt,
+\setlist[itemize]{leftmargin=9pt, labelsep=4pt, itemsep=0.2pt, topsep=0.5pt, parsep=0pt,
   label={\color{brandviolet}\textbullet}}
 
 % Chiffres clés sous le profil.
@@ -176,17 +176,17 @@
   \end{tikzpicture}\par}
 
 % Colonne de droite : petits titres et blocs.
-\newcommand{\sidesection}[2][4.5pt]{%
+\newcommand{\sidesection}[2][3pt]{%
   \par\vspace{#1}%
   \begin{tikzpicture}[baseline=(t.base)]
     \node[inner sep=0, anchor=base west, font=\bfseries, text=ink] (t) {\MakeUppercase{#2}};
     \shade[left color=brandviolet, right color=brandcyan]
       ($(t.south west)+(0,-2.5pt)$) rectangle ($(t.south west)+(14mm,-3.6pt)$);
-  \end{tikzpicture}\par\vspace{4.5pt}}
+  \end{tikzpicture}\par\vspace{3pt}}
 
 \newcommand{\skillgroup}[2]{%
   {\small\bfseries\color{inklight}#1}\par\vspace{0.5pt}
-  {\small #2}\par\vspace{5pt}}
+  {\small #2}\par\vspace{3.5pt}}
 
 % Formation : diplôme, dates, établissement, précision, contenu.
 \newcommand{\degree}[5]{%
@@ -196,7 +196,7 @@
   {\small #5}\par}
 
 \newcommand{\interest}[2]{{\small\makebox[13pt][l]{\color{brandviolet}#1}%
-  \parbox[t]{\dimexpr\linewidth-13pt\relax}{\raggedright #2}}\par\vspace{2pt}}
+  \parbox[t]{\dimexpr\linewidth-13pt\relax}{\raggedright #2}}\par\vspace{1pt}}
 
 % Niveau de langue : 5 points.
 \newcommand{\langlevel}[1]{%
@@ -205,7 +205,7 @@
       \ifnum\i>#1 \fill[hair] (\i*7pt,0) circle (2.3pt);
       \else \fill[brandviolet] (\i*7pt,0) circle (2.3pt); \fi }
   \end{tikzpicture}}
-\newcommand{\langitem}[3]{{\small\bfseries #1}\hfill{\small\color{muted}#2}\hspace{4pt}\langlevel{#3}\par\vspace{2pt}}
+\newcommand{\langitem}[3]{{\small\bfseries #1}\hfill{\small\color{muted}#2}\hspace{4pt}\langlevel{#3}\par\vspace{1pt}}
 
 % ------------------------------ Bandeau ------------------------------------
 % Icônes du bandeau : préparées hors du bandeau (un dessin TikZ ne doit pas
