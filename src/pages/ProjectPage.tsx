@@ -65,7 +65,7 @@ export function ProjectPage({ id }: { id: string }) {
               <div className="flex flex-wrap items-center gap-3">
                 {exp && <CompanyLogo company={exp.company} size={40} />}
                 {exp?.client && <LogoTile sources={exp.client.logos} name={exp.client.name} size={40} fallback={null} />}
-                {exp?.client?.parent && <LogoTile sources={exp.client.parent.logos} name={exp.client.parent.name} size={40} fallback={null} />}
+                {exp?.client?.parents?.map((p) => <LogoTile key={p.name} sources={p.logos} name={p.name} size={40} fallback={null} />)}
                 <p className="font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">
                   {project.context} · {project.year}
                 </p>
