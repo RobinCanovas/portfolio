@@ -1,0 +1,130 @@
+% ---------------------------------------------------------------------------
+%  Resume of Robin Canovas, banking version in English (work-study or
+%  internship in a bank or large group). Same layout as cv-robin-canovas-en.tex:
+%  only the headline, profile and order of arguments change. Compile with XeLaTeX.
+% ---------------------------------------------------------------------------
+\def\cvenglish{}
+\input{cv-layout}
+\renewcommand{\cvheadline}{Computer Science student, work-study \,·\, Banking environment experience}
+\renewcommand{\cvheaddomains}{Security \,·\, Databases \& SQL \,·\, DevOps \,·\, Mathematics}
+
+\begin{document}
+\makeheader
+
+% ============================== Main column ================================
+\begin{minipage}[t]{\mainwidth}
+\raggedright
+
+\cvsection{Profile}
+Third-year Computer Science student (BUT), in work-study at Ellipses. During my internship
+I worked for \textbf{BNP Paribas Personal Finance} in a highly regulated banking setting: secured access,
+acceptance testing, controlled releases. I want to continue in \textbf{banking or a large group},
+through work-study or internships during my master's or engineering school.
+\keyfigures
+
+\cvsection{Professional experience}
+
+\experience{Web Developer}{Sept. 2026\dateto Present}
+  {Éditions Ellipses}{Apprenticeship}{Paris}
+  {France's leading publisher for universities and preparatory classes}
+\begin{itemize}
+  \item Maintained and extended the web platform (Symfony, PHP, MySQL).
+  \item Code reviews, testing and quality practices within the in-house tech team.
+\end{itemize}
+
+\experience{Development Analyst}{Apr. 2026\dateto Jul. 2026}
+  {Acelys Services Numériques}{Internship · 4 months}{Montpellier}
+  {IT services company · Client: \textbf{\color{ink}BNP Paribas} Personal Finance (Domofinance)}
+\begin{itemize}
+  \item Implemented \textbf{multi-factor authentication} and e-mail filtering.
+  \item Gathered business requirements and wrote specifications, in Scrum.
+  \item Tested partner deliverables, debugged Symfony and React issues.
+  \item \textbf{Ansible deployment pipelines} triggered from Bitbucket (dependencies, migrations, go-live), with server access through \textbf{SSH keys and tunnels}.
+\end{itemize}
+
+\experience{Full-Stack Developer}{Jan. 2026\dateto Feb. 2026}
+  {French Ministry of Education}{Freelance}{Alès, remote}
+  {Student accommodation files, schools in the Gard area}
+\begin{itemize}
+  \item Ran it end to end: \textbf{database design}, PHP app, automated workflows.
+  \item Centralised the case files and trained staff on the tool.
+\end{itemize}
+
+\experience{Full-Stack Developer}{Sept. 2025\dateto Jan. 2026}
+  {Solutions Solstice}{Apprenticeship}{Paris region}
+  {Publisher of environmental monitoring software (DAHS)}
+\begin{itemize}
+  \item Java features and contribution to the \textbf{software certification}.
+  \item Automated SQL queries and AI-assisted analysis of system diagnostics.
+\end{itemize}
+
+\experience{IT Systems Manager}{Sept. 2025\dateto Jan. 2026}
+  {Aeroboat France}{Fixed-term}{Toulouse, remote}
+  {Aeronautics association, ground-effect craft models}
+\begin{itemize}
+  \item Built the association's website (WordPress), responsive and SEO-ready.
+\end{itemize}
+
+\experience{Retail Sales \& Service Advisor}{Jul. 2025\dateto Aug. 2025}
+  {Boulanger}{Summer job}{Lattes}{}
+\begin{itemize}
+  \item Customer advice, after-sales support and consumer credit offers.
+\end{itemize}
+
+\cvsection{Selected projects}
+\begin{itemize}[itemsep=1pt]
+  \item \textbf{Requirements specification} {\color{muted}· needs analysis, UML, functional specs}
+  \item \textbf{AC-Motors database} {\color{muted}· data models, SQL queries, online playground}
+  \item \textbf{Neural network from scratch} {\color{muted}· Python, NumPy, backpropagation, deep learning}
+  \item \textbf{Gradient descent} {\color{muted}· linear regression, partial derivatives, live demo}
+  \item \textbf{IPv4 subnetting} {\color{muted}· mask, broadcast and host range, bit by bit}
+\end{itemize}
+{\small\color{muted}Interactive demos on my portfolio (QR code, top right).}
+
+\end{minipage}%
+\hfill%
+% ============================== Side column ================================
+\begin{minipage}[t]{\sidewidth}
+\raggedright
+
+\sidesection[6pt]{Education}
+\degree{BUT in Computer Science}{2024\dateto 2027}{IUT d'Orsay, Université Paris-Saclay}
+  {13th worldwide, Shanghai Ranking 2026}
+  {3-year degree: databases, networks, systems, software engineering, maths.}
+\vspace{5pt}
+\degree{French Baccalauréat}{2024}{Lycée Françoise Combes}
+  {Internat d'Excellence de Montpellier}
+  {Mathematics and Computer Science, Advanced Mathematics option.}
+
+\sidesection{Skills}
+\skillgroup{Databases}{Advanced SQL, MySQL, PL/SQL, SQLite, data modelling, indexing, Doctrine}
+\skillgroup{Security, networks \& DevOps}{MFA, SSH, TCP/IP, subnetting, Linux, Ansible, Bitbucket Pipelines, Git}
+\skillgroup{Mathematics}{Linear algebra, probability, statistics, graph theory, optimisation}
+\skillgroup{Development}{PHP, Symfony, API Platform, Java, Python, C and C++, React, TypeScript}
+\skillgroup{Consulting \& methods}{Specifications, business analysis, testing, Agile (Scrum), UML, project management}
+
+\sidesection{Soft skills}
+\softskill{Rigour}{Regulated banking setting, certification}
+\softskill{Customer-facing}{In-store advice, business requirements}
+\softskill{Ownership}{Freelance project run end to end}
+\softskill{Teaching others}{Trained staff on a new tool and new scouts}
+
+\sidesection{Languages}
+\langitem{French}{native}{5}
+\langitem{English}{B2}{4}
+\langitem{Spanish}{B1}{3}
+
+\sidesection{Volunteering}
+{\small\bfseries\color{ink}Scout with EEDF since 2013}\par
+{\footnotesize\color{muted}French scouting association, Gard}\par\vspace{1.5pt}
+{\small Welcoming and training new members, charity events and fundraising.}
+
+\sidesection{Interests}
+\interest{\drawball}{Volleyball, beach volley, tennis, wrestling}
+\interest{\drawnote}{Piano}
+\interest{\drawglobe}{Travel: Romania, England, Spain}
+\interest{\drawatom}{Science popularisation}
+
+\end{minipage}
+
+\end{document}
