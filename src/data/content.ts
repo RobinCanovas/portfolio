@@ -76,7 +76,7 @@ function build(lang: Lang) {
     contract: (c: Experience['contract']) => (isFr ? fr.contract[c] : c),
     mode: (m: Experience['mode']) => (isFr ? fr.mode[m] : m),
     tech: (t: Tech) => (isFr ? (fr.tech[t] ?? t) : t),
-    group: (name: string) => (isFr ? `groupe ${name}` : `${name} group`),
+    group: (name: string) => (isFr ? `filiale de ${name}` : `subsidiary of ${name}`),
   };
 }
 

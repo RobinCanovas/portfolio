@@ -52,7 +52,7 @@ export const fr: FrOverlay = {
     status: 'Ouvert aux opportunités',
     currentRole: 'Développeur web @ Éditions Ellipses',
     pitch:
-      'Étudiant en BUT Informatique en alternance à l’IUT d’Orsay (Université Paris-Saclay), je construis un profil généraliste, solide en maths comme en informatique, avec un objectif clair : un master sélectif ou une grande école. En parallèle de mes études, je transforme déjà des besoins métier en logiciels sûrs et fiables, y compris pour une filiale du groupe BNP Paribas.',
+      'Étudiant en BUT Informatique en alternance à l’IUT d’Orsay (Université Paris-Saclay), je construis un profil généraliste, solide en maths comme en informatique, avec un objectif clair : un master sélectif ou une grande école. En parallèle de mes études, je transforme déjà des besoins métier en logiciels sûrs et fiables, y compris pour une filiale de BNP Paribas et d’EDF.',
     ambition: 'Mon projet d’études : après le BUT, un master sélectif ou une grande école, pour approfondir les maths, la data et la prise de décision. À plus long terme, je vise des métiers exigeants où la technologie éclaire les décisions, sans me fermer de portes.',
   },
 
@@ -98,8 +98,8 @@ export const fr: FrOverlay = {
   clients: {
     Domofinance: {
       about:
-        'Société de crédit à la consommation née de l’alliance de BNP Paribas Personal Finance et d’EDF, spécialiste du financement des travaux de rénovation énergétique (isolation, pompes à chaleur, panneaux solaires…).',
-      facts: [{ label: 'depuis' }, { value: '450 000+', label: 'clients financés' }, { value: '96 %', label: 'clients satisfaits' }],
+        'Établissement financier créé en 2003 à l’initiative d’EDF et de BNP Paribas Personal Finance, entièrement dédié au financement de la rénovation énergétique et de l’amélioration de l’habitat : des prêts travaux pour les particuliers, proposés via un réseau d’artisans partenaires (isolation, pompes à chaleur, panneaux solaires…).',
+      facts: [{ label: 'depuis' }, { value: '450 000', label: 'chantiers financés' }, { value: '3 500', label: 'professionnels partenaires' }],
       parentLabel: 'groupe',
     },
   },
@@ -125,7 +125,7 @@ export const fr: FrOverlay = {
       duration: '4 mois',
       location: 'Montpellier, Occitanie',
       summary:
-        'Intégré à une équipe Agile qui accompagne la transformation technique des plateformes de Domofinance (groupe BNP Paribas Personal Finance) : garantir la qualité des livrables et faire le lien technique entre les besoins métier et les équipes de développement externes.',
+        'Intégré à une équipe Agile qui accompagne la transformation technique des plateformes de Domofinance (filiale de BNP Paribas Personal Finance et d’EDF) : garantir la qualité des livrables et faire le lien technique entre les besoins métier et les équipes de développement externes.',
       missions: [
         {
           title: 'Assurance qualité & expertise technique',
@@ -154,7 +154,7 @@ export const fr: FrOverlay = {
       ],
       skills: ['Développement web', 'Symfony', 'React', 'API Platform', 'Ansible', 'Bitbucket Pipelines', 'SSH', 'Scrum', 'Spécifications', 'Assurance qualité'],
       confidential:
-        'Cette mission s’est déroulée sur une plateforme de crédit à la consommation réglementée du groupe BNP Paribas. Pour des raisons de sécurité et de confidentialité, aucun code, aucune capture ni aucun détail interne n’est publié ici.',
+        'Cette mission s’est déroulée sur une plateforme de crédit à la consommation réglementée de Domofinance (BNP Paribas × EDF). Pour des raisons de sécurité et de confidentialité, aucun code, aucune capture ni aucun détail interne n’est publié ici.',
     },
     education: {
       role: 'Développeur web full-stack',
@@ -231,7 +231,7 @@ export const fr: FrOverlay = {
   projects: {
     'domofinance-mfa': {
       title: 'MFA et sécurité des e-mails d’une plateforme de crédit',
-      context: 'Acelys × Domofinance (groupe BNP Paribas)',
+      context: 'Acelys × Domofinance (BNP Paribas × EDF)',
       description: 'Authentification multifacteur et filtrage des e-mails transactionnels sur les plateformes Domofinance, et validation des livrables des partenaires externes.',
       problem:
         'Une plateforme de crédit réglementée doit authentifier fortement ses clients et fiabiliser ses e-mails transactionnels, tandis que plusieurs équipes externes livrent du code qu’il faut vérifier avant la mise en production.',
@@ -249,11 +249,11 @@ export const fr: FrOverlay = {
         { title: 'Validation', detail: 'Livrables partenaires vérifiés avant mise en production, en cycles Scrum.' },
       ],
       confidential:
-        'Ce projet n’est volontairement pas détaillé : il tourne sur une plateforme réglementée du groupe BNP Paribas, son code et son fonctionnement interne sont donc confidentiels. Ce qui est décrit ici reste au niveau de mon profil LinkedIn public.',
+        'Ce projet n’est volontairement pas détaillé : il tourne sur une plateforme réglementée de Domofinance (BNP Paribas × EDF), son code et son fonctionnement interne sont donc confidentiels. Ce qui est décrit ici reste au niveau de mon profil LinkedIn public.',
     },
     'acelys-deploy': {
       title: 'Pipelines de déploiement Ansible',
-      context: 'Acelys × Domofinance (groupe BNP Paribas)',
+      context: 'Acelys × Domofinance (BNP Paribas × EDF)',
       description: 'Des mises en production automatisées : Bitbucket Pipelines lance des playbooks Ansible via SSH pour installer les dépendances, migrer la base et mettre en ligne.',
       problem: 'Une mise en production manuelle est lente et risquée sur une plateforme qui doit rester disponible : chaque étape doit être reproductible, sécurisée et réversible.',
       outcome: [

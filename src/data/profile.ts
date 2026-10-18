@@ -14,7 +14,7 @@ export const profile = {
   status: 'Open to opportunities',
   currentRole: 'Web Developer @ Éditions Ellipses',
   pitch:
-    'Work-study computer science student at the IUT d’Orsay (Université Paris-Saclay), I’m building a generalist profile, strong in both maths and computing, with a clear goal: a selective master’s programme or a grande école. Alongside my studies, I already turn business requirements into secure, reliable software, including for a BNP Paribas group subsidiary.',
+    'Work-study computer science student at the IUT d’Orsay (Université Paris-Saclay), I’m building a generalist profile, strong in both maths and computing, with a clear goal: a selective master’s programme or a grande école. Alongside my studies, I already turn business requirements into secure, reliable software, including for a subsidiary of BNP Paribas and EDF.',
   ambition: 'My study project: after the BUT, a selective master’s or a grande école, to go deeper into maths, data and decision-making. In the long run, I want demanding roles where technology informs decisions, without closing any doors.',
   /** Head-and-shoulders portrait, 4:5, framed on the face. */
   portrait: './robin-canovas.jpg',
@@ -130,13 +130,13 @@ export const companyList: Company[] = Object.values(companies);
 const domofinance: Client = {
   name: 'Domofinance',
   logos: ['./logos/domofinance.png', 'https://www.domofinance.com/build/website/domofinance-trans.f48e1653.png'],
-  parent: { name: 'BNP Paribas Personal Finance', logos: ['https://cdn-group.bnpparibas.com/build/images/logo-bnp.svg'] },
+  parent: { name: 'BNP Paribas Personal Finance & EDF', logos: ['https://cdn-group.bnpparibas.com/build/images/logo-bnp.svg'] },
   about:
-    'Consumer-credit company born from the alliance of BNP Paribas Personal Finance and EDF, specialised in financing home energy-renovation projects (insulation, heat pumps, solar panels…).',
+    'Financial institution set up in 2003 by EDF and BNP Paribas Personal Finance, dedicated to financing energy renovation and home improvement: loans for private households, offered through a network of partner tradespeople (insulation, heat pumps, solar panels…).',
   facts: [
     { value: '2003', label: 'since' },
-    { value: '450,000+', label: 'clients financed' },
-    { value: '96%', label: 'satisfied clients' },
+    { value: '450,000', label: 'renovation projects financed' },
+    { value: '3,500', label: 'partner professionals' },
   ],
   url: 'https://www.domofinance.com',
 };
@@ -175,7 +175,7 @@ export const experiences: Experience[] = [
     location: 'Montpellier, Occitanie',
     mode: 'Hybrid',
     summary:
-      'Embedded in an Agile team supporting the technical transformation of Domofinance’s platforms (BNP Paribas Personal Finance group): ensuring the quality of deliverables and acting as the technical bridge between business requirements and external development teams.',
+      'Embedded in an Agile team supporting the technical transformation of Domofinance’s platforms (a subsidiary of BNP Paribas Personal Finance and EDF): ensuring the quality of deliverables and acting as the technical bridge between business requirements and external development teams.',
     missions: [
       {
         title: 'Quality assurance & technical expertise',
@@ -206,7 +206,7 @@ export const experiences: Experience[] = [
     skills: ['Web development', 'Symfony', 'React', 'API Platform', 'Ansible', 'Bitbucket Pipelines', 'SSH', 'Scrum', 'Specifications', 'Quality assurance'],
     client: domofinance,
     confidential:
-      'This work was done on a regulated consumer-credit platform of the BNP Paribas group. For security and confidentiality reasons, no code, screenshot or internal detail is published here.',
+      'This work was done on a regulated consumer-credit platform of Domofinance (BNP Paribas × EDF). For security and confidentiality reasons, no code, screenshot or internal detail is published here.',
     projectIds: ['domofinance-mfa', 'acelys-deploy'],
   },
   {
@@ -318,7 +318,7 @@ export const projects: Project[] = [
     id: 'domofinance-mfa',
     featured: true,
     title: 'MFA & e-mail security for a credit platform',
-    context: 'Acelys × Domofinance (BNP Paribas group)',
+    context: 'Acelys × Domofinance (BNP Paribas × EDF)',
     experienceId: 'acelys',
     year: '2026',
     description: 'Multi-factor authentication and transaction e-mail filtering on Domofinance’s platforms, plus validation of external partners’ deliverables.',
@@ -339,13 +339,13 @@ export const projects: Project[] = [
     ],
     stack: ['Symfony', 'React', 'API Platform', 'Security', 'Agile'],
     confidential:
-      'This project is not showcased in detail on purpose: it runs on a regulated platform of the BNP Paribas group, so its code and internals are confidential. What is described here stays at the level of my public LinkedIn profile.',
+      'This project is not showcased in detail on purpose: it runs on a regulated platform of Domofinance (BNP Paribas × EDF), so its code and internals are confidential. What is described here stays at the level of my public LinkedIn profile.',
   },
   {
     id: 'acelys-deploy',
     featured: true,
     title: 'Ansible deployment pipelines',
-    context: 'Acelys × Domofinance (BNP Paribas group)',
+    context: 'Acelys × Domofinance (BNP Paribas × EDF)',
     experienceId: 'acelys',
     year: '2026',
     description: 'Automated releases: Bitbucket Pipelines runs Ansible playbooks over SSH to install dependencies, migrate the database and go live.',
