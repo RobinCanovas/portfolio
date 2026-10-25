@@ -98,7 +98,7 @@ export const fr: FrOverlay = {
   clients: {
     Domofinance: {
       about:
-        'Établissement financier créé en 2003 à l’initiative d’EDF et de BNP Paribas Personal Finance, entièrement dédié au financement de la rénovation énergétique et de l’amélioration de l’habitat : des prêts travaux pour les particuliers, proposés via un réseau d’artisans partenaires (isolation, pompes à chaleur, panneaux solaires…).',
+        'Établissement financier créé en 2003 à l’initiative d’EDF et de BNP Paribas Personal Finance, entièrement dédié au financement de la rénovation énergétique et de l’amélioration de l’habitat : des prêts travaux pour les particuliers, proposés via un réseau d’artisans partenaires (isolation, pompes à chaleur, panneaux solaires…). EDF y apporte son expertise de l’énergie et son réseau d’artisans partenaires ; BNP Paribas Personal Finance, son expertise du crédit aux particuliers.',
       facts: [{ label: 'depuis' }, { value: '450 000', label: 'chantiers financés' }, { value: '3 500', label: 'professionnels partenaires' }],
       parentLabel: 'groupe',
     },
@@ -202,7 +202,7 @@ export const fr: FrOverlay = {
       period: 'Sept. 2025 → janv. 2026',
       duration: '5 mois',
       location: 'Toulouse, Occitanie',
-      summary: 'Responsable de l’informatique de l’association, ainsi que de la conception et du développement de son site web.',
+      summary: 'Responsable de l’informatique de l’association : conception et développement de son site web, et structuration de toute sa visibilité.',
       missions: [
         {
           title: 'Site web',
@@ -213,6 +213,10 @@ export const fr: FrOverlay = {
             'Compatibilité multiplateforme (ordinateur, tablette, mobile).',
             'Bonnes pratiques de performance et de référencement (SEO).',
           ],
+        },
+        {
+          title: 'Visibilité',
+          items: ['Structuration de l’ensemble de la visibilité de l’association, à partir du site.'],
         },
       ],
       skills: ['Gestion de projet', 'Web design', 'SEO'],
