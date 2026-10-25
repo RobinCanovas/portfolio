@@ -677,6 +677,31 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
     ],
     stack: ['Python', 'AI'],
   },
+  {
+    id: 'wastewater-cuve',
+    title: 'Home wastewater treatment tank — innovation contest, patent filed',
+    context: 'Lycée Françoise Combes, excellence boarding school · Innovation contest, team of 4 (team coordinator)',
+    year: '2022',
+    description:
+      'A high-school innovation contest project: a home wastewater treatment tank, shaped like a cumulus water heater, combining an activated-carbon filter with algae-based biological depollution. Won the contest, with a patent filed on the idea.',
+    problem:
+      'Treating wastewater at the source would save water for households and recover value from the pollutants removed, instead of sending everything to a municipal plant.',
+    outcome: [
+      'Concept of a cumulus-shaped tank, in several formats depending on the household.',
+      'Two-stage treatment: activated-carbon filtration, then biological depollution by algae identified in the team’s research.',
+      'A collection system turning the removed sludge into biomass, sellable to companies — alongside water savings for the household.',
+      'Contest won; a patent filed on the idea, with priority rights still active today.',
+    ],
+    highlights: ['Team coordination (4 people)', 'Research-backed concept', 'Activated carbon + algae filtration', 'Patent filed'],
+    build: [
+      { icon: 'search', title: 'Research', detail: 'Studies reviewed on algae capable of depolluting water, used as the starting point.' },
+      { icon: 'layout', title: 'Concept', detail: 'A cumulus-shaped home tank, in several formats depending on the household.' },
+      { icon: 'cpu', title: 'Filtration', detail: 'Water passes through an activated-carbon filter, then an algae-based biological stage.' },
+      { icon: 'database', title: 'Waste → biomass', detail: 'Removed sludge collected and sold on as biomass.' },
+      { icon: 'check', title: 'Result', detail: 'Contest won; the idea patented, with priority rights still active today.' },
+    ],
+    stack: [],
+  },
 ];
 
 export const projectFilters: Tech[] = ['Symfony', 'React', 'PHP', 'Java', 'MySQL', 'Networks', 'Ansible', 'Security', 'Maths', 'AI', 'HTML/CSS', 'WordPress', 'Python'];
