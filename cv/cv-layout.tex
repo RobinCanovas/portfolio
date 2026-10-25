@@ -76,6 +76,11 @@
 \newcommand{\cvcity}{\tr{Massy (91)}{Massy, France}}
 \newcommand{\cvlinkedin}{robin-canovas}
 \newcommand{\cvsite}{robincanovas.github.io/portfolio}
+% Les deux lignes sous le nom ; une version ciblée peut les redéfinir (\renewcommand).
+\newcommand{\cvheadline}{\tr{Étudiant en informatique en alternance \,·\, Profil généraliste}
+  {Computer Science student, work-study \,·\, Generalist profile}}
+\newcommand{\cvheaddomains}{\tr{Bases de données \,·\, Réseaux \& DevOps \,·\, Mathématiques \,·\, Sécurité}
+  {Databases \,·\, Networks \& DevOps \,·\, Mathematics \,·\, Security}}
 
 % ------------------------------ Couleurs -----------------------------------
 % Mêmes couleurs que le portfolio (papier, encre, vermillon, bleu).
@@ -254,12 +259,10 @@
       at ($(NW)+(50mm,-7.5mm)$) {\cvfirstname\ \textbf{\cvlastname}};
     \node[anchor=north west, inner sep=0, text=brandcyan!45!white, font=\bfseries\normalsize]
       at ($(NW)+(50mm,-18.5mm)$)
-      {\tr{Étudiant en informatique en alternance \,·\, Profil généraliste}
-          {Computer Science student, work-study \,·\, Generalist profile}};
+      {\cvheadline};
     \node[anchor=north west, inner sep=0, text=white!78!ink, font=\small]
       at ($(NW)+(50mm,-24mm)$)
-      {\tr{Bases de données \,·\, Réseaux \& DevOps \,·\, Mathématiques \,·\, Sécurité}
-          {Databases \,·\, Networks \& DevOps \,·\, Mathematics \,·\, Security}};
+      {\cvheaddomains};
     \node[anchor=north west, inner sep=0, text=white, font=\small, align=left]
       at ($(NW)+(50mm,-31mm)$) {%
         \contacticon{\hmail}\href{mailto:\cvmail}{\cvmail}\hspace{9pt}
