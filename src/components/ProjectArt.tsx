@@ -836,6 +836,51 @@ function Neural() {
   );
 }
 
+/** Wastewater tank: dirty water flows in, is filtered through carbon then algae, clean water goes out, sludge becomes biomass, and the idea earns a patent badge. */
+function Cuve() {
+  return (
+    <Frame hue={[E, A]}>
+      {() => (
+        <>
+          {/* Incoming dirty water */}
+          <Wire d="M20 56 H78" color={F} t={0.1} dur={0.4} />
+          {/* The cumulus-shaped tank */}
+          <path
+            d="M86 70 a34 34 0 0 1 68 0 V128 a10 10 0 0 1 -10 10 H96 a10 10 0 0 1 -10 -10 Z"
+            fill={PANEL}
+            stroke={INK}
+            strokeWidth="1.6"
+          />
+          {/* Charcoal filter layer */}
+          <rect x="90" y="78" width="60" height="18" fill={ink(0.55)} {...st('fade', 0.4, { d: 0.4 })} />
+          {/* Algae depollution layer */}
+          <rect x="90" y="98" width="60" height="26" fill="rgb(46 107 69 / 0.4)" {...st('fade', 0.75, { d: 0.4 })} />
+          {[0, 1, 2].map((i) => (
+            <circle key={i} cx={102 + i * 18} cy={111} r="3.2" fill={E} {...st('pop', 0.95 + i * 0.08, { d: 0.3 })} />
+          ))}
+          <text x="120" y="68" textAnchor="middle" fill={ink(0.6)} fontFamily={MONO} fontSize="9">
+            cuve
+          </text>
+          {/* Clean water out, towards a house */}
+          <Wire d="M150 118 C 180 118, 180 112, 210 112" color={C} t={1.25} dur={0.45} />
+          <path d="M224 118 V98 L240 86 L256 98 V118 Z" fill="none" stroke={C} strokeWidth="1.6" {...st('fade', 1.6, { d: 0.4 })} />
+          {/* Sludge collected into biomass */}
+          <Wire d="M106 134 C 90 148, 70 148, 56 140" color={A} t={1.2} dur={0.4} />
+          <circle cx="44" cy="134" r="13" fill="rgb(140 100 24 / 0.12)" stroke={A} strokeWidth="1.5" {...st('pop', 1.55, { d: 0.35 })} />
+          <text x="44" y="137" textAnchor="middle" fill={A} fontFamily={MONO} fontSize="8">
+            biomasse
+          </text>
+          {/* Patent / contest-won badge */}
+          <g {...st('pop', 2.0, { d: 0.4, s: 0.3, e: 'var(--ease-pop)' })}>
+            <circle cx="268" cy="44" r="18" fill="rgb(46 107 69 / 0.12)" stroke={E} strokeWidth="1.6" />
+            <path d="M260 44.5 l5 5 l10 -11" fill="none" stroke={E} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" pathLength={1} {...st('draw', 2.15, { d: 0.35 })} />
+          </g>
+        </>
+      )}
+    </Frame>
+  );
+}
+
 function Generic() {
   const nodes: [number, number][] = [
     [80, 80],
@@ -873,6 +918,7 @@ const ART: Record<string, () => ReactNode> = {
   librairie: Bookshop,
   debian: RaspberryPi,
   'python-game': Game,
+  'wastewater-cuve': Cuve,
 };
 
 export const hasProjectArt = (id: string) => id in ART;
