@@ -483,6 +483,28 @@ export const fr: FrOverlay = {
         { title: 'NumPy', detail: 'Calculs de l’état du jeu.' },
       ],
     },
+    'wastewater-cuve': {
+      title: 'Cuve de traitement des eaux usées — concours d’innovation, brevet déposé',
+      context: 'Lycée Françoise Combes, internat d’excellence · Concours d’innovation, équipe de 4 (coordinateur d’équipe)',
+      description:
+        'Un projet de concours d’innovation au lycée : une cuve domestique de traitement des eaux usées, sur le modèle d’un cumulus, combinant un filtre à charbon actif et une dépollution biologique par algues. Concours gagné, idée brevetée.',
+      problem:
+        'Traiter les eaux usées à la source permettrait d’économiser l’eau des foyers et de valoriser les déchets retirés, plutôt que de tout envoyer vers une station d’épuration municipale.',
+      outcome: [
+        'Concept de cuve en forme de cumulus, en plusieurs formats selon le foyer.',
+        'Traitement en deux étapes : filtration par charbon actif, puis dépollution biologique par des algues identifiées lors des recherches de l’équipe.',
+        'Un système de collecte transformant les boues retirées en biomasse revendable aux entreprises, en plus de l’économie d’eau pour le foyer.',
+        'Concours gagné ; un brevet déposé sur l’idée, toujours actif avec un droit de priorité.',
+      ],
+      highlights: ['Coordination d’équipe (4 personnes)', 'Concept appuyé sur des études', 'Filtration charbon actif + algues', 'Brevet déposé'],
+      build: [
+        { title: 'Recherche', detail: 'Études passées en revue sur des algues capables de dépolluer l’eau, point de départ du projet.' },
+        { title: 'Concept', detail: 'Une cuve domestique en forme de cumulus, en plusieurs formats selon le foyer.' },
+        { title: 'Filtration', detail: 'L’eau passe par un filtre à charbon actif, puis une étape biologique à base d’algues.' },
+        { title: 'Déchets → biomasse', detail: 'Les boues retirées sont collectées et revendues comme biomasse.' },
+        { title: 'Résultat', detail: 'Concours gagné ; idée brevetée, avec un droit de priorité toujours actif aujourd’hui.' },
+      ],
+    },
   },
 
   education: {
