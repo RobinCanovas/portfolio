@@ -190,7 +190,8 @@ export const fr: FrOverlay = {
       period: 'Sept. 2025 → janv. 2026',
       duration: '5 mois',
       location: 'Paris et périphérie',
-      summary: 'Développement et maintenance d’un logiciel environnemental, et participation à sa certification selon la norme applicable.',
+      summary:
+        'Développement et maintenance du logiciel environnemental qui collecte et traite les données des baies d’analyse installées sur des sites industriels, et participation à sa certification selon la norme applicable.',
       missions: [
         {
           title: 'Logiciel & certification',
@@ -202,7 +203,7 @@ export const fr: FrOverlay = {
             'Qualité du code et maintenance logicielle.',
           ],
         },
-        { title: 'Innovation', items: ['Accompagnement de l’analyse des diagnostics système, avec l’introduction de l’IA.'] },
+        { title: 'Innovation', items: ['Accompagnement de l’analyse des diagnostics système, avec une première introduction de l’IA pour accélérer la recherche de pannes.'] },
       ],
       skills: ['Java', 'Autonomie', 'Certification', 'Performance'],
     },
@@ -393,11 +394,12 @@ export const fr: FrOverlay = {
       title: 'Logiciel environnemental & diagnostics par IA',
       context: 'Solutions Solstice · Alternance',
       description: 'Nouvelles fonctionnalités et certification d’un logiciel de surveillance environnementale, automatisation de requêtes et diagnostics assistés par IA.',
-      problem: 'Les sites industriels doivent déclarer leurs émissions de façon fiable selon des normes strictes : le logiciel doit être certifié et les pannes diagnostiquées rapidement.',
+      problem:
+        'Les sites industriels doivent surveiller et déclarer leurs rejets atmosphériques de façon fiable selon des normes strictes. Des baies d’analyse de gaz mesurent en continu sur site ; le logiciel qui collecte, traite et restitue leurs données doit être certifié, et les pannes diagnostiquées rapidement.',
       outcome: ['Nouvelles fonctionnalités intégrées au logiciel.', 'Contribution au processus de certification.', 'Requêtes base de données automatisées.', 'Premiers pas de l’IA dans les diagnostics système.'],
       highlights: ['Fonctionnalités & maintenance Java', 'Certification selon la norme', 'Automatisation de requêtes', 'IA pour les diagnostics'],
       build: [
-        { title: 'Mesures', detail: 'Données environnementales acquises depuis les analyseurs sur site.' },
+        { title: 'Baies d’analyse', detail: 'Des baies d’analyseurs de gaz installées sur les sites industriels mesurent les rejets en continu et alimentent le logiciel.' },
         { title: 'Logiciel Java', detail: 'Fonctionnalités, corrections et performance de l’application.' },
         { title: 'Requêtes automatisées', detail: 'Requêtes récurrentes vers la base automatisées.' },
         { title: 'Diagnostics IA', detail: 'L’IA introduite pour aider à analyser les diagnostics système.' },
@@ -534,7 +536,7 @@ export const fr: FrOverlay = {
     },
     bac: {
       degree: 'Baccalauréat général, Mathématiques & NSI',
-      details: ['Spécialités : Mathématiques et NSI (informatique).', 'Options : Mathématiques expertes, Théâtre.'],
+      details: ['Spécialités : Mathématiques et NSI (informatique).', 'Options : Mathématiques expertes, Théâtre.', 'Baccalauréat obtenu avec un an d’avance.'],
     },
   },
 
