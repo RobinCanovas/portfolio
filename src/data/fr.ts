@@ -72,8 +72,8 @@ export const fr: FrOverlay = {
     education: {
       sector: 'Ministère de l’Éducation nationale',
       about:
-        'Le ministère de l’Éducation nationale gère les établissements publics du pays. Cette mission a été réalisée pour des établissements du Gard (secteur d’Alès), afin de numériser la gestion des dossiers administratifs des élèves.',
-      facts: [{ value: 'Public', label: 'secteur' }, { label: 'établissements servis' }, { value: 'À distance', label: 'mission freelance' }],
+        'Le ministère de l’Éducation nationale gère les établissements publics du pays. Cette mission a été réalisée pour tout le bassin scolaire d’Alès, dans le Gard, afin de numériser la gestion des dossiers administratifs des élèves.',
+      facts: [{ value: 'Public', label: 'secteur' }, { value: 'Alès (Gard)', label: 'bassin scolaire complet' }, { value: 'À distance', label: 'mission freelance' }],
     },
     solstice: {
       sector: 'Mesure environnementale & logiciel industriel',
@@ -110,14 +110,22 @@ export const fr: FrOverlay = {
       period: 'Sept. 2026 → aujourd’hui',
       duration: 'En cours',
       location: 'Paris, Île-de-France',
-      summary: 'Développement de la plateforme web Symfony de l’éditeur, au sein de l’équipe technique interne.',
+      summary:
+        'Développement de la plateforme web Symfony de l’éditeur, au sein de l’équipe technique interne, dont DBooker, l’espace dédié aux auteurs.',
       missions: [
         {
           title: 'Développement',
           items: ['Développer et maintenir des fonctionnalités de la plateforme Symfony / PHP de l’éditeur.', 'Appliquer les pratiques de qualité, de revue de code et de tests de l’équipe.'],
         },
+        {
+          title: 'Espace auteur DBooker',
+          items: [
+            'Mise en place d’un environnement local dédié (vhost Apache, domaine propre) pour tester le branding de l’espace auteur DBooker isolément de la plateforme principale.',
+            'Utilisation d’un outil local d’interception des e-mails pour tester les e-mails transactionnels sans en envoyer de réels.',
+          ],
+        },
       ],
-      skills: ['PHP', 'Symfony', 'Développement web'],
+      skills: ['PHP', 'Symfony', 'Développement web', 'Apache', 'Configuration d’environnement'],
     },
     acelys: {
       role: 'Analyste du développement',
@@ -161,7 +169,8 @@ export const fr: FrOverlay = {
       period: 'Janv. 2026 → févr. 2026',
       duration: '1 mois',
       location: 'Gard (Alès), Occitanie',
-      summary: 'Développement complet d’une application interne de gestion des dossiers d’aménagement des élèves, de la conception de la base à la formation du personnel.',
+      summary:
+        'Développement complet d’une application interne de gestion des dossiers d’aménagement des élèves pour tout le bassin scolaire d’Alès (Gard), de la conception de la base à la formation du personnel.',
       missions: [
         {
           title: 'Réalisé',
@@ -216,10 +225,14 @@ export const fr: FrOverlay = {
         },
         {
           title: 'Visibilité',
-          items: ['Structuration de l’ensemble de la visibilité de l’association, à partir du site.'],
+          items: [
+            'Gestion du nom de domaine, de l’hébergement du site et des adresses e-mail de l’association.',
+            'Mise en place et animation de la présence de l’association sur les réseaux sociaux.',
+            'Définition de l’identité visuelle (logo, couleurs) déclinée sur le site et les réseaux sociaux.',
+          ],
         },
       ],
-      skills: ['Gestion de projet', 'Web design', 'SEO'],
+      skills: ['Gestion de projet', 'Web design', 'SEO', 'Identité de marque', 'Réseaux sociaux'],
     },
     boulanger: {
       role: 'Conseiller vente & services',
@@ -236,18 +249,19 @@ export const fr: FrOverlay = {
     'domofinance-mfa': {
       title: 'MFA et sécurité des e-mails d’une plateforme de crédit',
       context: 'Acelys × Domofinance (BNP Paribas × EDF)',
-      description: 'Authentification multifacteur et filtrage des e-mails transactionnels sur les plateformes Domofinance, et validation des livrables des partenaires externes.',
+      description:
+        'Authentification multifacteur et filtrage des e-mails transactionnels sur le portail utilisé par les 3 500 artisans partenaires de Domofinance, et validation des livrables des partenaires externes.',
       problem:
-        'Une plateforme de crédit réglementée doit authentifier fortement ses clients et fiabiliser ses e-mails transactionnels, tandis que plusieurs équipes externes livrent du code qu’il faut vérifier avant la mise en production.',
+        'Une plateforme de crédit réglementée doit authentifier fortement chacun de ses 3 500 artisans partenaires et fiabiliser ses e-mails transactionnels, tandis que plusieurs équipes externes livrent du code qu’il faut vérifier avant la mise en production.',
       outcome: [
-        'Authentification multifacteur ajoutée au parcours client.',
+        'Authentification multifacteur ajoutée au parcours des 3 500 artisans partenaires.',
         'Workflow de filtrage des e-mails transactionnels en place.',
         'Livrables externes validés par rapport aux exigences avant mise en production.',
       ],
-      highlights: ['Authentification multifacteur', 'Filtrage des e-mails transactionnels', 'Validation des livrables', 'Besoins métier → spécifications'],
+      highlights: ['MFA pour 3 500 utilisateurs partenaires', 'Filtrage des e-mails transactionnels', 'Validation des livrables', 'Besoins métier → spécifications'],
       build: [
         { title: 'Besoin métier', detail: 'Besoins recueillis avec les équipes métier et traduits en spécifications techniques.' },
-        { title: 'MFA', detail: 'Un second facteur d’authentification protège l’accès client.' },
+        { title: 'MFA', detail: 'Un second facteur d’authentification protège l’accès des 3 500 artisans partenaires de Domofinance.' },
         { title: 'Filtrage e-mails', detail: 'Les e-mails transactionnels passent par un workflow de filtrage.' },
         { title: 'Symfony · API Platform', detail: 'Back-end et API, suivis en performance et maintenabilité.' },
         { title: 'Validation', detail: 'Livrables partenaires vérifiés avant mise en production, en cycles Scrum.' },
@@ -364,8 +378,8 @@ export const fr: FrOverlay = {
     'edu-accommodation': {
       title: 'Application de gestion des dossiers d’aménagement',
       context: 'Éducation nationale · Freelance',
-      description: 'Application PHP interne pour enregistrer, suivre et partager les dossiers d’aménagement des élèves entre établissements.',
-      problem: 'Les dossiers étaient gérés à la main et dispersés entre établissements : un suivi lent et source d’erreurs pour le personnel.',
+      description: 'Application PHP interne pour enregistrer, suivre et partager les dossiers d’aménagement des élèves, pour tout le bassin scolaire d’Alès.',
+      problem: 'Les dossiers étaient gérés à la main et dispersés entre tous les établissements du bassin : un suivi lent et source d’erreurs pour le personnel.',
       outcome: ['Un espace central et sécurisé pour chaque dossier élève.', 'Plusieurs workflows administratifs automatisés.', 'Personnel formé et autonome sur l’outil.'],
       highlights: ['Base de données dédiée', 'Interfaces sécurisées', 'Workflows automatisés', 'Formation des utilisateurs'],
       build: [

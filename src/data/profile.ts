@@ -68,10 +68,10 @@ const companies = {
     logos: ['./logos/education.svg', 'https://www.education.gouv.fr/libraries/dsfr/dist/favicon/favicon.svg'],
     sector: 'French Ministry of Education',
     about:
-      'The French Ministry of National Education runs public schools across the country. This mission was carried out for schools in the Gard département (Alès area), to digitise how staff manage students’ administrative files.',
+      'The French Ministry of National Education runs public schools across the country. This mission was carried out for the whole Alès school catchment area, in the Gard département, to digitise how staff manage students’ administrative files.',
     facts: [
       { value: 'Public', label: 'sector' },
-      { value: 'Gard', label: 'schools served' },
+      { value: 'Alès (Gard)', label: 'whole catchment area' },
       { value: 'Remote', label: 'freelance mission' },
     ],
     url: 'https://www.education.gouv.fr',
@@ -155,7 +155,8 @@ export const experiences: Experience[] = [
     location: 'Paris, Île-de-France',
     mode: 'On-site',
     current: true,
-    summary: 'Developing the publisher’s Symfony web platform within the in-house technical team.',
+    summary:
+      'Developing the publisher’s Symfony web platform within the in-house technical team, including DBooker, the author-facing portal.',
     missions: [
       {
         title: 'Development',
@@ -164,9 +165,16 @@ export const experiences: Experience[] = [
           'Apply the team’s code-quality, review and testing practices.',
         ],
       },
+      {
+        title: 'DBooker author portal',
+        items: [
+          'Set up a dedicated local environment (Apache vhost, its own domain) to test the DBooker author portal’s branding in isolation from the main platform.',
+          'Used a local mail-interception tool to test transactional e-mails without sending anything real.',
+        ],
+      },
     ],
     stack: ['Symfony', 'PHP', 'MySQL'],
-    skills: ['PHP', 'Symfony', 'Web development'],
+    skills: ['PHP', 'Symfony', 'Web development', 'Apache', 'Environment setup'],
   },
   {
     id: 'acelys',
@@ -221,7 +229,8 @@ export const experiences: Experience[] = [
     duration: '1 month',
     location: 'Gard (Alès), Occitanie',
     mode: 'Remote',
-    summary: 'Full development of an internal application to manage students’ academic accommodation files, from database design to staff training.',
+    summary:
+      'Full development of an internal application to manage students’ academic accommodation files across the whole Alès school catchment area (Gard), from database design to staff training.',
     missions: [
       {
         title: 'Delivered',
@@ -291,11 +300,15 @@ export const experiences: Experience[] = [
       },
       {
         title: 'Visibility',
-        items: ['Structured the association’s whole visibility, from its website outwards.'],
+        items: [
+          'Managed the domain name and hosting for the website and the association’s e-mail addresses.',
+          'Set up and ran the association’s social media presence.',
+          'Defined the visual identity (logo, colours) carried across the website and social media.',
+        ],
       },
     ],
     stack: ['WordPress', 'HTML/CSS', 'SEO'],
-    skills: ['Project management', 'Web design', 'SEO'],
+    skills: ['Project management', 'Web design', 'SEO', 'Brand identity', 'Social media'],
     projectIds: ['aeroboat-site'],
   },
   {
@@ -328,18 +341,19 @@ export const projects: Project[] = [
     context: 'Acelys × Domofinance (BNP Paribas × EDF)',
     experienceId: 'acelys',
     year: '2026',
-    description: 'Multi-factor authentication and transaction e-mail filtering on Domofinance’s platforms, plus validation of external partners’ deliverables.',
+    description:
+      'Multi-factor authentication and transaction e-mail filtering on the portal used by Domofinance’s 3,500 partner tradespeople, plus validation of external partners’ deliverables.',
     problem:
-      'A regulated credit platform needs strong customer authentication and trustworthy transactional e-mails, while several external teams deliver code that must be checked before it reaches production.',
+      'A regulated credit platform needs strong authentication for every one of its 3,500 partner tradespeople and trustworthy transactional e-mails, while several external teams deliver code that must be checked before it reaches production.',
     outcome: [
-      'Multi-factor authentication added to the customer journey.',
+      'Multi-factor authentication added to the journey of all 3,500 partner tradespeople.',
       'Transaction e-mail filtering workflow in place.',
       'External deliverables validated against requirements before release.',
     ],
-    highlights: ['Multi-factor authentication', 'Transaction e-mail filtering', 'Deliverable validation', 'Business needs → specifications'],
+    highlights: ['MFA for 3,500 partner users', 'Transaction e-mail filtering', 'Deliverable validation', 'Business needs → specifications'],
     build: [
       { icon: 'file', title: 'Business need', detail: 'Requirements gathered with business teams and turned into technical specifications.' },
-      { icon: 'shield', title: 'MFA', detail: 'A second authentication factor protects customer access.' },
+      { icon: 'shield', title: 'MFA', detail: 'A second authentication factor protects access for Domofinance’s 3,500 partner tradespeople.' },
       { icon: 'mail', title: 'E-mail filtering', detail: 'Transactional e-mails go through a filtering workflow.' },
       { icon: 'server', title: 'Symfony · API Platform', detail: 'Back-end and APIs, monitored for performance and maintainability.' },
       { icon: 'check', title: 'Validation', detail: 'Partner deliverables checked before release, in Scrum cycles.' },
@@ -382,8 +396,8 @@ export const projects: Project[] = [
     context: 'Éducation Nationale · Freelance',
     experienceId: 'education',
     year: '2026',
-    description: 'Internal PHP application to record, track and share students’ academic accommodation files across schools.',
-    problem: 'Accommodation files were handled manually and scattered across schools, making follow-up slow and error-prone for staff.',
+    description: 'Internal PHP application to record, track and share students’ academic accommodation files across the whole Alès school catchment area.',
+    problem: 'Accommodation files were handled manually and scattered across every school of the catchment area, making follow-up slow and error-prone for staff.',
     outcome: ['One central, secure place for every student file.', 'Several administrative workflows automated.', 'Staff trained and autonomous on the tool.'],
     highlights: ['Dedicated relational database', 'Secure staff interfaces', 'Automated workflows', 'User training'],
     build: [

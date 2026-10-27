@@ -1,7 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ExperiencePage } from './pages/ExperiencePage';
-import { ProjectPage } from './pages/ProjectPage';
-import { EducationPage } from './pages/EducationPage';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { findEducationPage } from './data/educationPages';
 import { href, navigate, useRoute } from './router';
 import { CommandPalette } from './components/CommandPalette';
@@ -21,6 +18,10 @@ import { StackLine } from './components/fx/StackLine';
 import { AnimatePresence, motion } from 'framer-motion';
 import { findExperience, findProject, profile } from './data/profile';
 import type { Tech } from './types';
+
+const ExperiencePage = lazy(() => import('./pages/ExperiencePage').then((m) => ({ default: m.ExperiencePage })));
+const ProjectPage = lazy(() => import('./pages/ProjectPage').then((m) => ({ default: m.ProjectPage })));
+const EducationPage = lazy(() => import('./pages/EducationPage').then((m) => ({ default: m.EducationPage })));
 
 /** Plain paper, with a whisper of fibre so the large flat areas don't look digital. */
 function Backdrop() {
@@ -151,7 +152,9 @@ function Portfolio() {
       <HyperToast />
       <Navbar key={route.name} onHome={route.name === 'home'} onFilter={filterProjects} onOpenExperience={openExperience} onFocusProject={openProject} onContact={openContact} onPalette={openPalette} />
       <main id="main" tabIndex={-1} className="outline-none">
-        {page ?? (
+        {page ? (
+          <Suspense fallback={<div className="min-h-screen" />}>{page}</Suspense>
+        ) : (
           <>
             <Hero onContact={openContact} />
             <StackLine />
