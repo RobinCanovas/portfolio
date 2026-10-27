@@ -256,7 +256,8 @@ export const experiences: Experience[] = [
     duration: '5 months',
     location: 'Paris area',
     mode: 'On-site',
-    summary: 'Developed and maintained environmental software and took part in its certification against the applicable standard.',
+    summary:
+      'Developed and maintained the environmental software that collects and processes the data of analysis bays installed on industrial sites, and took part in its certification against the applicable standard.',
     missions: [
       {
         title: 'Software & certification',
@@ -270,7 +271,7 @@ export const experiences: Experience[] = [
       },
       {
         title: 'Innovation',
-        items: ['Supported the analysis of system diagnostics, with the introduction of AI.'],
+        items: ['Supported the analysis of system diagnostics, with the first introduction of AI to speed up fault-finding.'],
       },
     ],
     stack: ['Java', 'AI', 'MySQL', 'Agile'],
@@ -416,11 +417,12 @@ export const projects: Project[] = [
     experienceId: 'solstice',
     year: '2025',
     description: 'New features and certification work on environmental monitoring software, automated database queries and AI-assisted diagnostics.',
-    problem: 'Industrial sites must report emissions data reliably under strict standards; the software has to be certified and faults diagnosed quickly.',
+    problem:
+      'Industrial sites must monitor and report their atmospheric emissions reliably under strict standards. Gas analysis bays measure continuously on site; the software that collects, processes and reports their data has to be certified, and faults have to be diagnosed quickly.',
     outcome: ['New features integrated into the existing software.', 'Contribution to the certification process.', 'Database queries automated.', 'First steps of AI in system diagnostics.'],
     highlights: ['Java features & maintenance', 'Standards certification', 'Database query automation', 'AI for diagnostics'],
     build: [
-      { icon: 'cpu', title: 'Measurements', detail: 'Environmental data acquired from on-site analysers.' },
+      { icon: 'cpu', title: 'Analysis bays', detail: 'Racks of gas analysers installed on industrial sites measure emissions continuously and feed the software.' },
       { icon: 'code', title: 'Java software', detail: 'Features, fixes and performance work on the application.' },
       { icon: 'database', title: 'Automated queries', detail: 'Recurring database queries automated.' },
       { icon: 'search', title: 'AI diagnostics', detail: 'AI introduced to help analyse system diagnostics.' },
@@ -741,7 +743,7 @@ export const education: Education[] = [
     degree: 'Baccalauréat général, Mathematics & Computer Science',
     period: '2022 → 2024',
     logos: ['./logos/lycee-francoise-combes-logo.png'],
-    details: ['Specialities: Mathematics and NSI (computer science).', 'Options: Mathématiques Expertes, Theatre.'],
+    details: ['Specialities: Mathematics and NSI (computer science).', 'Options: Mathématiques Expertes, Theatre.', 'Baccalauréat obtained one year early.'],
   },
 ];
 
