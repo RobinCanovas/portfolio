@@ -9,12 +9,12 @@ export const links: SocialLinks = {
 
 export const profile = {
   name: 'Robin Canovas',
-  title: 'Computer Science Student & Development Analyst',
+  title: 'Computer Science Student · Data, AI & Finance',
   location: 'Paris, France',
   status: 'Open to opportunities',
   currentRole: 'Web Developer @ Éditions Ellipses',
   pitch:
-    'Work-study computer science student at the IUT d’Orsay (Université Paris-Saclay), I’m building a generalist profile, strong in both maths and computing, with a clear goal: a selective master’s programme or a grande école. Alongside my studies, I already turn business requirements into secure, reliable software, including for a subsidiary of BNP Paribas and EDF.',
+    'Work-study computer science student at the IUT d’Orsay (Université Paris-Saclay), I’m building a generalist profile, strong in both maths and computing, with a clear goal: a selective master’s programme or a grande école. Alongside my studies, I already turn business requirements into secure, reliable software, including for a subsidiary of BNP Paribas and EDF. Next, I want to go deeper into data, AI and finance.',
   ambition: 'My study project: after the BUT, a selective master’s or a grande école, to go deeper into maths, data and decision-making. In the long run, I want demanding roles where technology informs decisions, without closing any doors.',
   /** Head-and-shoulders portrait, 4:5, framed on the face. */
   portrait: './robin-canovas.jpg',
