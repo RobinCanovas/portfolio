@@ -9,12 +9,12 @@ export const links: SocialLinks = {
 
 export const profile = {
   name: 'Robin Canovas',
-  title: 'Computer Science Student & Development Analyst',
+  title: 'Computer Science Student · Data, AI & Finance',
   location: 'Paris, France',
   status: 'Open to opportunities',
   currentRole: 'Web Developer @ Éditions Ellipses',
   pitch:
-    'Work-study computer science student at the IUT d’Orsay (Université Paris-Saclay), I’m building a generalist profile, strong in both maths and computing, with a clear goal: a selective master’s programme or a grande école. Alongside my studies, I already turn business requirements into secure, reliable software, including for a subsidiary of BNP Paribas and EDF.',
+    'Work-study computer science student at the IUT d’Orsay (Université Paris-Saclay), I’m building a generalist profile, strong in both maths and computing, with a clear goal: a selective master’s programme or a grande école. Alongside my studies, I already turn business requirements into secure, reliable software, including for a subsidiary of BNP Paribas and EDF. Next, I want to go deeper into data, AI and finance.',
   ambition: 'My study project: after the BUT, a selective master’s or a grande école, to go deeper into maths, data and decision-making. In the long run, I want demanding roles where technology informs decisions, without closing any doors.',
   /** Head-and-shoulders portrait, 4:5, framed on the face. */
   portrait: './robin-canovas.jpg',
@@ -68,10 +68,10 @@ const companies = {
     logos: ['./logos/education.svg', 'https://www.education.gouv.fr/libraries/dsfr/dist/favicon/favicon.svg'],
     sector: 'French Ministry of Education',
     about:
-      'The French Ministry of National Education runs public schools across the country. This mission was carried out for schools in the Gard département (Alès area), to digitise how staff manage students’ administrative files.',
+      'The French Ministry of National Education runs public schools across the country. This mission was carried out for the whole Alès school catchment area, in the Gard département, to digitise how staff manage students’ administrative files.',
     facts: [
       { value: 'Public', label: 'sector' },
-      { value: 'Gard', label: 'schools served' },
+      { value: 'Alès (Gard)', label: 'whole catchment area' },
       { value: 'Remote', label: 'freelance mission' },
     ],
     url: 'https://www.education.gouv.fr',
@@ -155,7 +155,8 @@ export const experiences: Experience[] = [
     location: 'Paris, Île-de-France',
     mode: 'On-site',
     current: true,
-    summary: 'Developing the publisher’s Symfony web platform within the in-house technical team.',
+    summary:
+      'Developing the publisher’s Symfony web platform within the in-house technical team, including DBooker, the author-facing portal.',
     missions: [
       {
         title: 'Development',
@@ -164,9 +165,16 @@ export const experiences: Experience[] = [
           'Apply the team’s code-quality, review and testing practices.',
         ],
       },
+      {
+        title: 'DBooker author portal',
+        items: [
+          'Set up a dedicated local environment (Apache vhost, its own domain) to test the DBooker author portal’s branding in isolation from the main platform.',
+          'Used a local mail-interception tool to test transactional e-mails without sending anything real.',
+        ],
+      },
     ],
     stack: ['Symfony', 'PHP', 'MySQL'],
-    skills: ['PHP', 'Symfony', 'Web development'],
+    skills: ['PHP', 'Symfony', 'Web development', 'Apache', 'Environment setup'],
   },
   {
     id: 'acelys',
@@ -221,7 +229,8 @@ export const experiences: Experience[] = [
     duration: '1 month',
     location: 'Gard (Alès), Occitanie',
     mode: 'Remote',
-    summary: 'Full development of an internal application to manage students’ academic accommodation files, from database design to staff training.',
+    summary:
+      'Full development of an internal application to manage students’ academic accommodation files across the whole Alès school catchment area (Gard), from database design to staff training.',
     missions: [
       {
         title: 'Delivered',
@@ -247,7 +256,8 @@ export const experiences: Experience[] = [
     duration: '5 months',
     location: 'Paris area',
     mode: 'On-site',
-    summary: 'Developed and maintained environmental software and took part in its certification against the applicable standard.',
+    summary:
+      'Developed and maintained the environmental software that collects and processes the data of analysis bays installed on industrial sites, and took part in its certification against the applicable standard.',
     missions: [
       {
         title: 'Software & certification',
@@ -261,7 +271,7 @@ export const experiences: Experience[] = [
       },
       {
         title: 'Innovation',
-        items: ['Supported the analysis of system diagnostics, with the introduction of AI.'],
+        items: ['Supported the analysis of system diagnostics, with the first introduction of AI to speed up fault-finding.'],
       },
     ],
     stack: ['Java', 'AI', 'MySQL', 'Agile'],
@@ -291,11 +301,15 @@ export const experiences: Experience[] = [
       },
       {
         title: 'Visibility',
-        items: ['Structured the association’s whole visibility, from its website outwards.'],
+        items: [
+          'Managed the domain name and hosting for the website and the association’s e-mail addresses.',
+          'Set up and ran the association’s social media presence.',
+          'Defined the visual identity (logo, colours) carried across the website and social media.',
+        ],
       },
     ],
     stack: ['WordPress', 'HTML/CSS', 'SEO'],
-    skills: ['Project management', 'Web design', 'SEO'],
+    skills: ['Project management', 'Web design', 'SEO', 'Brand identity', 'Social media'],
     projectIds: ['aeroboat-site'],
   },
   {
@@ -328,18 +342,19 @@ export const projects: Project[] = [
     context: 'Acelys × Domofinance (BNP Paribas × EDF)',
     experienceId: 'acelys',
     year: '2026',
-    description: 'Multi-factor authentication and transaction e-mail filtering on Domofinance’s platforms, plus validation of external partners’ deliverables.',
+    description:
+      'Multi-factor authentication and transaction e-mail filtering on the portal used by Domofinance’s 3,500 partner tradespeople, plus validation of external partners’ deliverables.',
     problem:
-      'A regulated credit platform needs strong customer authentication and trustworthy transactional e-mails, while several external teams deliver code that must be checked before it reaches production.',
+      'A regulated credit platform needs strong authentication for every one of its 3,500 partner tradespeople and trustworthy transactional e-mails, while several external teams deliver code that must be checked before it reaches production.',
     outcome: [
-      'Multi-factor authentication added to the customer journey.',
+      'Multi-factor authentication added to the journey of all 3,500 partner tradespeople.',
       'Transaction e-mail filtering workflow in place.',
       'External deliverables validated against requirements before release.',
     ],
-    highlights: ['Multi-factor authentication', 'Transaction e-mail filtering', 'Deliverable validation', 'Business needs → specifications'],
+    highlights: ['MFA for 3,500 partner users', 'Transaction e-mail filtering', 'Deliverable validation', 'Business needs → specifications'],
     build: [
       { icon: 'file', title: 'Business need', detail: 'Requirements gathered with business teams and turned into technical specifications.' },
-      { icon: 'shield', title: 'MFA', detail: 'A second authentication factor protects customer access.' },
+      { icon: 'shield', title: 'MFA', detail: 'A second authentication factor protects access for Domofinance’s 3,500 partner tradespeople.' },
       { icon: 'mail', title: 'E-mail filtering', detail: 'Transactional e-mails go through a filtering workflow.' },
       { icon: 'server', title: 'Symfony · API Platform', detail: 'Back-end and APIs, monitored for performance and maintainability.' },
       { icon: 'check', title: 'Validation', detail: 'Partner deliverables checked before release, in Scrum cycles.' },
@@ -382,8 +397,8 @@ export const projects: Project[] = [
     context: 'Éducation Nationale · Freelance',
     experienceId: 'education',
     year: '2026',
-    description: 'Internal PHP application to record, track and share students’ academic accommodation files across schools.',
-    problem: 'Accommodation files were handled manually and scattered across schools, making follow-up slow and error-prone for staff.',
+    description: 'Internal PHP application to record, track and share students’ academic accommodation files across the whole Alès school catchment area.',
+    problem: 'Accommodation files were handled manually and scattered across every school of the catchment area, making follow-up slow and error-prone for staff.',
     outcome: ['One central, secure place for every student file.', 'Several administrative workflows automated.', 'Staff trained and autonomous on the tool.'],
     highlights: ['Dedicated relational database', 'Secure staff interfaces', 'Automated workflows', 'User training'],
     build: [
@@ -402,11 +417,12 @@ export const projects: Project[] = [
     experienceId: 'solstice',
     year: '2025',
     description: 'New features and certification work on environmental monitoring software, automated database queries and AI-assisted diagnostics.',
-    problem: 'Industrial sites must report emissions data reliably under strict standards; the software has to be certified and faults diagnosed quickly.',
+    problem:
+      'Industrial sites must monitor and report their atmospheric emissions reliably under strict standards. Gas analysis bays measure continuously on site; the software that collects, processes and reports their data has to be certified, and faults have to be diagnosed quickly.',
     outcome: ['New features integrated into the existing software.', 'Contribution to the certification process.', 'Database queries automated.', 'First steps of AI in system diagnostics.'],
     highlights: ['Java features & maintenance', 'Standards certification', 'Database query automation', 'AI for diagnostics'],
     build: [
-      { icon: 'cpu', title: 'Measurements', detail: 'Environmental data acquired from on-site analysers.' },
+      { icon: 'cpu', title: 'Analysis bays', detail: 'Racks of gas analysers installed on industrial sites measure emissions continuously and feed the software.' },
       { icon: 'code', title: 'Java software', detail: 'Features, fixes and performance work on the application.' },
       { icon: 'database', title: 'Automated queries', detail: 'Recurring database queries automated.' },
       { icon: 'search', title: 'AI diagnostics', detail: 'AI introduced to help analyse system diagnostics.' },
@@ -677,6 +693,31 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
     ],
     stack: ['Python', 'AI'],
   },
+  {
+    id: 'wastewater-cuve',
+    title: 'Home wastewater treatment tank — innovation contest, patent filed',
+    context: 'Lycée Françoise Combes, excellence boarding school · Innovation contest, team of 4 (team coordinator)',
+    year: '2022',
+    description:
+      'A high-school innovation contest project: a home wastewater treatment tank, shaped like a cumulus water heater, combining an activated-carbon filter with algae-based biological depollution. Won the contest, with a patent filed on the idea.',
+    problem:
+      'Treating wastewater at the source would save water for households and recover value from the pollutants removed, instead of sending everything to a municipal plant.',
+    outcome: [
+      'Concept of a cumulus-shaped tank, in several formats depending on the household.',
+      'Two-stage treatment: activated-carbon filtration, then biological depollution by algae identified in the team’s research.',
+      'A collection system turning the removed sludge into biomass, sellable to companies — alongside water savings for the household.',
+      'Contest won; a patent filed on the idea, with priority rights still active today.',
+    ],
+    highlights: ['Team coordination (4 people)', 'Research-backed concept', 'Activated carbon + algae filtration', 'Patent filed'],
+    build: [
+      { icon: 'search', title: 'Research', detail: 'Studies reviewed on algae capable of depolluting water, used as the starting point.' },
+      { icon: 'layout', title: 'Concept', detail: 'A cumulus-shaped home tank, in several formats depending on the household.' },
+      { icon: 'cpu', title: 'Filtration', detail: 'Water passes through an activated-carbon filter, then an algae-based biological stage.' },
+      { icon: 'database', title: 'Waste → biomass', detail: 'Removed sludge collected and sold on as biomass.' },
+      { icon: 'check', title: 'Result', detail: 'Contest won; the idea patented, with priority rights still active today.' },
+    ],
+    stack: [],
+  },
 ];
 
 export const projectFilters: Tech[] = ['Symfony', 'React', 'PHP', 'Java', 'MySQL', 'Networks', 'Ansible', 'Security', 'Maths', 'AI', 'HTML/CSS', 'WordPress', 'Python'];
@@ -702,7 +743,7 @@ export const education: Education[] = [
     degree: 'Baccalauréat général, Mathematics & Computer Science',
     period: '2022 → 2024',
     logos: ['./logos/lycee-francoise-combes-logo.png'],
-    details: ['Specialities: Mathematics and NSI (computer science).', 'Options: Mathématiques Expertes, Theatre.'],
+    details: ['Specialities: Mathematics and NSI (computer science).', 'Options: Mathématiques Expertes, Theatre.', 'Baccalauréat obtained one year early.'],
   },
 ];
 

@@ -47,12 +47,12 @@ export const fr: FrOverlay = {
   links: { cv: './Robin-Canovas-CV.pdf' },
 
   profile: {
-    title: 'Étudiant en informatique & analyste développement',
+    title: 'Étudiant en informatique · Data, IA & finance',
     location: 'Paris, France',
     status: 'Ouvert aux opportunités',
     currentRole: 'Développeur web @ Éditions Ellipses',
     pitch:
-      'Étudiant en BUT Informatique en alternance à l’IUT d’Orsay (Université Paris-Saclay), je construis un profil généraliste, solide en maths comme en informatique, avec un objectif clair : un master sélectif ou une grande école. En parallèle de mes études, je transforme déjà des besoins métier en logiciels sûrs et fiables, y compris pour une filiale de BNP Paribas et d’EDF.',
+      'Étudiant en BUT Informatique en alternance à l’IUT d’Orsay (Université Paris-Saclay), je construis un profil généraliste, solide en maths comme en informatique, avec un objectif clair : un master sélectif ou une grande école. En parallèle de mes études, je transforme déjà des besoins métier en logiciels sûrs et fiables, y compris pour une filiale de BNP Paribas et d’EDF. La suite : aller plus loin dans la data, l’IA et la finance.',
     ambition: 'Mon projet d’études : après le BUT, un master sélectif ou une grande école, pour approfondir les maths, la data et la prise de décision. À plus long terme, je vise des métiers exigeants où la technologie éclaire les décisions, sans me fermer de portes.',
   },
 
@@ -72,8 +72,8 @@ export const fr: FrOverlay = {
     education: {
       sector: 'Ministère de l’Éducation nationale',
       about:
-        'Le ministère de l’Éducation nationale gère les établissements publics du pays. Cette mission a été réalisée pour des établissements du Gard (secteur d’Alès), afin de numériser la gestion des dossiers administratifs des élèves.',
-      facts: [{ value: 'Public', label: 'secteur' }, { label: 'établissements servis' }, { value: 'À distance', label: 'mission freelance' }],
+        'Le ministère de l’Éducation nationale gère les établissements publics du pays. Cette mission a été réalisée pour tout le bassin scolaire d’Alès, dans le Gard, afin de numériser la gestion des dossiers administratifs des élèves.',
+      facts: [{ value: 'Public', label: 'secteur' }, { value: 'Alès (Gard)', label: 'bassin scolaire complet' }, { value: 'À distance', label: 'mission freelance' }],
     },
     solstice: {
       sector: 'Mesure environnementale & logiciel industriel',
@@ -110,14 +110,22 @@ export const fr: FrOverlay = {
       period: 'Sept. 2026 → aujourd’hui',
       duration: 'En cours',
       location: 'Paris, Île-de-France',
-      summary: 'Développement de la plateforme web Symfony de l’éditeur, au sein de l’équipe technique interne.',
+      summary:
+        'Développement de la plateforme web Symfony de l’éditeur, au sein de l’équipe technique interne, dont DBooker, l’espace dédié aux auteurs.',
       missions: [
         {
           title: 'Développement',
           items: ['Développer et maintenir des fonctionnalités de la plateforme Symfony / PHP de l’éditeur.', 'Appliquer les pratiques de qualité, de revue de code et de tests de l’équipe.'],
         },
+        {
+          title: 'Espace auteur DBooker',
+          items: [
+            'Mise en place d’un environnement local dédié (vhost Apache, domaine propre) pour tester le branding de l’espace auteur DBooker isolément de la plateforme principale.',
+            'Utilisation d’un outil local d’interception des e-mails pour tester les e-mails transactionnels sans en envoyer de réels.',
+          ],
+        },
       ],
-      skills: ['PHP', 'Symfony', 'Développement web'],
+      skills: ['PHP', 'Symfony', 'Développement web', 'Apache', 'Configuration d’environnement'],
     },
     acelys: {
       role: 'Analyste du développement',
@@ -161,7 +169,8 @@ export const fr: FrOverlay = {
       period: 'Janv. 2026 → févr. 2026',
       duration: '1 mois',
       location: 'Gard (Alès), Occitanie',
-      summary: 'Développement complet d’une application interne de gestion des dossiers d’aménagement des élèves, de la conception de la base à la formation du personnel.',
+      summary:
+        'Développement complet d’une application interne de gestion des dossiers d’aménagement des élèves pour tout le bassin scolaire d’Alès (Gard), de la conception de la base à la formation du personnel.',
       missions: [
         {
           title: 'Réalisé',
@@ -181,7 +190,8 @@ export const fr: FrOverlay = {
       period: 'Sept. 2025 → janv. 2026',
       duration: '5 mois',
       location: 'Paris et périphérie',
-      summary: 'Développement et maintenance d’un logiciel environnemental, et participation à sa certification selon la norme applicable.',
+      summary:
+        'Développement et maintenance du logiciel environnemental qui collecte et traite les données des baies d’analyse installées sur des sites industriels, et participation à sa certification selon la norme applicable.',
       missions: [
         {
           title: 'Logiciel & certification',
@@ -193,7 +203,7 @@ export const fr: FrOverlay = {
             'Qualité du code et maintenance logicielle.',
           ],
         },
-        { title: 'Innovation', items: ['Accompagnement de l’analyse des diagnostics système, avec l’introduction de l’IA.'] },
+        { title: 'Innovation', items: ['Accompagnement de l’analyse des diagnostics système, avec une première introduction de l’IA pour accélérer la recherche de pannes.'] },
       ],
       skills: ['Java', 'Autonomie', 'Certification', 'Performance'],
     },
@@ -216,10 +226,14 @@ export const fr: FrOverlay = {
         },
         {
           title: 'Visibilité',
-          items: ['Structuration de l’ensemble de la visibilité de l’association, à partir du site.'],
+          items: [
+            'Gestion du nom de domaine, de l’hébergement du site et des adresses e-mail de l’association.',
+            'Mise en place et animation de la présence de l’association sur les réseaux sociaux.',
+            'Définition de l’identité visuelle (logo, couleurs) déclinée sur le site et les réseaux sociaux.',
+          ],
         },
       ],
-      skills: ['Gestion de projet', 'Web design', 'SEO'],
+      skills: ['Gestion de projet', 'Web design', 'SEO', 'Identité de marque', 'Réseaux sociaux'],
     },
     boulanger: {
       role: 'Conseiller vente & services',
@@ -236,18 +250,19 @@ export const fr: FrOverlay = {
     'domofinance-mfa': {
       title: 'MFA et sécurité des e-mails d’une plateforme de crédit',
       context: 'Acelys × Domofinance (BNP Paribas × EDF)',
-      description: 'Authentification multifacteur et filtrage des e-mails transactionnels sur les plateformes Domofinance, et validation des livrables des partenaires externes.',
+      description:
+        'Authentification multifacteur et filtrage des e-mails transactionnels sur le portail utilisé par les 3 500 artisans partenaires de Domofinance, et validation des livrables des partenaires externes.',
       problem:
-        'Une plateforme de crédit réglementée doit authentifier fortement ses clients et fiabiliser ses e-mails transactionnels, tandis que plusieurs équipes externes livrent du code qu’il faut vérifier avant la mise en production.',
+        'Une plateforme de crédit réglementée doit authentifier fortement chacun de ses 3 500 artisans partenaires et fiabiliser ses e-mails transactionnels, tandis que plusieurs équipes externes livrent du code qu’il faut vérifier avant la mise en production.',
       outcome: [
-        'Authentification multifacteur ajoutée au parcours client.',
+        'Authentification multifacteur ajoutée au parcours des 3 500 artisans partenaires.',
         'Workflow de filtrage des e-mails transactionnels en place.',
         'Livrables externes validés par rapport aux exigences avant mise en production.',
       ],
-      highlights: ['Authentification multifacteur', 'Filtrage des e-mails transactionnels', 'Validation des livrables', 'Besoins métier → spécifications'],
+      highlights: ['MFA pour 3 500 utilisateurs partenaires', 'Filtrage des e-mails transactionnels', 'Validation des livrables', 'Besoins métier → spécifications'],
       build: [
         { title: 'Besoin métier', detail: 'Besoins recueillis avec les équipes métier et traduits en spécifications techniques.' },
-        { title: 'MFA', detail: 'Un second facteur d’authentification protège l’accès client.' },
+        { title: 'MFA', detail: 'Un second facteur d’authentification protège l’accès des 3 500 artisans partenaires de Domofinance.' },
         { title: 'Filtrage e-mails', detail: 'Les e-mails transactionnels passent par un workflow de filtrage.' },
         { title: 'Symfony · API Platform', detail: 'Back-end et API, suivis en performance et maintenabilité.' },
         { title: 'Validation', detail: 'Livrables partenaires vérifiés avant mise en production, en cycles Scrum.' },
@@ -364,8 +379,8 @@ export const fr: FrOverlay = {
     'edu-accommodation': {
       title: 'Application de gestion des dossiers d’aménagement',
       context: 'Éducation nationale · Freelance',
-      description: 'Application PHP interne pour enregistrer, suivre et partager les dossiers d’aménagement des élèves entre établissements.',
-      problem: 'Les dossiers étaient gérés à la main et dispersés entre établissements : un suivi lent et source d’erreurs pour le personnel.',
+      description: 'Application PHP interne pour enregistrer, suivre et partager les dossiers d’aménagement des élèves, pour tout le bassin scolaire d’Alès.',
+      problem: 'Les dossiers étaient gérés à la main et dispersés entre tous les établissements du bassin : un suivi lent et source d’erreurs pour le personnel.',
       outcome: ['Un espace central et sécurisé pour chaque dossier élève.', 'Plusieurs workflows administratifs automatisés.', 'Personnel formé et autonome sur l’outil.'],
       highlights: ['Base de données dédiée', 'Interfaces sécurisées', 'Workflows automatisés', 'Formation des utilisateurs'],
       build: [
@@ -379,11 +394,12 @@ export const fr: FrOverlay = {
       title: 'Logiciel environnemental & diagnostics par IA',
       context: 'Solutions Solstice · Alternance',
       description: 'Nouvelles fonctionnalités et certification d’un logiciel de surveillance environnementale, automatisation de requêtes et diagnostics assistés par IA.',
-      problem: 'Les sites industriels doivent déclarer leurs émissions de façon fiable selon des normes strictes : le logiciel doit être certifié et les pannes diagnostiquées rapidement.',
+      problem:
+        'Les sites industriels doivent surveiller et déclarer leurs rejets atmosphériques de façon fiable selon des normes strictes. Des baies d’analyse de gaz mesurent en continu sur site ; le logiciel qui collecte, traite et restitue leurs données doit être certifié, et les pannes diagnostiquées rapidement.',
       outcome: ['Nouvelles fonctionnalités intégrées au logiciel.', 'Contribution au processus de certification.', 'Requêtes base de données automatisées.', 'Premiers pas de l’IA dans les diagnostics système.'],
       highlights: ['Fonctionnalités & maintenance Java', 'Certification selon la norme', 'Automatisation de requêtes', 'IA pour les diagnostics'],
       build: [
-        { title: 'Mesures', detail: 'Données environnementales acquises depuis les analyseurs sur site.' },
+        { title: 'Baies d’analyse', detail: 'Des baies d’analyseurs de gaz installées sur les sites industriels mesurent les rejets en continu et alimentent le logiciel.' },
         { title: 'Logiciel Java', detail: 'Fonctionnalités, corrections et performance de l’application.' },
         { title: 'Requêtes automatisées', detail: 'Requêtes récurrentes vers la base automatisées.' },
         { title: 'Diagnostics IA', detail: 'L’IA introduite pour aider à analyser les diagnostics système.' },
@@ -483,6 +499,28 @@ export const fr: FrOverlay = {
         { title: 'NumPy', detail: 'Calculs de l’état du jeu.' },
       ],
     },
+    'wastewater-cuve': {
+      title: 'Cuve de traitement des eaux usées — concours d’innovation, brevet déposé',
+      context: 'Lycée Françoise Combes, internat d’excellence · Concours d’innovation, équipe de 4 (coordinateur d’équipe)',
+      description:
+        'Un projet de concours d’innovation au lycée : une cuve domestique de traitement des eaux usées, sur le modèle d’un cumulus, combinant un filtre à charbon actif et une dépollution biologique par algues. Concours gagné, idée brevetée.',
+      problem:
+        'Traiter les eaux usées à la source permettrait d’économiser l’eau des foyers et de valoriser les déchets retirés, plutôt que de tout envoyer vers une station d’épuration municipale.',
+      outcome: [
+        'Concept de cuve en forme de cumulus, en plusieurs formats selon le foyer.',
+        'Traitement en deux étapes : filtration par charbon actif, puis dépollution biologique par des algues identifiées lors des recherches de l’équipe.',
+        'Un système de collecte transformant les boues retirées en biomasse revendable aux entreprises, en plus de l’économie d’eau pour le foyer.',
+        'Concours gagné ; un brevet déposé sur l’idée, toujours actif avec un droit de priorité.',
+      ],
+      highlights: ['Coordination d’équipe (4 personnes)', 'Concept appuyé sur des études', 'Filtration charbon actif + algues', 'Brevet déposé'],
+      build: [
+        { title: 'Recherche', detail: 'Études passées en revue sur des algues capables de dépolluer l’eau, point de départ du projet.' },
+        { title: 'Concept', detail: 'Une cuve domestique en forme de cumulus, en plusieurs formats selon le foyer.' },
+        { title: 'Filtration', detail: 'L’eau passe par un filtre à charbon actif, puis une étape biologique à base d’algues.' },
+        { title: 'Déchets → biomasse', detail: 'Les boues retirées sont collectées et revendues comme biomasse.' },
+        { title: 'Résultat', detail: 'Concours gagné ; idée brevetée, avec un droit de priorité toujours actif aujourd’hui.' },
+      ],
+    },
   },
 
   education: {
@@ -498,7 +536,7 @@ export const fr: FrOverlay = {
     },
     bac: {
       degree: 'Baccalauréat général, Mathématiques & NSI',
-      details: ['Spécialités : Mathématiques et NSI (informatique).', 'Options : Mathématiques expertes, Théâtre.'],
+      details: ['Spécialités : Mathématiques et NSI (informatique).', 'Options : Mathématiques expertes, Théâtre.', 'Baccalauréat obtenu avec un an d’avance.'],
     },
   },
 

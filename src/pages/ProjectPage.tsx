@@ -5,10 +5,6 @@ import { useContent, useLang } from '../i18n';
 import { href } from '../router';
 import { BuildDiagram } from '../components/BuildDiagram';
 import { DevicePreview } from '../components/demos/DevicePreview';
-import { DeployPipeline } from '../components/lab/DeployPipeline';
-import { GradientDescent } from '../components/lab/GradientDescent';
-import { SubnetCalculator } from '../components/lab/SubnetCalculator';
-import { NeuralNetwork } from '../components/lab/NeuralNetwork';
 import { CodeBlock } from '../components/CodeBlock';
 import { hasCapture, ProjectVisual } from '../components/ProjectVisual';
 import { ShareButton } from '../components/ShareButton';
@@ -16,6 +12,10 @@ import { TechIcon } from '../components/TechIcon';
 import { CompanyLogo, LogoTile } from '../components/ui';
 
 const SqlPlayground = lazy(() => import('../components/demos/SqlPlayground').then((m) => ({ default: m.SqlPlayground })));
+const DeployPipeline = lazy(() => import('../components/lab/DeployPipeline').then((m) => ({ default: m.DeployPipeline })));
+const GradientDescent = lazy(() => import('../components/lab/GradientDescent').then((m) => ({ default: m.GradientDescent })));
+const SubnetCalculator = lazy(() => import('../components/lab/SubnetCalculator').then((m) => ({ default: m.SubnetCalculator })));
+const NeuralNetwork = lazy(() => import('../components/lab/NeuralNetwork').then((m) => ({ default: m.NeuralNetwork })));
 
 const fade = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
@@ -182,10 +182,18 @@ export function ProjectPage({ id }: { id: string }) {
           <section aria-labelledby="demo-title">
             <SectionTitle kicker={t('page.tryIt')} title={t('page.liveDemo')} id="demo-title" />
             <div className="panel rounded-xl p-5 sm:p-8">
-              {project.demo === 'deploy' && <DeployPipeline />}
-              {project.demo === 'gradient' && <GradientDescent />}
-              {project.demo === 'subnet' && <SubnetCalculator />}
-              {project.demo === 'neural' && <NeuralNetwork />}
+              <Suspense
+                fallback={
+                  <p className="flex items-center gap-2 text-ink-3">
+                    <Loader2 className="size-4 animate-spin" /> {t('page.loading')}
+                  </p>
+                }
+              >
+                {project.demo === 'deploy' && <DeployPipeline />}
+                {project.demo === 'gradient' && <GradientDescent />}
+                {project.demo === 'subnet' && <SubnetCalculator />}
+                {project.demo === 'neural' && <NeuralNetwork />}
+              </Suspense>
             </div>
           </section>
         )}
