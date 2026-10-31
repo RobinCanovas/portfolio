@@ -23,7 +23,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
   const [afterIntro] = useState(() => !revealed);
 
   const stats = [
-    { value: experiences.filter((e) => !e.minor).length, label: t('hero.stat.experiences') },
+    { value: experiences.filter((e) => !e.minor && e.contract !== 'Volunteer').length, label: t('hero.stat.experiences') },
     { value: 12, suffix: '+', label: t('hero.stat.months') },
     { value: projects.length, label: t('hero.stat.projects') },
     { value: null, text: '2027', label: t('hero.stat.graduation') },

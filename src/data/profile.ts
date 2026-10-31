@@ -282,12 +282,13 @@ export const experiences: Experience[] = [
     id: 'aeroboat',
     company: companies.aeroboat,
     role: 'IT Systems Manager',
-    contract: 'Fixed-term',
-    period: 'Sept. 2025 → Jan. 2026',
-    duration: '5 months',
+    contract: 'Volunteer',
+    period: 'Oct. 2025 → Present',
+    duration: 'Ongoing',
     location: 'Toulouse, Occitanie',
     mode: 'Remote',
-    summary: 'In charge of the association’s IT: designed and built its website, and structured its whole visibility.',
+    current: true,
+    summary: 'Volunteer in charge of the association’s IT: designed and built its website, and structured its whole visibility.',
     missions: [
       {
         title: 'Website',
@@ -433,7 +434,7 @@ export const projects: Project[] = [
   {
     id: 'aeroboat-site',
     title: 'Aeroboat France website',
-    context: 'Aeroboat France · Fixed-term',
+    context: 'Aeroboat France · Volunteer',
     experienceId: 'aeroboat',
     year: '2025',
     description: 'The association’s website, designed and built from scratch: clear navigation, modern identity, responsive and SEO-ready.',

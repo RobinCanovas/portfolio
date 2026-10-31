@@ -209,10 +209,10 @@ export const fr: FrOverlay = {
     },
     aeroboat: {
       role: 'Responsable des systèmes informatiques',
-      period: 'Sept. 2025 → janv. 2026',
-      duration: '5 mois',
+      period: 'Oct. 2025 → aujourd’hui',
+      duration: 'En cours',
       location: 'Toulouse, Occitanie',
-      summary: 'Responsable de l’informatique de l’association : conception et développement de son site web, et structuration de toute sa visibilité.',
+      summary: 'Bénévole responsable de l’informatique de l’association : conception et développement de son site web, et structuration de toute sa visibilité.',
       missions: [
         {
           title: 'Site web',
@@ -408,7 +408,7 @@ export const fr: FrOverlay = {
     },
     'aeroboat-site': {
       title: 'Site web d’Aeroboat France',
-      context: 'Aeroboat France · CDD',
+      context: 'Aeroboat France · Bénévolat',
       description: 'Le site de l’association, conçu et développé de zéro : navigation claire, identité moderne, responsive et optimisé SEO.',
       problem: 'Une toute jeune association avait besoin d’une présence en ligne crédible pour présenter ses projets et ses fondateurs, et attirer membres et partenaires.',
       outcome: ['Site en ligne présentant l’association et son équipe.', 'Cohérent sur ordinateur, tablette et mobile.', 'Bonnes pratiques SEO appliquées.'],
@@ -606,7 +606,7 @@ export const fr: FrOverlay = {
     Spanish: { name: 'Espagnol' },
   },
 
-  contract: { Apprenticeship: 'Alternance', Internship: 'Stage', Freelance: 'Freelance', 'Fixed-term': 'CDD' },
+  contract: { Apprenticeship: 'Alternance', Internship: 'Stage', Freelance: 'Freelance', 'Fixed-term': 'CDD', Volunteer: 'Bénévolat' },
   mode: { 'On-site': 'Sur site', Hybrid: 'Hybride', Remote: 'À distance' },
   tech: { Security: 'Sécurité', AI: 'IA', Networks: 'Réseaux' },
 };
