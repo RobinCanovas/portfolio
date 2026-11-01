@@ -212,16 +212,33 @@ export const fr: FrOverlay = {
       period: 'Oct. 2025 → aujourd’hui',
       duration: 'En cours',
       location: 'Toulouse, Occitanie',
-      summary: 'Bénévole responsable de l’informatique de l’association : conception et développement de son site web, et structuration de toute sa visibilité.',
+      summary:
+        'Bénévole responsable de l’informatique de l’association : conception de son site web, structuration de toute sa visibilité, et refonte en cours du site sur une plateforme PHP sur mesure avec CMS pour les membres et conformité RGPD intégrée.',
       missions: [
         {
           title: 'Site web',
           items: [
             'Conception d’une architecture claire et intuitive pour faciliter la navigation.',
             'Mise en valeur des activités et de l’identité de l’association avec un design moderne.',
-            'Développement d’interfaces interactives pensées pour l’expérience utilisateur.',
+            'Développement d’interfaces interactives pensées pour l’expérience utilisateur, en français et en anglais.',
             'Compatibilité multiplateforme (ordinateur, tablette, mobile).',
             'Bonnes pratiques de performance et de référencement (SEO).',
+          ],
+        },
+        {
+          title: 'RGPD & confidentialité',
+          items: [
+            'Rédaction de la politique de confidentialité, de la politique de cookies et des mentions légales, avec des durées de conservation explicites et une purge quotidienne automatique des données expirées.',
+            'Création d’un formulaire d’exercice des droits (accès, rectification, effacement, portabilité…) avec un engagement de réponse sous un mois.',
+            'Site public conçu pour ne nécessiter aucun bandeau de consentement : aucun cookie, outil d’analyse ni ressource externe pour les visiteurs, formulaires protégés par jetons signés, polices hébergées.',
+            'Mots de passe stockés uniquement hachés, adresses IP conservées uniquement sous forme d’empreintes irréversibles, brièvement, pour limiter les abus.',
+          ],
+        },
+        {
+          title: 'Espace membres & CMS',
+          items: [
+            'Création d’un espace membres protégé par identifiant avec un petit CMS sur mesure, pour que les membres publient des actualités sans toucher au code.',
+            'Refonte du site en PHP et Vite, sans framework, sur l’hébergement OVH existant de l’association (nouvelle version en préproduction, appelée à remplacer WordPress).',
           ],
         },
         {
@@ -233,7 +250,7 @@ export const fr: FrOverlay = {
           ],
         },
       ],
-      skills: ['Gestion de projet', 'Web design', 'SEO', 'Identité de marque', 'Réseaux sociaux'],
+      skills: ['Gestion de projet', 'Web design', 'RGPD', 'Développement de CMS', 'SEO', 'Identité de marque', 'Réseaux sociaux'],
     },
     boulanger: {
       role: 'Conseiller vente & services',
@@ -409,15 +426,22 @@ export const fr: FrOverlay = {
     'aeroboat-site': {
       title: 'Site web d’Aeroboat France',
       context: 'Aeroboat France · Bénévolat',
-      description: 'Le site de l’association, conçu et développé de zéro : navigation claire, identité moderne, responsive et optimisé SEO.',
-      problem: 'Une toute jeune association avait besoin d’une présence en ligne crédible pour présenter ses projets et ses fondateurs, et attirer membres et partenaires.',
-      outcome: ['Site en ligne présentant l’association et son équipe.', 'Cohérent sur ordinateur, tablette et mobile.', 'Bonnes pratiques SEO appliquées.'],
-      highlights: ['Architecture de l’information', 'Design responsive', 'Performance & SEO'],
+      description:
+        'Le site de l’association, conçu et développé de zéro : un site WordPress en ligne, et une nouvelle version PHP sur mesure en préproduction, avec CMS pour les membres, pages en français et en anglais et RGPD intégré.',
+      problem:
+        'Une toute jeune association avait besoin d’une présence en ligne crédible pour présenter ses projets et ses fondateurs, et attirer membres et partenaires, tout en traitant correctement les données personnelles des membres et des candidats.',
+      outcome: [
+        'Site en ligne présentant l’association et son équipe, cohérent sur ordinateur, tablette et mobile.',
+        'Nouvelle version en préproduction : PHP + Vite sur mesure, bilingue, avec espace membres et petit CMS pour publier des actualités.',
+        'RGPD dès la conception : pages confidentialité, cookies et mentions légales, formulaire de droits, purge automatique des données, aucun traceur pour les visiteurs.',
+      ],
+      highlights: ['Architecture de l’information', 'CMS sur mesure', 'RGPD dès la conception', 'Performance & SEO'],
       build: [
-        { title: 'Architecture', detail: 'Navigation claire autour de l’histoire, de l’équipe et du contact.' },
-        { title: 'Design', detail: 'Identité moderne, sections interactives.' },
-        { title: 'WordPress', detail: 'Construit sous WordPress pour que l’association puisse le modifier facilement.' },
-        { title: 'SEO & performance', detail: 'Métadonnées, médias adaptés, vérifications multi-appareils.' },
+        { title: 'Architecture', detail: 'Navigation claire autour de l’histoire, de l’équipe, du projet et du contact.' },
+        { title: 'Design', detail: 'Identité moderne, sections interactives, en français et en anglais.' },
+        { title: 'WordPress', detail: 'Première version sous WordPress pour que l’association puisse la modifier facilement.' },
+        { title: 'PHP + Vite sur mesure', detail: 'Nouvelle version sans framework, avec espace membres protégé et mini-CMS.' },
+        { title: 'RGPD', detail: 'Politiques de confidentialité et de cookies, formulaire de droits, durées de conservation, mots de passe hachés, aucun cookie pour les visiteurs.' },
       ],
     },
     'ac-motors': {
