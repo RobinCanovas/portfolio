@@ -42,6 +42,8 @@ export interface Company {
   facts: KeyFact[];
   /** Optional illustration shown on the company page (the company's own visual) */
   visual?: { src: string[]; alt: string };
+  /** Real photos (cover first), shown instead of the logo where a company has its own imagery */
+  photos?: { src: string; alt: string }[];
   url?: string;
 }
 

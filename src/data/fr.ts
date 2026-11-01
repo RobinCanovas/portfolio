@@ -9,7 +9,7 @@ type Missions = { title: string; items: string[] }[];
 
 export interface FrOverlay {
   profile: Record<'title' | 'location' | 'status' | 'currentRole' | 'pitch' | 'ambition', string>;
-  companies: Record<string, { sector: string; about: string; facts: Facts; visualAlt?: string }>;
+  companies: Record<string, { sector: string; about: string; facts: Facts; visualAlt?: string; photoAlts?: string[] }>;
   clients: Record<string, { about: string; facts: Facts; parentLabel?: string }>;
   experiences: Record<
     string,
@@ -87,6 +87,13 @@ export const fr: FrOverlay = {
         'Association toulousaine fondée en 2025 par trois étudiants. Inspirée des ekranoplanes soviétiques, elle conçoit, construit et instrumente des maquettes à effet de sol, et a fait sa première apparition publique au Salon du Bourget 2025.',
       facts: [{ label: 'création' }, { label: 'port d’attache' }, { value: 'Salon du Bourget', label: 'première apparition publique' }],
       visualAlt: 'Emblème d’Aeroboat France',
+      photoAlts: [
+        'Un engin à effet de sol rouge d’Aeroboat glissant sur l’eau',
+        'La maquette rouge d’Aeroboat juste au-dessus d’un lac',
+        'Structure d’aile à nervures posée au sol pendant la construction',
+        'Rendu du futur V6 au-dessus d’un lac',
+        'Simulation numérique (CFD) de l’écoulement autour de l’engin',
+      ],
     },
     boulanger: {
       sector: 'Distribution d’électroménager et de multimédia',

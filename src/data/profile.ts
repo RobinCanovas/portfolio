@@ -110,6 +110,13 @@ const companies = {
       src: ['./logos/aeroboat.png', 'https://aeroboat-france.com/wp-content/uploads/2025/09/logoabf-without-bg-1.png'],
       alt: 'Aeroboat France emblem',
     },
+    photos: [
+      { src: './photos/aeroboat/water-run.webp', alt: 'A red Aeroboat ground-effect craft skimming the water' },
+      { src: './photos/aeroboat/model-water.webp', alt: 'The red Aeroboat model just above a lake' },
+      { src: './photos/aeroboat/wing-pavement.webp', alt: 'A ribbed wing structure laid out on the ground during construction' },
+      { src: './photos/aeroboat/render-v6.webp', alt: 'Render of the V6 design above a lake' },
+      { src: './photos/aeroboat/cfd-color.webp', alt: 'Computational fluid dynamics (CFD) simulation of the airflow around the craft' },
+    ],
     url: 'https://aeroboat-france.com',
   },
   boulanger: {
