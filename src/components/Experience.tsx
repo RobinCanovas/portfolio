@@ -7,7 +7,7 @@ import { Badge, CompanyLogo, LogoTile, Section } from './ui';
 export function Experience() {
   const { t } = useLang();
   const c = useContent();
-  const main = c.experiences.filter((e) => !e.minor);
+  const main = c.experiences.filter((e) => !e.minor && e.contract !== 'Volunteer');
   const minor = c.experiences.filter((e) => e.minor);
 
   return (

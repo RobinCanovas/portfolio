@@ -110,6 +110,13 @@ const companies = {
       src: ['./logos/aeroboat.png', 'https://aeroboat-france.com/wp-content/uploads/2025/09/logoabf-without-bg-1.png'],
       alt: 'Aeroboat France emblem',
     },
+    photos: [
+      { src: './photos/aeroboat/water-run.webp', alt: 'A red Aeroboat ground-effect craft skimming the water' },
+      { src: './photos/aeroboat/model-water.webp', alt: 'The red Aeroboat model just above a lake' },
+      { src: './photos/aeroboat/wing-pavement.webp', alt: 'A ribbed wing structure laid out on the ground during construction' },
+      { src: './photos/aeroboat/render-v6.webp', alt: 'Render of the V6 design above a lake' },
+      { src: './photos/aeroboat/cfd-color.webp', alt: 'Computational fluid dynamics (CFD) simulation of the airflow around the craft' },
+    ],
     url: 'https://aeroboat-france.com',
   },
   boulanger: {
@@ -282,21 +289,39 @@ export const experiences: Experience[] = [
     id: 'aeroboat',
     company: companies.aeroboat,
     role: 'IT Systems Manager',
-    contract: 'Fixed-term',
-    period: 'Sept. 2025 → Jan. 2026',
-    duration: '5 months',
+    contract: 'Volunteer',
+    period: 'Oct. 2025 → Present',
+    duration: 'Ongoing',
     location: 'Toulouse, Occitanie',
     mode: 'Remote',
-    summary: 'In charge of the association’s IT: designed and built its website, and structured its whole visibility.',
+    current: true,
+    summary:
+      'Volunteer in charge of the association’s IT: built its website, structured its whole visibility, and is now rebuilding the site as a custom PHP platform with a members’ CMS and built-in GDPR compliance.',
     missions: [
       {
         title: 'Website',
         items: [
           'Designed a clear, intuitive architecture to improve navigation.',
           'Showcased the association’s services and identity through a modern design.',
-          'Developed interactive interfaces optimised for user experience.',
+          'Developed interactive interfaces optimised for user experience, in French and English.',
           'Ensured cross-platform compatibility (desktop, tablet, mobile).',
           'Applied performance and search-engine-optimisation (SEO) best practices.',
+        ],
+      },
+      {
+        title: 'GDPR & privacy',
+        items: [
+          'Wrote the privacy policy, cookie policy and legal notice, with explicit retention periods and an automatic daily purge of expired data.',
+          'Built a data-subject rights form (access, rectification, erasure, portability…) with a one-month response commitment.',
+          'Designed the public site to need no consent banner: no cookies, analytics or external resources for visitors, forms protected by signed tokens, self-hosted fonts.',
+          'Stored passwords hashed only, and IP addresses only as irreversible fingerprints kept briefly for rate limiting.',
+        ],
+      },
+      {
+        title: 'Members’ area & CMS',
+        items: [
+          'Built a login-protected members’ area with a small custom CMS, so members can publish news posts without touching code.',
+          'Rebuilt the site on PHP and Vite, without a framework, on the association’s existing OVH hosting (new version in preview, currently replacing WordPress).',
         ],
       },
       {
@@ -308,8 +333,8 @@ export const experiences: Experience[] = [
         ],
       },
     ],
-    stack: ['WordPress', 'HTML/CSS', 'SEO'],
-    skills: ['Project management', 'Web design', 'SEO', 'Brand identity', 'Social media'],
+    stack: ['WordPress', 'PHP', 'HTML/CSS', 'SEO', 'Security'],
+    skills: ['Project management', 'Web design', 'GDPR', 'CMS development', 'SEO', 'Brand identity', 'Social media'],
     projectIds: ['aeroboat-site'],
   },
   {
@@ -433,20 +458,26 @@ export const projects: Project[] = [
   {
     id: 'aeroboat-site',
     title: 'Aeroboat France website',
-    context: 'Aeroboat France · Fixed-term',
+    context: 'Aeroboat France · Volunteer',
     experienceId: 'aeroboat',
     year: '2025',
-    description: 'The association’s website, designed and built from scratch: clear navigation, modern identity, responsive and SEO-ready.',
-    problem: 'A brand-new association needed a credible online presence to present its projects and founders, and to attract members and partners.',
-    outcome: ['Live website presenting the association and its team.', 'Consistent across desktop, tablet and mobile.', 'SEO best practices applied.'],
-    highlights: ['Information architecture', 'Responsive design', 'Performance & SEO'],
-    build: [
-      { icon: 'search', title: 'Architecture', detail: 'Clear navigation around the association’s story, team and contact.' },
-      { icon: 'layout', title: 'Design', detail: 'Modern identity, interactive sections.' },
-      { icon: 'globe', title: 'WordPress', detail: 'Built on WordPress so the association can edit it easily.' },
-      { icon: 'check', title: 'SEO & performance', detail: 'Metadata, responsive media, cross-device checks.' },
+    description:
+      'The association’s website, designed and built from scratch: a live WordPress site, and a new custom PHP version in preview with a members’ CMS, French/English pages and GDPR built in.',
+    problem: 'A brand-new association needed a credible online presence to present its projects and founders, and to attract members and partners, while handling members’ and applicants’ personal data properly.',
+    outcome: [
+      'Live website presenting the association and its team, consistent on desktop, tablet and mobile.',
+      'New version in preview: custom PHP + Vite, bilingual, with a members’ area and a small CMS to publish news.',
+      'GDPR by design: privacy, cookie and legal pages, rights form, automatic data purge, no trackers for visitors.',
     ],
-    stack: ['WordPress', 'HTML/CSS', 'SEO'],
+    highlights: ['Information architecture', 'Custom CMS', 'GDPR by design', 'Performance & SEO'],
+    build: [
+      { icon: 'search', title: 'Architecture', detail: 'Clear navigation around the association’s story, team, project and contact.' },
+      { icon: 'layout', title: 'Design', detail: 'Modern identity, interactive sections, French and English.' },
+      { icon: 'globe', title: 'WordPress', detail: 'First version on WordPress so the association can edit it easily.' },
+      { icon: 'code', title: 'Custom PHP + Vite', detail: 'New version without a framework, with a login-protected members’ area and a mini-CMS.' },
+      { icon: 'shield', title: 'GDPR', detail: 'Privacy and cookie policies, rights form, retention limits, hashed passwords, no cookies for visitors.' },
+    ],
+    stack: ['WordPress', 'PHP', 'HTML/CSS', 'SEO', 'Security'],
     demoUrl: 'https://aeroboat-france.com',
   },
   {

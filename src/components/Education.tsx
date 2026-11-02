@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, GraduationCap, Tent } from 'lucide-react';
 import { href } from '../router';
 import { useContent, useLang } from '../i18n';
-import { Badge, LogoTile, Section, fadeUp } from './ui';
+import { Badge, CompanyLogo, LogoTile, Section, fadeUp } from './ui';
 
 function VModelDiagram() {
   const { t } = useLang();
@@ -29,7 +29,9 @@ function VModelDiagram() {
 
 export function Education() {
   const { t } = useLang();
-  const { education, volunteering, interests } = useContent();
+  const c = useContent();
+  const { education, volunteering, interests } = c;
+  const volunteerRoles = c.experiences.filter((e) => e.contract === 'Volunteer');
 
   return (
     <Section id="education" eyebrow={t('section.education')} title={t('section.education.title')}>
@@ -77,6 +79,42 @@ export function Education() {
         </motion.div>
 
         <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.1 }} className="space-y-6">
+          {volunteerRoles.map((exp) => (
+            <a key={exp.id} href={href.experience(exp.id)} className="panel group relative block overflow-hidden rounded-xl p-6 transition-colors duration-300 hover:border-ink/35 sm:p-7">
+              {exp.company.photos?.[0] && (
+                <img
+                  src={exp.company.photos[0].src}
+                  alt={exp.company.photos[0].alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="-mx-6 -mt-6 mb-5 aspect-[16/8] w-[calc(100%+3rem)] max-w-none object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02] sm:-mx-7 sm:-mt-7 sm:w-[calc(100%+3.5rem)]"
+                />
+              )}
+              <div className="flex items-center gap-4">
+                {!exp.company.photos?.length && <CompanyLogo company={exp.company} size={56} />}
+                <div>
+                  <h3 className="font-serif text-2xl leading-tight text-ink transition-colors duration-200 group-hover:text-accent">{exp.role}</h3>
+                  <p className="mt-1 text-sm text-ink-2">
+                    {exp.company.name} · {c.contract(exp.contract)}
+                  </p>
+                  <p className="mt-0.5 font-mono text-xs text-ink-3">
+                    {exp.period}
+                    {exp.current && ` · ${t('exp.current')}`}
+                  </p>
+                </div>
+              </div>
+              <p className="mt-5 text-sm leading-relaxed text-ink-2">{exp.summary}</p>
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {(exp.skills ?? []).map((sk) => (
+                  <Badge key={sk}>{sk}</Badge>
+                ))}
+              </div>
+              <span className="mt-6 inline-flex items-center gap-1.5 text-xs font-medium text-ink-2 transition-colors group-hover:text-ink">
+                {t('exp.discover')} <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+              </span>
+            </a>
+          ))}
+
           <a href={href.education('eedf')} className="panel group relative block overflow-hidden rounded-xl p-6 transition-colors duration-300 hover:border-ink/35 sm:p-7">
             <div className="flex items-center gap-4">
               <LogoTile
