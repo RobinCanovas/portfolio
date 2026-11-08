@@ -85,7 +85,7 @@ export function EducationPage({ id }: { id: string }) {
                     </span>
                   }
                 />
-                <p className="font-mono text-[11px] tracking-[0.25em] text-ink-3 uppercase">{p(page.kicker)}</p>
+                <p className="text-xs text-ink-3">{p(page.kicker)}</p>
               </div>
               <h1 className="mt-6 font-serif text-5xl leading-[1] tracking-[-0.01em] text-ink sm:text-7xl">{page.name}</h1>
               <p className="mt-4 font-serif text-2xl text-ink-2 italic sm:text-3xl">{p(page.title)}</p>
@@ -178,7 +178,7 @@ export function EducationPage({ id }: { id: string }) {
           </a>
           <a href={href.education(next.id)} className="group inline-flex items-center gap-3 text-right">
             <span>
-              <span className="block font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">{t('page.next')}</span>
+              <span className="block text-xs text-ink-3">{t('page.next')}</span>
               <span className="font-serif text-xl text-ink transition-colors group-hover:text-accent">{next.name}</span>
             </span>
             <ArrowRight className="size-4 text-ink-3 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-ink" aria-hidden="true" />

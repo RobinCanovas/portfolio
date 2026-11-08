@@ -194,7 +194,7 @@ export function CommandPalette({ open, onClose, ...actions }: PaletteActions & {
                 return (
                   <li key={item.id} role="presentation">
                     {header && (
-                      <p className="flex items-center gap-1.5 px-3 pt-3 pb-1 font-mono text-[10px] tracking-widest text-ink-3 uppercase">
+                      <p className="flex items-center gap-1.5 px-3 pt-3 pb-1 text-xs text-ink-3">
                         {header === 'Experience' && <Briefcase className="size-3" aria-hidden="true" />}
                         {t(`palette.${header}` as const)}
                       </p>

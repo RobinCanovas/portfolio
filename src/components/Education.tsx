@@ -157,7 +157,7 @@ export function Education() {
           </a>
 
           <article className="border-t border-ink/10 pt-6">
-            <h3 className="font-mono text-[11px] tracking-[0.22em] text-ink-3 uppercase">{t('edu.beyond')}</h3>
+            <h3 className="text-xs text-ink-3">{t('edu.beyond')}</h3>
             <p className="mt-4 font-serif text-2xl leading-relaxed text-ink">
               {interests.map((i, n) => (
                 <span key={i}>

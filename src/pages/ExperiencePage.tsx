@@ -13,7 +13,7 @@ const fade = (delay = 0) => ({
   transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as const },
 });
 
-const label = 'font-mono text-[11px] tracking-[0.25em] uppercase';
+const label = 'text-xs';
 
 /** Key figures in a ruled row, like the data box of a magazine profile. */
 function Facts({ facts }: { facts: KeyFact[] }) {
@@ -102,7 +102,7 @@ export function ExperiencePage({ id }: { id: string }) {
               <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 font-serif text-2xl text-ink-2 italic sm:text-3xl">
                 {exp.role}
                 {exp.current && (
-                  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.15em] text-good uppercase not-italic">
+                  <span className="inline-flex items-center gap-1.5 text-xs text-good not-italic">
                     <span className="size-1.5 rounded-full bg-good" aria-hidden="true" /> {t('exp.current')}
                   </span>
                 )}
@@ -246,13 +246,13 @@ export function ExperiencePage({ id }: { id: string }) {
             <ArrowLeft className="size-4 shrink-0 text-ink-3 transition-transform duration-200 group-hover:-translate-x-1 group-hover:text-ink" aria-hidden="true" />
             <CompanyLogo company={prev.company} size={40} />
             <span>
-              <span className="block font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">{t('page.previous')}</span>
+              <span className="block text-xs text-ink-3">{t('page.previous')}</span>
               <span className="font-serif text-xl text-ink transition-colors group-hover:text-accent">{prev.company.name}</span>
             </span>
           </a>
           <a href={href.experience(next.id)} className="group flex items-center justify-end gap-4 border-t border-ink/10 py-6 text-right sm:border-t-0 sm:border-l sm:pl-6">
             <span>
-              <span className="block font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">{t('page.next')}</span>
+              <span className="block text-xs text-ink-3">{t('page.next')}</span>
               <span className="font-serif text-xl text-ink transition-colors group-hover:text-accent">{next.company.name}</span>
             </span>
             <CompanyLogo company={next.company} size={40} />
