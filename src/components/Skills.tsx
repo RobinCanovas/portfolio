@@ -56,7 +56,7 @@ export function Skills() {
               <SimpleIcon slug={s.icon} className="mt-0.5 size-5" />
               <span className="min-w-0">
                 <span className="block text-sm font-medium text-ink">{s.name}</span>
-                <span className={`mt-1 flex items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase ${LEVEL_TEXT[s.level]}`}>
+                <span className={`mt-1 flex items-center gap-1.5 text-xs ${LEVEL_TEXT[s.level]}`}>
                   <span className={`size-1.5 rounded-full ${DOTS[s.level]}`} aria-hidden="true" />
                   {t(`skills.${s.level}` as const)}
                 </span>
@@ -68,7 +68,7 @@ export function Skills() {
 
       <div className="mt-14 grid gap-12 lg:grid-cols-2">
         <div>
-          <h3 className="font-mono text-[11px] tracking-[0.22em] text-ink-3 uppercase">{t('skills.languages')}</h3>
+          <h3 className="text-xs text-ink-3">{t('skills.languages')}</h3>
           <ul className="mt-4 border-b border-ink/10">
             {languages.map((l) => (
               <li key={l.code} className="flex items-center gap-4 border-t border-ink/10 py-3 text-sm">
@@ -89,7 +89,7 @@ export function Skills() {
           </ul>
         </div>
         <div className="border-l-2 border-accent pl-6 lg:self-start">
-          <p className="font-mono text-[11px] tracking-[0.22em] text-accent uppercase">{t('skills.direction')}</p>
+          <p className="text-xs text-accent">{t('skills.direction')}</p>
           <p className="mt-3 font-serif text-xl leading-snug text-ink sm:text-[1.45rem]">{profile.ambition}</p>
         </div>
       </div>

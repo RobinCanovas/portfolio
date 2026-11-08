@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useLang } from '../i18n';
@@ -15,54 +15,31 @@ export function Section({
   title: string;
   children: ReactNode;
 }) {
-  const [index, label] = eyebrow.split(' · ');
+  // Eyebrows are written "05 · Label": only the label is shown.
+  const label = eyebrow.split(' · ')[1] ?? eyebrow;
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-      <motion.header initial="hidden" whileInView="show" viewport={{ once: true, margin: '-80px' }} className="relative mb-10 sm:mb-14">
-        {/* Chapter number, set large in the italic serif, like a folio in the margin */}
-        <motion.span
-          aria-hidden="true"
-          variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 1 } } }}
-          className="pointer-events-none absolute -top-12 -left-1 font-serif text-[7rem] leading-none text-ink/[0.07] italic select-none sm:-top-16 sm:text-[10rem]"
-        >
-          {index}
-        </motion.span>
-        <motion.p
-          variants={{ hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
-          className="relative flex items-center gap-3 font-mono text-xs tracking-[0.25em] text-accent uppercase"
-        >
-          <span className="h-px w-8 bg-accent" aria-hidden="true" />
-          {label ?? eyebrow}
-        </motion.p>
-        <motion.h2
-          id={`${id}-title`}
-          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } } }}
-          className="relative mt-3 font-serif text-5xl leading-[1.05] tracking-[-0.01em] text-ink sm:text-6xl"
-        >
-          {title.split(' ').map((word, i, words) => (
-            <Fragment key={i}>
-              <motion.span
-                variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}
-                className="inline-block"
-              >
-                {word}
-              </motion.span>
-              {/* Real spaces keep the accessible name readable ("Let’s build something"). */}
-              {i < words.length - 1 && ' '}
-            </Fragment>
-          ))}
-        </motion.h2>
+      <motion.header
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }}
+        viewport={{ once: true, margin: '-80px' }}
+        className="mb-10 sm:mb-14"
+      >
+        <p className="text-sm font-medium text-accent">{label}</p>
+        <h2 id={`${id}-title`} className="mt-2 font-serif text-5xl leading-[1.05] tracking-[-0.01em] text-ink sm:text-6xl">
+          {title}
+        </h2>
       </motion.header>
       {children}
     </section>
   );
 }
 
-/** Small label in the mono face; `active` sets it in ink, like a stamp. */
+/** Small tag; `active` sets it in ink. */
 export function Badge({ children, active = false }: { children: ReactNode; active?: boolean }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[11px] whitespace-nowrap ${
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs whitespace-nowrap ${
         active ? 'border-ink bg-ink text-paper' : 'border-ink/15 bg-transparent text-ink-2'
       }`}
     >

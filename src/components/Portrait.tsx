@@ -1,17 +1,13 @@
 import { useState } from 'react';
-import { ShieldCheck, UserRound } from 'lucide-react';
+import { UserRound } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
-import { LogoTile } from './ui';
 
 /**
- * Portrait printed like a photograph in a magazine: a plain frame, a caption underneath,
- * and two labels pinned to its edges. Nothing moves.
+ * Portrait printed like a photograph in a magazine: a plain frame and a caption underneath. Nothing moves.
  */
 export function Portrait() {
   const { t } = useLang();
-  const { profile, experiences, lang } = useContent();
-  const bankClient = experiences.find((e) => e.client?.parents?.length)?.client;
-  const bank = bankClient?.parents?.[0];
+  const { profile } = useContent();
   const [failed, setFailed] = useState(false);
 
   return (
@@ -35,25 +31,11 @@ export function Portrait() {
           )}
         </div>
 
-        {bank && (
-          <div className="panel lift absolute top-8 -left-5 flex items-center gap-2.5 rounded-lg p-2 pr-3.5 sm:-left-12">
-            <LogoTile sources={bank.logos} name={bank.name} size={34} fallback={<ShieldCheck className="size-6 text-good" />} />
-            <span className="text-left leading-tight">
-              <span className="block font-mono text-[10px] tracking-wider text-good uppercase">{t('portrait.client')}</span>
-              <span className="block text-xs font-semibold text-ink">{t('portrait.clientLine')}</span>
-              <span className="block text-[10px] text-ink-3">Domofinance · MFA · Ansible</span>
-            </span>
-          </div>
-        )}
-        <div className="panel lift absolute -right-4 bottom-10 flex items-center gap-2 rounded-lg px-3 py-2 sm:-right-9">
-          <ShieldCheck className="size-4 text-accent" aria-hidden="true" />
-          <span className="text-xs font-medium text-ink">{lang === 'fr' ? 'MFA · Sécurité · Qualité' : 'MFA · Security · QA'}</span>
-        </div>
       </div>
 
       <figcaption className="mt-3 flex items-baseline justify-between gap-4 border-t border-ink/10 pt-2.5">
         <span className="font-serif text-base text-ink-2 italic">{profile.title}</span>
-        <span className="shrink-0 font-mono text-[10px] tracking-wider text-ink-4 uppercase">Paris</span>
+        <span className="shrink-0 text-xs text-ink-4">Paris</span>
       </figcaption>
     </figure>
   );

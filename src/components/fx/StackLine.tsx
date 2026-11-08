@@ -20,7 +20,7 @@ export function StackLine() {
   return (
     <div className="border-y border-ink/10">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-7 gap-y-3 px-4 py-5 sm:px-6">
-        <span className="font-mono text-[11px] tracking-[0.22em] text-ink-4 uppercase">{t('stack.label')}</span>
+        <span className="text-sm text-ink-4">{t('stack.label')}</span>
         <ul className="contents">
           {STACK.map((s) => (
             <li key={s.slug} className="group inline-flex items-center gap-2 text-sm text-ink-2">
