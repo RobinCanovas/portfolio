@@ -27,7 +27,7 @@ const fade = (delay = 0) => ({
 function SectionTitle({ kicker, title, id }: { kicker: string; title: string; id: string }) {
   return (
     <motion.div {...fade()} className="mb-7">
-      <p className="flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase">
+      <p className="flex items-center gap-3 text-xs text-accent">
         <span className="h-px w-6 bg-accent" aria-hidden="true" />
         {kicker}
       </p>
@@ -66,7 +66,7 @@ export function ProjectPage({ id }: { id: string }) {
                 {exp && <CompanyLogo company={exp.company} size={40} />}
                 {exp?.client && <LogoTile sources={exp.client.logos} name={exp.client.name} size={40} fallback={null} />}
                 {exp?.client?.parents?.map((p) => <LogoTile key={p.name} sources={p.logos} name={p.name} size={40} fallback={null} />)}
-                <p className="font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">
+                <p className="text-xs text-ink-3">
                   {project.context} · {project.year}
                 </p>
               </div>
@@ -91,7 +91,7 @@ export function ProjectPage({ id }: { id: string }) {
                 <ProjectVisual id={project.id} autoplay replay={replay} className="aspect-[2/1] w-full" />
               </div>
               <figcaption className="mt-2.5 text-sm text-ink-3">
-                <span className="font-mono text-[10px] tracking-[0.18em] text-ink-2 uppercase">{t('page.plate', { n: String(index + 1).padStart(2, '0') })}</span>
+                <span className="text-xs text-ink-2">{t('page.plate', { n: String(index + 1).padStart(2, '0') })}</span>
                 <span className="font-serif italic"> — {hasCapture(project.id) ? t('page.plateDemo') : t('page.plateStory')}</span>
               </figcaption>
             </motion.figure>
@@ -118,11 +118,11 @@ export function ProjectPage({ id }: { id: string }) {
         {/* Problem / outcome */}
         <section className="grid gap-10 lg:grid-cols-2 lg:gap-14" aria-label={t('page.context')}>
           <motion.div {...fade()} className="border-t border-ink pt-5">
-            <h2 className="font-mono text-[11px] tracking-[0.25em] text-ink-3 uppercase">{t('page.challenge')}</h2>
+            <h2 className="text-xs text-ink-3">{t('page.challenge')}</h2>
             <p className="mt-4 font-serif text-2xl leading-snug text-ink sm:text-[1.7rem]">{project.problem}</p>
           </motion.div>
           <motion.div {...fade(0.1)} className="border-t border-ink pt-5">
-            <h2 className="font-mono text-[11px] tracking-[0.25em] text-ink-3 uppercase">{t('page.result')}</h2>
+            <h2 className="text-xs text-ink-3">{t('page.result')}</h2>
             <ul className="mt-4 divide-y divide-ink/10">
               {project.outcome.map((o) => (
                 <li key={o} className="flex gap-3 py-2.5 text-ink-2">
@@ -261,13 +261,13 @@ export function ProjectPage({ id }: { id: string }) {
 
         <nav aria-label={t('page.otherProjects')} className="grid border-t border-ink sm:grid-cols-2">
           <a href={href.project(prev.id)} className="group py-6 pr-6">
-            <span className="flex items-center gap-1.5 font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">
+            <span className="flex items-center gap-1.5 text-xs text-ink-3">
               <ArrowLeft className="size-3.5 transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true" /> {t('page.previous')}
             </span>
             <span className="mt-2 block font-serif text-2xl leading-tight text-ink transition-colors group-hover:text-accent">{prev.title}</span>
           </a>
           <a href={href.project(next.id)} className="group border-t border-ink/10 py-6 text-right sm:border-t-0 sm:border-l sm:pl-6">
-            <span className="flex items-center justify-end gap-1.5 font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase">
+            <span className="flex items-center justify-end gap-1.5 text-xs text-ink-3">
               {t('page.next')} <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
             </span>
             <span className="mt-2 block font-serif text-2xl leading-tight text-ink transition-colors group-hover:text-accent">{next.title}</span>

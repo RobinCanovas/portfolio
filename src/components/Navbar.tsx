@@ -67,7 +67,7 @@ function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperien
   return (
     <div className="grid w-[min(92vw,720px)] grid-cols-[1.4fr_1fr] gap-2 p-2">
       <div>
-        <p className="px-3 pt-2 pb-1 font-mono text-[10px] tracking-widest text-ink-3 uppercase">{t('nav.career')}</p>
+        <p className="px-3 pt-2 pb-1 text-xs text-ink-3">{t('nav.career')}</p>
         <ul>
           {experiences.filter((e) => !e.minor).map((exp, i) => (
             <motion.li key={exp.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03, duration: 0.2 }}>
@@ -98,7 +98,7 @@ function ExperiencePanel({ onPick, close }: { onPick: NavActions['onOpenExperien
       </div>
 
       <div className="flex flex-col gap-2 rounded-lg bg-paper p-2">
-        <p className="px-2 pt-2 pb-1 font-mono text-[10px] tracking-widest text-ink-3 uppercase">{t('nav.background')}</p>
+        <p className="px-2 pt-2 pb-1 text-xs text-ink-3">{t('nav.background')}</p>
         <button
           type="button"
           data-menu-item
@@ -158,7 +158,7 @@ function ProjectsPanel({ onFilter, onFocusProject, close }: { onFilter: NavActio
   return (
     <div className="grid w-[min(92vw,680px)] grid-cols-[1fr_1.1fr] gap-2 p-2">
       <div>
-        <p className="px-3 pt-2 pb-1 font-mono text-[10px] tracking-widest text-ink-3 uppercase">{t('nav.filter')}</p>
+        <p className="px-3 pt-2 pb-1 text-xs text-ink-3">{t('nav.filter')}</p>
         <ul className="grid grid-cols-2 gap-0.5">
           {(['All', ...c.projectFilters] as const).map((tech, i) => (
             <motion.li key={tech} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.015, duration: 0.2 }}>
@@ -180,7 +180,7 @@ function ProjectsPanel({ onFilter, onFocusProject, close }: { onFilter: NavActio
         </ul>
       </div>
       <div className="rounded-lg bg-paper p-2">
-        <p className="px-2 pt-2 pb-1 font-mono text-[10px] tracking-widest text-ink-3 uppercase">{t('nav.featured')}</p>
+        <p className="px-2 pt-2 pb-1 text-xs text-ink-3">{t('nav.featured')}</p>
         <ul className="space-y-1">
           {featured.map((p, i) => (
             <motion.li key={p.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.04 + i * 0.03, duration: 0.2 }}>
@@ -234,7 +234,7 @@ function GoalsPanel({ close }: { close: () => void }) {
   return (
     <div className="grid w-[min(92vw,700px)] grid-cols-[1.1fr_1fr] gap-2 p-2">
       <div>
-        <p className="px-3 pt-2 pb-1 font-mono text-[10px] tracking-widest text-ink-3 uppercase">{t('nav.roadmap')}</p>
+        <p className="px-3 pt-2 pb-1 text-xs text-ink-3">{t('nav.roadmap')}</p>
         <ol className="relative">
           <span aria-hidden="true" className="absolute top-6 bottom-6 left-[27px] w-px bg-ink/15" />
           {ROADMAP.map((r, i) => (
@@ -244,7 +244,7 @@ function GoalsPanel({ close }: { close: () => void }) {
                   <r.icon className="size-4" aria-hidden="true" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block font-mono text-[10px] tracking-widest text-ink-3 uppercase">{t(`goals.s${r.n}.tag` as const)}</span>
+                  <span className="block text-xs text-ink-3">{t(`goals.s${r.n}.tag` as const)}</span>
                   <span className="block truncate text-sm font-semibold text-ink">{t(`goals.s${r.n}.title` as const)}</span>
                 </span>
               </button>
@@ -253,7 +253,7 @@ function GoalsPanel({ close }: { close: () => void }) {
         </ol>
       </div>
       <div className="flex flex-col gap-2 rounded-lg bg-paper p-2">
-        <p className="px-2 pt-2 pb-1 font-mono text-[10px] tracking-widest text-ink-3 uppercase">{t('nav.schools')}</p>
+        <p className="px-2 pt-2 pb-1 text-xs text-ink-3">{t('nav.schools')}</p>
         <div className="grid grid-cols-3 gap-2 px-1">
           {targetSchools.map((sc, i) => (
             <motion.button
@@ -532,7 +532,7 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="mb-2 flex items-center justify-between">
-                <span className="font-mono text-[11px] tracking-[0.2em] text-ink-3 uppercase">{t('nav.menu')}</span>
+                <span className="text-xs text-ink-3">{t('nav.menu')}</span>
                 <button type="button" onClick={() => setDrawer(false)} aria-label={t('nav.closeMenu')} className="rounded-full p-2 text-ink-2 transition-colors hover:bg-ink/[0.06]">
                   <X className="size-6" />
                 </button>

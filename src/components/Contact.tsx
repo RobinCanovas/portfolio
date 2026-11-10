@@ -44,20 +44,20 @@ function ContactForm() {
     <form onSubmit={onSubmit} className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1.5 block font-mono text-[11px] tracking-wider text-ink-3 uppercase">{t('contact.name')}</span>
+          <span className="mb-1.5 block text-xs text-ink-3">{t('contact.name')}</span>
           <input name="name" required autoComplete="name" className={field} placeholder={t('contact.namePh')} />
         </label>
         <label className="block">
-          <span className="mb-1.5 block font-mono text-[11px] tracking-wider text-ink-3 uppercase">{t('contact.email')}</span>
+          <span className="mb-1.5 block text-xs text-ink-3">{t('contact.email')}</span>
           <input name="email" type="email" required autoComplete="email" className={field} placeholder={t('contact.emailPh')} />
         </label>
       </div>
       <label className="block">
-        <span className="mb-1.5 block font-mono text-[11px] tracking-wider text-ink-3 uppercase">{t('contact.subject')}</span>
+        <span className="mb-1.5 block text-xs text-ink-3">{t('contact.subject')}</span>
         <input name="subject" className={field} placeholder={t('contact.subjectPh')} />
       </label>
       <label className="block">
-        <span className="mb-1.5 block font-mono text-[11px] tracking-wider text-ink-3 uppercase">{t('contact.message')}</span>
+        <span className="mb-1.5 block text-xs text-ink-3">{t('contact.message')}</span>
         <textarea name="message" required rows={4} className={`${field} resize-y`} placeholder={t('contact.messagePh')} />
       </label>
       <button type="submit" className="btn-ink inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 font-medium">
