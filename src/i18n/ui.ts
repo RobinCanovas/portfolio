@@ -194,6 +194,10 @@ export const ui = {
     'edu.scout': 'Scouting',
     'edu.scoutNote': 'Where I learned teamwork, autonomy and commitment.',
     'edu.beyond': 'Beyond code',
+    'edu.photos': 'View photos',
+    'lightbox.close': 'Close',
+    'lightbox.prev': 'Previous photo',
+    'lightbox.next': 'Next photo',
     'edu.values': 'Teamwork|Autonomy|Commitment|Adaptability',
 
     'contact.lead': 'Looking for a rigorous, curious profile in tech, data, AI or finance?',
@@ -475,6 +479,10 @@ export const ui = {
     'edu.scout': 'Scoutisme',
     'edu.scoutNote': 'Là où j’ai appris le travail d’équipe, l’autonomie et l’engagement.',
     'edu.beyond': 'En dehors du code',
+    'edu.photos': 'Voir les photos',
+    'lightbox.close': 'Fermer',
+    'lightbox.prev': 'Photo précédente',
+    'lightbox.next': 'Photo suivante',
     'edu.values': 'Travail d’équipe|Autonomie|Engagement|Adaptabilité',
 
     'contact.lead': 'Vous cherchez un profil rigoureux et curieux en tech, data, IA ou finance ?',
