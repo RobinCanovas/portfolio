@@ -7,7 +7,7 @@ import { ProjectArt } from './ProjectArt';
 const capture = (id: string) => ({ src: `./captures/${id}.webp`, width: 1600, height: 744 });
 
 export const CAPTURES: Record<string, { src: string; width: number; height: number }> = Object.fromEntries(
-  ['cwad'].map((id) => [id, capture(id)]),
+  ['cwad', 'aeroboat-site'].map((id) => [id, capture(id)]),
 );
 
 export const hasCapture = (id: string) => id in CAPTURES;
