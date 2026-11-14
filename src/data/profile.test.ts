@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { education, experiences, findExperience, findProject, links, projectFilters, projects, skillGroups } from './profile';
+import { domains, education, experiences, findExperience, findProject, links, projectFilters, projects, skillGroups } from './profile';
 
 const unique = (ids: string[]) => new Set(ids).size === ids.length;
 
@@ -51,6 +51,11 @@ describe('profile data', () => {
         tech,
       ).toBe(true);
     }
+  });
+
+  it('puts every project in a field, and every field has projects', () => {
+    for (const p of projects) expect(domains, p.id).toContain(p.domain);
+    for (const d of domains) expect(projects.some((p) => p.domain === d), d).toBe(true);
   });
 
   it('points demo links to https or to public/projects', () => {
