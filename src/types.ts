@@ -1,3 +1,5 @@
+export type Domain = 'finance' | 'data' | 'business' | 'dev';
+
 export type Tech =
   | 'Symfony'
   | 'PHP'
@@ -119,6 +121,8 @@ export interface Project {
   context: string;
   /** Experience id when the project was done for an employer */
   experienceId?: string;
+  /** The field the project belongs to: drives the filters and the order of the grid */
+  domain: Domain;
   year: string;
   description: string;
   problem: string;

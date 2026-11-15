@@ -1,4 +1,4 @@
-import type { Client, Company, Education, Experience, Project, SkillGroup, SocialLinks, Tech } from '../types';
+import type { Client, Company, Domain, Education, Experience, Project, SkillGroup, SocialLinks, Tech } from '../types';
 
 export const links: SocialLinks = {
   linkedin: 'https://www.linkedin.com/in/robin-canovas',
@@ -362,6 +362,7 @@ export const experiences: Experience[] = [
 export const projects: Project[] = [
   {
     id: 'domofinance-mfa',
+    domain: 'finance',
     featured: true,
     title: 'MFA & e-mail security for a credit platform',
     context: 'Acelys × Domofinance (BNP Paribas × EDF)',
@@ -390,6 +391,7 @@ export const projects: Project[] = [
   },
   {
     id: 'acelys-deploy',
+    domain: 'dev',
     featured: true,
     title: 'Ansible deployment pipelines',
     context: 'Acelys × Domofinance (BNP Paribas × EDF)',
@@ -417,6 +419,7 @@ export const projects: Project[] = [
   },
   {
     id: 'edu-accommodation',
+    domain: 'dev',
     featured: true,
     title: 'Student accommodation files app',
     context: 'Éducation Nationale · Freelance',
@@ -436,6 +439,7 @@ export const projects: Project[] = [
   },
   {
     id: 'solstice-dahs',
+    domain: 'data',
     featured: true,
     title: 'Environmental software & AI diagnostics',
     context: 'Solutions Solstice · Apprenticeship',
@@ -457,6 +461,7 @@ export const projects: Project[] = [
   },
   {
     id: 'aeroboat-site',
+    domain: 'dev',
     title: 'Aeroboat France website',
     context: 'Aeroboat France · Volunteer',
     experienceId: 'aeroboat',
@@ -482,6 +487,7 @@ export const projects: Project[] = [
   },
   {
     id: 'gradient-descent',
+    domain: 'data',
     title: 'Gradient descent, visualised',
     context: 'Personal · Maths & machine learning',
     year: '2026',
@@ -500,6 +506,7 @@ export const projects: Project[] = [
   },
   {
     id: 'neural-network',
+    domain: 'data',
     featured: true,
     title: 'A neural network built by hand in Python',
     context: 'Personal · Deep learning, Machine Learnia course',
@@ -608,6 +615,7 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
   },
   {
     id: 'subnet-calculator',
+    domain: 'dev',
     title: 'IPv4 subnet calculator',
     context: 'Personal · Networks',
     year: '2026',
@@ -625,6 +633,7 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
   },
   {
     id: 'ac-motors',
+    domain: 'data',
     title: 'AC-Motors database',
     context: 'IUT d’Orsay · Academic',
     year: '2024',
@@ -644,6 +653,7 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
   },
   {
     id: 'cwad',
+    domain: 'dev',
     title: 'VogMerveille, travel agency site',
     context: 'IUT d’Orsay · Team project',
     year: '2024',
@@ -662,6 +672,7 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
   },
   {
     id: 'paris-sud-app',
+    domain: 'dev',
     title: 'Student housing manager',
     context: 'IUT d’Orsay · Academic',
     year: '2025',
@@ -678,6 +689,7 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
   },
   {
     id: 'librairie',
+    domain: 'business',
     title: 'Canaules bookshop: requirements',
     context: 'IUT d’Orsay · Academic',
     year: '2025',
@@ -694,6 +706,7 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
   },
   {
     id: 'debian',
+    domain: 'dev',
     title: 'Debian workstation on Raspberry Pi',
     context: 'IUT d’Orsay · Academic',
     year: '2024',
@@ -710,6 +723,7 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
   },
   {
     id: 'python-game',
+    domain: 'data',
     title: 'Game with AI opponent',
     context: 'Personal · Academic',
     year: '2024',
@@ -726,6 +740,7 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
   },
   {
     id: 'wastewater-cuve',
+    domain: 'business',
     title: 'Home wastewater treatment tank — innovation contest, patent filed',
     context: 'Lycée Françoise Combes, excellence boarding school · Innovation contest, team of 4 (team coordinator)',
     year: '2022',
@@ -750,6 +765,8 @@ def neural_network(X, y, n1=32, learning_rate=0.1, n_iter=1000):
     stack: [],
   },
 ];
+
+export const domains: Domain[] = ['finance', 'data', 'business', 'dev'];
 
 export const projectFilters: Tech[] = ['Symfony', 'React', 'PHP', 'Java', 'MySQL', 'Networks', 'Ansible', 'Security', 'Maths', 'AI', 'HTML/CSS', 'WordPress', 'Python'];
 
