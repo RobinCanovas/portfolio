@@ -5,7 +5,7 @@ import { CommandPalette } from './components/CommandPalette';
 import { Contact } from './components/Contact';
 import { Education } from './components/Education';
 import { Goals } from './components/Goals';
-import { LangProvider, useLang } from './i18n';
+import { LangProvider, useContent, useLang } from './i18n';
 import { Experience } from './components/Experience';
 import { Hero } from './components/Hero';
 import { Navbar } from './components/Navbar';
@@ -79,6 +79,25 @@ function Portfolio() {
   useKonami(triggerHyperMode);
   usePauseOffscreen();
   const route = useRoute();
+  const content = useContent();
+
+  // Tab title and meta description follow the language and the page being viewed.
+  useEffect(() => {
+    const site = profile.name;
+    let title = t('meta.title');
+    if (route.name === 'experience') {
+      const exp = content.findExperience(route.id);
+      if (exp) title = `${exp.role}, ${exp.company.name} | ${site}`;
+    } else if (route.name === 'project') {
+      const project = content.findProject(route.id);
+      if (project) title = `${project.title} | ${site}`;
+    } else if (route.name === 'education') {
+      const page = findEducationPage(route.id);
+      if (page) title = `${page.name} | ${site}`;
+    }
+    document.title = title;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', t('meta.description'));
+  }, [route, content, t]);
   const [filter, setFilter] = useState<Domain | 'All'>('All');
   const [contactOpen, setContactOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
