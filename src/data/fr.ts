@@ -52,7 +52,7 @@ export const fr: FrOverlay = {
     status: 'Ouvert aux opportunités',
     currentRole: 'Développeur web @ Éditions Ellipses',
     pitch:
-      'Étudiant en BUT Informatique en alternance à l’IUT d’Orsay (Université Paris-Saclay), je construis un profil généraliste, solide en maths comme en informatique, avec un objectif clair : un master sélectif ou une grande école. En parallèle de mes études, je transforme déjà des besoins métier en logiciels sûrs et fiables, y compris pour une filiale de BNP Paribas et d’EDF. La suite : aller plus loin dans la data, l’IA et la finance.',
+      'Solide en maths comme en informatique, je construis un profil généraliste avec un master sélectif ou une grande école en ligne de mire. En parallèle de mes études, je transforme déjà des besoins métier en logiciels fiables, y compris pour une filiale de BNP Paribas et d’EDF. La suite : la data, l’IA et la finance.',
     ambition: 'Mon projet d’études : après le BUT, un master sélectif ou une grande école, pour approfondir les maths, la data et la prise de décision. À plus long terme, je vise des métiers exigeants où la technologie éclaire les décisions, sans me fermer de portes.',
   },
 

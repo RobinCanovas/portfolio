@@ -54,7 +54,7 @@ const rise = (delay = 0) => ({
   transition: { delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
 });
 
-const label = 'font-mono text-[11px] tracking-[0.22em] text-ink-3 uppercase';
+const label = 'text-xs text-ink-3';
 
 export function Goals({ onContact }: { onContact?: () => void }) {
   const { t } = useLang();
@@ -77,7 +77,7 @@ export function Goals({ onContact }: { onContact?: () => void }) {
                     {s.n}
                   </span>
                   <div>
-                    <span className={`inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] uppercase ${goal ? 'text-accent' : now ? 'text-good' : 'text-ink-3'}`}>
+                    <span className={`inline-flex items-center gap-2 text-xs ${goal ? 'text-accent' : now ? 'text-good' : 'text-ink-3'}`}>
                       {now && <span className="size-1.5 rounded-full bg-good" aria-hidden="true" />}
                       {t(`goals.s${s.n}.tag` as const)}
                     </span>

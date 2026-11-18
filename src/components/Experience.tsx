@@ -46,7 +46,7 @@ export function Experience() {
 
                   {exp.client && (
                     <div className="mt-4 inline-flex flex-wrap items-center gap-3 rounded-lg border border-ink/10 bg-card px-3 py-2">
-                      <span className="font-mono text-[10px] tracking-widest text-good uppercase">{t('exp.client')}</span>
+                      <span className="text-xs text-good">{t('exp.client')}</span>
                       <LogoTile sources={exp.client.logos} name={exp.client.name} size={30} fallback={<span className="text-sm text-ink">{exp.client.name}</span>} />
                       {exp.client.parents?.map((p) => (
                         <LogoTile key={p.name} sources={p.logos} name={p.name} size={30} fallback={<span className="text-sm text-ink">{p.name}</span>} />
@@ -77,7 +77,7 @@ export function Experience() {
 
       {minor.length > 0 && (
         <div className="mt-8 sm:pl-[calc(9.5rem+2rem)]">
-          <p className="mb-3 font-mono text-[10px] tracking-widest text-ink-3 uppercase">{t('exp.also')}</p>
+          <p className="mb-3 text-xs text-ink-3">{t('exp.also')}</p>
           <ul className="space-y-2">
             {minor.map((exp) => (
               <li key={exp.id} className="flex flex-wrap items-center gap-3 text-sm text-ink-3">

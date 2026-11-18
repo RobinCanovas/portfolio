@@ -3,7 +3,7 @@ import { motion, type Variants } from 'framer-motion';
 import { ArrowDown, FileText, GraduationCap, Mail, MapPin } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { LinkedinIcon } from './BrandIcons';
-import { CountUp, RotatingWords } from './fx/effects';
+import { CountUp } from './fx/effects';
 import { useRevealed } from './fx/Intro';
 import { Portrait } from './Portrait';
 
@@ -16,14 +16,14 @@ const above: Variants = { hidden: { opacity: 0, y: -8 }, show: item.show };
 const inPlace: Variants = { hidden: { opacity: 1 }, show: { opacity: 1 } };
 
 export function Hero({ onContact }: { onContact: () => void }) {
-  const { t, lang } = useLang();
+  const { t } = useLang();
   const { profile, links, experiences, projects } = useContent();
   // Entrance animations wait until the opening intro hands over.
   const revealed = useRevealed();
   const [afterIntro] = useState(() => !revealed);
 
   const stats = [
-    { value: experiences.filter((e) => !e.minor && e.contract !== 'Volunteer').length, label: t('hero.stat.experiences') },
+    { value: experiences.filter((e) => e.contract !== 'Volunteer').length, label: t('hero.stat.experiences') },
     { value: 12, suffix: '+', label: t('hero.stat.months') },
     { value: projects.length, label: t('hero.stat.projects') },
     { value: null, text: '2027', label: t('hero.stat.graduation') },
@@ -33,7 +33,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
     <section id="home" className="relative">
       <div className="mx-auto grid min-h-dvh max-w-6xl items-center gap-14 px-4 pt-28 pb-24 sm:px-6 lg:grid-cols-[1.25fr_1fr]">
         <motion.div variants={container} initial="hidden" animate={revealed ? 'show' : 'hidden'}>
-          <motion.p variants={item} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[11px] tracking-[0.12em] text-ink-3 uppercase">
+          <motion.p variants={item} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-ink-3">
             <span className="inline-flex items-center gap-2 text-good">
               <span className="size-1.5 rounded-full bg-good" aria-hidden="true" />
               {profile.status}
@@ -56,8 +56,8 @@ export function Hero({ onContact }: { onContact: () => void }) {
             </motion.span>
           </h1>
 
-          <motion.p variants={item} className="mt-6 text-xl text-ink sm:text-2xl">
-            <RotatingWords key={lang} words={t('hero.roles').split('|')} className="text-ink" />
+          <motion.p variants={item} className="mt-6 text-lg text-ink sm:text-xl">
+            {t('hero.tagline')}
           </motion.p>
 
           <motion.div variants={item} className="mt-5 space-y-1.5 text-sm text-ink-2">
@@ -90,7 +90,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
               <div key={s.label} className={`pt-4 pb-1 ${i > 0 ? 'sm:border-l sm:border-ink/10 sm:pl-5' : ''} ${i % 2 === 1 ? 'border-l border-ink/10 pl-5 sm:pl-5' : ''}`}>
                 <dt className="sr-only">{s.label}</dt>
                 <dd className="font-serif text-4xl leading-none text-ink sm:text-[2.6rem]">{s.value === null ? s.text : <CountUp to={s.value} suffix={s.suffix} />}</dd>
-                <dd className="mt-1.5 font-mono text-[10px] tracking-[0.14em] text-ink-3 uppercase" aria-hidden="true">
+                <dd className="mt-1.5 text-xs text-ink-3" aria-hidden="true">
                   {s.label}
                 </dd>
               </div>
@@ -107,7 +107,7 @@ export function Hero({ onContact }: { onContact: () => void }) {
         href="#experience"
         aria-label={t('hero.scroll')}
         data-scroll-cue
-        className="group absolute bottom-7 left-1/2 hidden -translate-x-1/2 items-center gap-2 font-mono text-[10px] tracking-[0.3em] text-ink-3 uppercase transition-colors hover:text-ink sm:flex"
+        className="group absolute bottom-7 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-xs text-ink-3 transition-colors hover:text-ink sm:flex"
       >
         <ArrowDown className="size-3.5 transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true" />
         {t('hero.readOn')}
