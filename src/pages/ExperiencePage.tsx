@@ -143,7 +143,16 @@ export function ExperiencePage({ id }: { id: string }) {
             </h2>
             <p className="mt-4 leading-relaxed text-ink-2">{company.about}</p>
           </div>
-          {company.visual ? (
+          {company.photos?.length ? (
+            <div className="space-y-2">
+              <img src={company.photos[0].src} alt={company.photos[0].alt} className="aspect-[4/3] w-full rounded-xl object-cover ring-1 ring-ink/10" />
+              <div className="grid grid-cols-4 gap-2">
+                {company.photos.slice(1, 5).map((p) => (
+                  <img key={p.src} src={p.src} alt={p.alt} loading="lazy" decoding="async" className="aspect-square w-full rounded-lg object-cover ring-1 ring-ink/10" />
+                ))}
+              </div>
+            </div>
+          ) : company.visual ? (
             <div className="flex items-center justify-center rounded-xl bg-card p-6 ring-1 ring-ink/10">
               <LogoTile sources={company.visual.src} name={company.visual.alt} size={200} fallback={<CompanyLogo company={company} size={120} />} />
             </div>
@@ -164,7 +173,7 @@ export function ExperiencePage({ id }: { id: string }) {
           <motion.h2 {...fade()} id="missions-title" className="font-serif text-4xl leading-tight text-ink sm:text-[2.6rem]">
             {t('page.myRole')}
           </motion.h2>
-          {company.visual && <p className="mt-3 max-w-3xl text-ink-2">{exp.summary}</p>}
+          {(company.visual || company.photos?.length) && <p className="mt-3 max-w-3xl text-ink-2">{exp.summary}</p>}
           <div className={`mt-8 grid gap-10 ${exp.missions.length > 1 ? 'lg:grid-cols-2 lg:gap-14' : ''}`}>
             {exp.missions.map((group, gi) => (
               <motion.div key={group.title} {...fade(gi * 0.08)} className="border-t border-ink pt-5">

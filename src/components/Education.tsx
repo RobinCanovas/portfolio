@@ -81,8 +81,17 @@ export function Education() {
         <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.1 }} className="space-y-6">
           {volunteerRoles.map((exp) => (
             <a key={exp.id} href={href.experience(exp.id)} className="panel group relative block overflow-hidden rounded-xl p-6 transition-colors duration-300 hover:border-ink/35 sm:p-7">
+              {exp.company.photos?.[0] && (
+                <img
+                  src={exp.company.photos[0].src}
+                  alt={exp.company.photos[0].alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="-mx-6 -mt-6 mb-5 aspect-[16/8] w-[calc(100%+3rem)] max-w-none object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.02] sm:-mx-7 sm:-mt-7 sm:w-[calc(100%+3.5rem)]"
+                />
+              )}
               <div className="flex items-center gap-4">
-                <CompanyLogo company={exp.company} size={56} />
+                {!exp.company.photos?.length && <CompanyLogo company={exp.company} size={56} />}
                 <div>
                   <h3 className="font-serif text-2xl leading-tight text-ink transition-colors duration-200 group-hover:text-accent">{exp.role}</h3>
                   <p className="mt-1 text-sm text-ink-2">

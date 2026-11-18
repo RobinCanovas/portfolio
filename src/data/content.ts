@@ -10,7 +10,7 @@ const mergeFacts = (base: KeyFact[], over?: { value?: string; label: string }[])
 function localizeCompany(c: Company): Company {
   const o = fr.companies[c.id];
   if (!o) return c;
-  return { ...c, sector: o.sector, about: o.about, facts: mergeFacts(c.facts, o.facts), visual: c.visual && { ...c.visual, alt: o.visualAlt ?? c.visual.alt } };
+  return { ...c, sector: o.sector, about: o.about, facts: mergeFacts(c.facts, o.facts), visual: c.visual && { ...c.visual, alt: o.visualAlt ?? c.visual.alt }, photos: c.photos?.map((p, i) => ({ ...p, alt: o.photoAlts?.[i] ?? p.alt })) };
 }
 
 function localizeClient(c: Client): Client {
