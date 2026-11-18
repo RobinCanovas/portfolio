@@ -86,17 +86,25 @@ export function Education() {
             const photos = exp.company.photos ?? [];
             return (
               <div key={exp.id} className="panel group relative overflow-hidden rounded-xl p-6 transition-colors duration-300 hover:border-ink/35 sm:p-7">
-                {/* The whole card opens the photos; the link below sits above this layer. */}
-                {photos.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setOpenId(exp.id)}
-                    aria-label={`${t('edu.photos')} · ${exp.company.name}`}
-                    className="absolute inset-0 z-0 cursor-pointer rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                  />
-                )}
+                {/* The whole card opens the page; only the logo opens the photos (it sits above this layer). */}
+                <a href={href.experience(exp.id)} aria-label={`${t('exp.discover')} · ${exp.company.name}`} className="absolute inset-0 z-0 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" />
                 <div className="pointer-events-none flex items-center gap-4">
-                  <CompanyLogo company={exp.company} size={56} />
+                  {photos.length > 0 ? (
+                    <button
+                      type="button"
+                      onClick={() => setOpenId(exp.id)}
+                      aria-label={`${t('edu.photos')} · ${exp.company.name}`}
+                      title={`${t('edu.photos')} (${photos.length})`}
+                      className="pointer-events-auto relative z-10 shrink-0 cursor-pointer rounded-lg transition-transform duration-200 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                    >
+                      <CompanyLogo company={exp.company} size={56} />
+                      <span className="absolute -right-1.5 -bottom-1.5 flex size-5 items-center justify-center rounded-full bg-ink text-paper shadow" aria-hidden="true">
+                        <Camera className="size-3" />
+                      </span>
+                    </button>
+                  ) : (
+                    <CompanyLogo company={exp.company} size={56} />
+                  )}
                   <div>
                     <h3 className="font-serif text-2xl leading-tight text-ink transition-colors duration-200 group-hover:text-accent">{exp.role}</h3>
                     <p className="mt-1 text-sm text-ink-2">
@@ -114,16 +122,9 @@ export function Education() {
                     <Badge key={sk}>{sk}</Badge>
                   ))}
                 </div>
-                <div className="mt-6 flex items-center justify-between gap-4 text-xs font-medium">
-                  <a href={href.experience(exp.id)} className="relative z-10 inline-flex items-center gap-1.5 text-ink-2 transition-colors hover:text-ink">
-                    {t('exp.discover')} <ArrowRight className="size-3.5" aria-hidden="true" />
-                  </a>
-                  {photos.length > 0 && (
-                    <span className="pointer-events-none inline-flex items-center gap-1.5 text-ink-3 transition-colors group-hover:text-accent">
-                      <Camera className="size-3.5" aria-hidden="true" /> {t('edu.photos')} ({photos.length})
-                    </span>
-                  )}
-                </div>
+                <span className="pointer-events-none mt-6 inline-flex items-center gap-1.5 text-xs font-medium text-ink-2 transition-colors group-hover:text-ink">
+                  {t('exp.discover')} <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+                </span>
                 <AnimatePresence>
                   {openId === exp.id && <PhotoLightbox photos={photos} title={exp.company.name} onClose={() => setOpenId(null)} />}
                 </AnimatePresence>

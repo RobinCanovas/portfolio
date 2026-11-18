@@ -92,7 +92,7 @@ export function ProjectPage({ id }: { id: string }) {
               </div>
               <figcaption className="mt-2.5 text-sm text-ink-3">
                 <span className="text-xs text-ink-2">{t('page.plate', { n: String(index + 1).padStart(2, '0') })}</span>
-                <span className="font-serif italic"> — {hasCapture(project.id) ? t('page.plateDemo') : t('page.plateStory')}</span>
+                <span className="font-serif italic"> — {hasCapture(project.id) ? t(project.demo ? 'page.plateDemo' : 'page.plateSite') : t('page.plateStory')}</span>
               </figcaption>
             </motion.figure>
           </div>
