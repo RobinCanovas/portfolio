@@ -10,10 +10,12 @@ describe('profile data', () => {
     expect(unique(education.map((e) => e.id))).toBe(true);
   });
 
-  it('lists exactly one current position, at Éditions Ellipses', () => {
+  it('lists exactly one current paid position, at Éditions Ellipses, plus the ongoing Aeroboat volunteering', () => {
     const current = experiences.filter((e) => e.current);
-    expect(current).toHaveLength(1);
-    expect(current[0].company.name).toBe('Éditions Ellipses');
+    const paid = current.filter((e) => e.contract !== 'Volunteer');
+    expect(paid).toHaveLength(1);
+    expect(paid[0].company.name).toBe('Éditions Ellipses');
+    expect(current.filter((e) => e.contract === 'Volunteer').map((e) => e.company.name)).toEqual(['Aeroboat France']);
   });
 
   it('gives every company a logo, an about text and missions', () => {

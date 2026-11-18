@@ -20,7 +20,7 @@ export type Tech =
   | 'Agile'
   | 'UML';
 
-export type ContractType = 'Apprenticeship' | 'Internship' | 'Freelance' | 'Fixed-term';
+export type ContractType = 'Apprenticeship' | 'Internship' | 'Freelance' | 'Fixed-term' | 'Volunteer';
 export type WorkMode = 'On-site' | 'Hybrid' | 'Remote';
 
 export interface KeyFact {
