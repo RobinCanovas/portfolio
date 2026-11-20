@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { projects } from '../data/profile';
-import type { Tech } from '../types';
+import type { Domain } from '../types';
 import { Projects } from './Projects';
 
 function Harness() {
-  const [filter, setFilter] = useState<Tech | 'All'>('All');
+  const [filter, setFilter] = useState<Domain | 'All'>('All');
   return <Projects filter={filter} onFilter={setFilter} />;
 }
 
@@ -19,13 +19,13 @@ describe('<Projects />', () => {
     expect(cardTitles()).toHaveLength(projects.length);
   });
 
-  it('filters by technology', async () => {
+  it('filters by field, keeping the grid in order', async () => {
     render(<Harness />);
-    const javaButton = screen.getByRole('button', { name: /^Java\b/ });
-    await userEvent.click(javaButton);
-    const expected = projects.filter((p) => p.stack.includes('Java')).map((p) => p.title);
+    const dataButton = screen.getByRole('button', { name: /^Data, AI & maths\b/ });
+    await userEvent.click(dataButton);
+    const expected = projects.filter((p) => p.domain === 'data').map((p) => p.title);
     await waitFor(() => expect(cardTitles()).toEqual(expected));
-    expect(javaButton).toHaveAttribute('aria-pressed', 'true');
+    expect(dataButton).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('links every card to its case-study page', () => {

@@ -17,7 +17,7 @@ import { BackToTop, LocalTime } from './components/fx/Extras';
 import { StackLine } from './components/fx/StackLine';
 import { AnimatePresence, motion } from 'framer-motion';
 import { findExperience, findProject, profile } from './data/profile';
-import type { Tech } from './types';
+import type { Domain } from './types';
 
 const ExperiencePage = lazy(() => import('./pages/ExperiencePage').then((m) => ({ default: m.ExperiencePage })));
 const ProjectPage = lazy(() => import('./pages/ProjectPage').then((m) => ({ default: m.ProjectPage })));
@@ -79,7 +79,7 @@ function Portfolio() {
   useKonami(triggerHyperMode);
   usePauseOffscreen();
   const route = useRoute();
-  const [filter, setFilter] = useState<Tech | 'All'>('All');
+  const [filter, setFilter] = useState<Domain | 'All'>('All');
   const [contactOpen, setContactOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const previousRoute = useRef(route.name);
@@ -94,8 +94,8 @@ function Portfolio() {
   const closePalette = useCallback(() => setPaletteOpen(false), []);
   const openExperience = useCallback((id: string) => navigate(href.experience(id)), []);
   const openProject = useCallback((id: string) => navigate(href.project(id)), []);
-  const filterProjects = useCallback((tech: Tech | 'All') => {
-    setFilter(tech);
+  const filterProjects = useCallback((domain: Domain | 'All') => {
+    setFilter(domain);
     navigate(href.section('projects'));
   }, []);
 

@@ -7,9 +7,9 @@ import { useActiveSection } from '../hooks/useActiveSection';
 import { useContent, useLang } from '../i18n';
 import type { UiKey } from '../i18n/ui';
 import { href, navigate } from '../router';
-import type { Tech } from '../types';
+import type { Domain } from '../types';
 import { Logo } from './Logo';
-import { TechIcon } from './TechIcon';
+import { DomainIcon } from './DomainIcon';
 import { CompanyLogo, LogoTile } from './ui';
 
 type MenuId = 'experience' | 'projects' | 'goals';
@@ -24,7 +24,7 @@ const LINKS: { id: string; label: UiKey; menu?: MenuId }[] = [
 const SECTION_IDS = ['home', ...LINKS.map((l) => l.id), 'contact'];
 
 export interface NavActions {
-  onFilter: (tech: Tech | 'All') => void;
+  onFilter: (domain: Domain | 'All') => void;
   onOpenExperience: (id: string) => void;
   onFocusProject: (id: string) => void;
   onContact: () => void;
@@ -33,7 +33,7 @@ export interface NavActions {
   onHome?: boolean;
 }
 
-const countFor = (c: Content, tech: Tech | 'All') => (tech === 'All' ? c.projects.length : c.projects.filter((p) => p.stack.includes(tech)).length);
+const countFor = (c: Content, domain: Domain | 'All') => (domain === 'All' ? c.projects.length : c.projects.filter((p) => p.domain === domain).length);
 
 /** FR / EN switch — English is the default language. */
 function LangToggle({ className = '' }: { className?: string }) {
@@ -159,21 +159,21 @@ function ProjectsPanel({ onFilter, onFocusProject, close }: { onFilter: NavActio
     <div className="grid w-[min(92vw,680px)] grid-cols-[1fr_1.1fr] gap-2 p-2">
       <div>
         <p className="px-3 pt-2 pb-1 text-xs text-ink-3">{t('nav.filter')}</p>
-        <ul className="grid grid-cols-2 gap-0.5">
-          {(['All', ...c.projectFilters] as const).map((tech, i) => (
-            <motion.li key={tech} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.015, duration: 0.2 }}>
+        <ul className="grid grid-cols-1 gap-0.5">
+          {(['All', ...c.domains] as const).map((domain, i) => (
+            <motion.li key={domain} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.015, duration: 0.2 }}>
               <button
                 type="button"
                 data-menu-item
                 onClick={() => {
                   close();
-                  onFilter(tech);
+                  onFilter(domain);
                 }}
                 className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-ink-2 transition-colors hover:bg-ink/[0.04] hover:text-ink"
               >
-                <TechIcon tech={tech} />
-                <span className="flex-1 truncate">{tech === 'All' ? t('nav.allProjects') : c.tech(tech)}</span>
-                <span className="font-mono text-[10px] text-ink-3">{countFor(c, tech)}</span>
+                <DomainIcon domain={domain} />
+                <span className="flex-1 truncate">{domain === 'All' ? t('nav.allProjects') : t(`domain.${domain}`)}</span>
+                <span className="font-mono text-[10px] text-ink-3">{countFor(c, domain)}</span>
               </button>
             </motion.li>
           ))}
@@ -558,18 +558,18 @@ export function Navbar({ onFilter, onOpenExperience, onFocusProject, onContact, 
               </Accordion>
               <Accordion title={t('nav.projects')} open={section === 'projects'} onToggle={() => setSection((s) => (s === 'projects' ? null : 'projects'))}>
                 <div className="flex flex-wrap gap-2 px-2">
-                  {(['All', ...c.projectFilters] as const).map((tech) => (
+                  {(['All', ...c.domains] as const).map((domain) => (
                     <button
-                      key={tech}
+                      key={domain}
                       type="button"
                       onClick={mobilePick(() => {
-                        onFilter(tech);
+                        onFilter(domain);
                       })}
                       className="group inline-flex items-center gap-1.5 rounded-full border border-ink/15 px-3 py-1.5 font-mono text-xs text-ink-2 hover:border-ink/40"
                     >
-                      <TechIcon tech={tech} className="size-3.5" />
-                      {tech === 'All' ? t('nav.allProjects') : c.tech(tech)}
-                      <span className="text-ink-3">{countFor(c, tech)}</span>
+                      <DomainIcon domain={domain} className="size-3.5" />
+                      {domain === 'All' ? t('nav.allProjects') : t(`domain.${domain}`)}
+                      <span className="text-ink-3">{countFor(c, domain)}</span>
                     </button>
                   ))}
                 </div>

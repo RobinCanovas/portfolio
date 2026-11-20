@@ -64,6 +64,7 @@ function build(lang: Lang) {
     experiences,
     projects,
     projectFilters: en.projectFilters,
+    domains: en.domains,
     education: isFr ? en.education.map(localizeEducation) : en.education,
     vModel: isFr ? fr.vModel : (en.vModel as readonly { left: string; right: string }[]),
     volunteering: isFr ? { ...en.volunteering, ...fr.volunteering } : en.volunteering,

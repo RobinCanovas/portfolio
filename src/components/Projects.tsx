@@ -3,19 +3,25 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight, Lock, PlayCircle } from 'lucide-react';
 import { useContent, useLang } from '../i18n';
 import { href } from '../router';
-import type { Tech } from '../types';
+import type { Domain } from '../types';
+import { DomainIcon } from './DomainIcon';
 import { ProjectVisual } from './ProjectVisual';
 import { Badge, CompanyLogo, Section } from './ui';
 
 interface Props {
-  filter: Tech | 'All';
-  onFilter: (tech: Tech | 'All') => void;
+  filter: Domain | 'All';
+  onFilter: (domain: Domain | 'All') => void;
 }
 
 export function Projects({ filter, onFilter }: Props) {
   const { t, lang } = useLang();
   const c = useContent();
-  const visible = useMemo(() => (filter === 'All' ? c.projects : c.projects.filter((p) => p.stack.includes(filter))), [filter, c.projects]);
+  // Grouped by field, in the order of c.domains; within a field the order of the data is kept.
+  const visible = useMemo(() => {
+    if (filter !== 'All') return c.projects.filter((p) => p.domain === filter);
+    const rank = (d: Domain) => c.domains.indexOf(d);
+    return [...c.projects].sort((a, b) => rank(a.domain) - rank(b.domain));
+  }, [filter, c.projects, c.domains]);
   const allLabel = lang === 'fr' ? 'Tous' : 'All';
   // Hovering (or focusing) a card tells its illustration's story again.
   const [replays, setReplays] = useState<Record<string, number>>({});
@@ -24,20 +30,21 @@ export function Projects({ filter, onFilter }: Props) {
   return (
     <Section id="projects" eyebrow={t('section.projects')} title={t('section.projects.title')}>
       <div role="toolbar" aria-label={t('proj.filter')} className="-mx-4 mb-8 flex gap-x-5 gap-y-1 overflow-x-auto border-b border-ink/10 px-4 sm:mx-0 sm:flex-wrap sm:px-0">
-        {(['All', ...c.projectFilters] as const).map((tech) => {
-          const count = tech === 'All' ? c.projects.length : c.projects.filter((p) => p.stack.includes(tech)).length;
-          const on = filter === tech;
+        {(['All', ...c.domains] as const).map((domain) => {
+          const count = domain === 'All' ? c.projects.length : c.projects.filter((p) => p.domain === domain).length;
+          const on = filter === domain;
           return (
             <button
-              key={tech}
+              key={domain}
               type="button"
               aria-pressed={on}
-              onClick={() => onFilter(tech)}
-              className={`inline-flex shrink-0 items-center gap-1.5 border-b px-1 py-1.5 text-sm transition-colors duration-200 ${
+              onClick={() => onFilter(domain)}
+              className={`inline-flex shrink-0 items-center gap-2 border-b px-1 py-1.5 text-sm transition-colors duration-200 ${
                 on ? 'border-ink text-ink' : 'border-transparent text-ink-3 hover:text-ink'
               }`}
             >
-              {tech === 'All' ? allLabel : c.tech(tech)} <span className="text-ink-4">{count}</span>
+              <DomainIcon domain={domain} className="size-3.5" />
+              {domain === 'All' ? allLabel : t(`domain.${domain}`)} <span className="text-ink-4">{count}</span>
             </button>
           );
         })}
@@ -92,7 +99,7 @@ export function Projects({ filter, onFilter }: Props) {
 
                   <div className="mt-4 mb-5 flex flex-wrap gap-1.5">
                     {p.stack.map((tech) => (
-                      <Badge key={tech} active={tech === filter}>
+                      <Badge key={tech}>
                         {c.tech(tech)}
                       </Badge>
                     ))}
